@@ -1,4 +1,7 @@
 import { NextResponse } from 'next/server'
+import { promises as fs } from 'fs'
+import path from 'path'
+import { decrypt } from '@/lib/crypto-helper'
 
 const PROVIDER_ENDPOINTS: Record<string, string> = {
   groq: 'https://api.groq.com/openai/v1/chat/completions',
@@ -55,12 +58,36 @@ export async function POST(request: Request) {
       )
     }
 
+    let activeApiKey = apiKey
+    if (apiKey === '••••••••••••') {
+      try {
+        const configPath = path.join(process.cwd(), 'data', 'config.json')
+        const configData = await fs.readFile(configPath, 'utf-8')
+        const config = JSON.parse(configData)
+        const encryptedKey = config.apiKeys?.[provider]
+        if (encryptedKey) {
+          activeApiKey = decrypt(encryptedKey)
+        }
+      } catch (e) {
+        console.error('Failed to load/decrypt key on server:', e)
+      }
+    }
+
+    // Fallback to environment variables if key is still missing or masked
+    if (!activeApiKey || activeApiKey === '••••••••••••') {
+      const envKeyName = `${provider.toUpperCase()}_API_KEY`
+      const envKey = process.env[envKeyName]
+      if (envKey && envKey.trim() !== '' && !envKey.includes('your_')) {
+        activeApiKey = envKey
+      }
+    }
+
     if (provider === 'gemini') {
-      return handleGemini(messages, model, apiKey)
+      return handleGemini(messages, model, activeApiKey)
     }
 
     // OpenAI-compatible providers: groq, mistral, cerebras
-    return handleOpenAICompatible(messages, provider, model, apiKey)
+    return handleOpenAICompatible(messages, provider, model, activeApiKey)
   } catch (error) {
     console.error('Chat API error:', error)
     return NextResponse.json(
