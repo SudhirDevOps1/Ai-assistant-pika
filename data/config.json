@@ -1,0 +1,14 @@
+{
+  "provider": "groq",
+  "model": "llama-3.3-70b-versatile",
+  "apiKeys": {
+    "groq": "",
+    "gemini": "",
+    "mistral": "",
+    "cerebras": ""
+  },
+  "ttsVoice": "en-US-Neural2-A",
+  "autoFallback": true,
+  "conversationLimit": 50,
+  "wakeWord": "Hey Assistant"
+}

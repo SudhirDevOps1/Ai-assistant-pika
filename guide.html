@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pika AI Assistant - Complete Setup & Usage Guide</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg-primary: #0a0a1a;
+      --bg-card: rgba(255,255,255,0.03);
+      --bg-card-hover: rgba(255,255,255,0.06);
+      --border: rgba(255,255,255,0.08);
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --cyan: #22d3ee;
+      --purple: #a855f7;
+      --green: #4ade80;
+      --orange: #fb923c;
+      --red: #f87171;
+      --yellow: #facc15;
+      --blue: #60a5fa;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── Aurora Background ── */
+    .aurora-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .aurora-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.15;
+      animation: float 20s ease-in-out infinite;
+    }
+    .aurora-blob:nth-child(1) { width: 600px; height: 600px; background: var(--cyan); top: -10%; left: -10%; animation-delay: 0s; }
+    .aurora-blob:nth-child(2) { width: 500px; height: 500px; background: var(--purple); top: 40%; right: -10%; animation-delay: -5s; }
+    .aurora-blob:nth-child(3) { width: 400px; height: 400px; background: #ec4899; bottom: -5%; left: 30%; animation-delay: -10s; }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(30px, -30px) scale(1.05); }
+      66% { transform: translate(-20px, 20px) scale(0.95); }
+    }
+
+    /* ── Container ── */
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      text-align: center;
+      padding: 60px 0 50px;
+    }
+    .hero-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 24px;
+      border-radius: 24px;
+      background: linear-gradient(135deg, var(--cyan), var(--purple));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      box-shadow: 0 0 60px rgba(34,211,238,0.3), 0 0 120px rgba(168,85,247,0.2);
+      animation: pulse-glow 3s ease-in-out infinite;
+    }
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 60px rgba(34,211,238,0.3), 0 0 120px rgba(168,85,247,0.2); }
+      50% { box-shadow: 0 0 80px rgba(34,211,238,0.5), 0 0 160px rgba(168,85,247,0.3); }
+    }
+    .hero h1 {
+      font-size: 2.8rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--cyan), var(--purple), #ec4899);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 12px;
+    }
+    .hero p {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* ── Section ── */
+    .section {
+      margin-top: 48px;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .section-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    /* ── Glass Card ── */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 16px;
+      backdrop-filter: blur(20px);
+      transition: all 0.3s ease;
+    }
+    .card:hover {
+      background: var(--bg-card-hover);
+      border-color: rgba(255,255,255,0.12);
+      transform: translateY(-2px);
+    }
+    .card h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card p, .card li {
+      color: var(--text-muted);
+      font-size: 0.92rem;
+    }
+    .card ul {
+      list-style: none;
+      padding: 0;
+    }
+    .card li {
+      padding: 6px 0;
+      padding-left: 24px;
+      position: relative;
+    }
+    .card li::before {
+      content: '▸';
+      position: absolute;
+      left: 4px;
+      color: var(--cyan);
+      font-weight: bold;
+    }
+
+    /* ── Step Cards ── */
+    .step {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .step-number {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--cyan), var(--purple));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1rem;
+      flex-shrink: 0;
+      color: white;
+    }
+    .step-content {
+      flex: 1;
+    }
+    .step-content h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .step-content p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    /* ── Code Block ── */
+    .code-block {
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(34,211,238,0.15);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin: 12px 0;
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 0.88rem;
+      color: var(--cyan);
+      overflow-x: auto;
+      position: relative;
+    }
+    .code-block .comment { color: #6b7280; }
+    .code-block .cmd { color: var(--green); }
+    .code-block .url { color: var(--orange); }
+
+    /* ── Badge ── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border: 1px solid;
+    }
+    .badge-cyan { background: rgba(34,211,238,0.1); border-color: rgba(34,211,238,0.3); color: var(--cyan); }
+    .badge-purple { background: rgba(168,85,247,0.1); border-color: rgba(168,85,247,0.3); color: var(--purple); }
+    .badge-green { background: rgba(74,222,128,0.1); border-color: rgba(74,222,128,0.3); color: var(--green); }
+    .badge-orange { background: rgba(251,146,60,0.1); border-color: rgba(251,146,60,0.3); color: var(--orange); }
+    .badge-red { background: rgba(248,113,113,0.1); border-color: rgba(248,113,113,0.3); color: var(--red); }
+
+    /* ── Feature Grid ── */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 12px;
+    }
+    .feature-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      transition: all 0.3s ease;
+    }
+    .feature-item:hover {
+      background: var(--bg-card-hover);
+      transform: translateY(-2px);
+    }
+    .feature-item h4 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .feature-item p {
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      line-height: 1.5;
+    }
+
+    /* ── Table ── */
+    .table-wrapper {
+      overflow-x: auto;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    thead {
+      background: rgba(34,211,238,0.08);
+    }
+    th {
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--cyan);
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 10px 16px;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255,255,255,0.02); }
+
+    /* ── Alert ── */
+    .alert {
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin: 16px 0;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .alert-info {
+      background: rgba(34,211,238,0.08);
+      border: 1px solid rgba(34,211,238,0.2);
+    }
+    .alert-warn {
+      background: rgba(250,204,21,0.08);
+      border: 1px solid rgba(250,204,21,0.2);
+    }
+    .alert-success {
+      background: rgba(74,222,128,0.08);
+      border: 1px solid rgba(74,222,128,0.2);
+    }
+    .alert-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 2px; }
+    .alert-text { font-size: 0.88rem; color: var(--text-muted); }
+    .alert-text strong { color: var(--text); }
+
+    /* ── Divider ── */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      margin: 40px 0;
+    }
+
+    /* ── TOC ── */
+    .toc {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-top: 32px;
+    }
+    .toc h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: var(--cyan);
+    }
+    .toc a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+    }
+    .toc a:hover {
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+      transform: translateX(4px);
+    }
+    .toc-num {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      background: rgba(34,211,238,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--cyan);
+      flex-shrink: 0;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      .hero h1 { font-size: 2rem; }
+      .feature-grid { grid-template-columns: 1fr; }
+      .container { padding: 20px 16px 60px; }
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+  </style>
+</head>
+<body>
+
+  <!-- Aurora Background -->
+  <div class="aurora-bg">
+    <div class="aurora-blob"></div>
+    <div class="aurora-blob"></div>
+    <div class="aurora-blob"></div>
+  </div>
+
+  <div class="container">
+
+    <!-- ═══════════ HERO ═══════════ -->
+    <div class="hero">
+      <div class="hero-icon">🎙️</div>
+      <h1>Pika AI Assistant Desktop Assistant</h1>
+      <p>Complete Setup & Usage Guide — Hindi/English Voice Assistant jo aapke PC ko control karega AI se</p>
+      <div style="display:flex; gap:8px; justify-content:center; margin-top:20px; flex-wrap:wrap;">
+        <span class="badge badge-cyan">Next.js 15</span>
+        <span class="badge badge-purple">React 19</span>
+        <span class="badge badge-green">Python WebSocket</span>
+        <span class="badge badge-orange">4 AI Providers</span>
+      </div>
+    </div>
+
+    <!-- ═══════════ TABLE OF CONTENTS ═══════════ -->
+    <div class="toc">
+      <h3>📋 Guide Contents</h3>
+      <a href="#requirements"><span class="toc-num">1</span> Requirements — Kya chahiye</a>
+      <a href="#setup"><span class="toc-num">2</span> Setup — Install kaise karein</a>
+      <a href="#pc-bridge"><span class="toc-num">3</span> PC Bridge — Python Server Setup</a>
+      <a href="#settings"><span class="toc-num">4</span> Settings — Configure karna</a>
+      <a href="#chat"><span class="toc-num">5</span> Chat — AI se baat karna</a>
+      <a href="#pc-control"><span class="toc-num">6</span> PC Control — Computer control karna</a>
+      <a href="#reminders"><span class="toc-num">7</span> Reminders — Yaad-dehani</a>
+      <a href="#clipboard"><span class="toc-num">8</span> Clipboard — Copy history</a>
+      <a href="#system-monitor"><span class="toc-num">9</span> System Monitor — PC ki health</a>
+      <a href="#providers"><span class="toc-num">10</span> AI Providers — Kaunsa choose karein</a>
+      <a href="#troubleshoot"><span class="toc-num">11</span> Troubleshooting — Problems fix karna</a>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ═══════════ 1. REQUIREMENTS ═══════════ -->
+    <div class="section" id="requirements">
+      <div class="section-header">
+        <div class="section-icon" style="background: linear-gradient(135deg, var(--cyan), var(--blue));">📦</div>
+        <h2 class="section-title">1. Requirements — Kya Chahiye</h2>
+      </div>
+
+      <div class="card">
+        <h3>💻 Software Requirements</h3>
+        <ul>
+          <li><strong>Node.js v18+</strong> — JavaScript runtime (tumhare paas v24 hai ✅)</li>
+          <li><strong>Python 3.10+</strong> — PC Bridge ke liye (tumhare paas 3.12 hai ✅)</li>
+          <li><strong>npm</strong> — Package manager (Node ke saath aata hai)</li>
+          <li><strong>pip</strong> — Python package manager</li>
+          <li><strong>Browser</strong> — Chrome/Edge/Firefox (koi bhi modern browser)</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>🔑 API Keys (Koi EK chahiye)</h3>
+        <ul>
+          <li><strong>Groq</strong> — Free, sabse fast ⚡ → <a href="https://console.groq.com" style="color:var(--cyan);">console.groq.com</a></li>
+          <li><strong>Google Gemini</strong> — Free tier available → <a href="https://aistudio.google.com" style="color:var(--cyan);">aistudio.google.com</a></li>
+          <li><strong>Mistral</strong> — Free tier → <a href="https://console.mistral.ai" style="color:var(--cyan);">console.mistral.ai</a></li>
+          <li><strong>Cerebras</strong> — Free, ultra fast → <a href="https://cloud.cerebras.ai" style="color:var(--cyan);">cloud.cerebras.ai</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ═══════════ 2. SETUP ═══════════ -->
+    <div class="section" id="setup">
+      <div class="section-header">
+        <div class="section-icon" style="background: linear-gradient(135deg, var(--green), var(--cyan));">🚀</div>
+        <h2 class="section-title">2. Setup — Install Kaise Karein</h2>
+      </div>
+
+      <div class="step">
+        <div class="step-number">1</div>
+        <div class="step-content">
+          <h4>Terminal/CMD khole project folder mein</h4>
+          <div class="code-block">
+            <span class="cmd">cd</span> E:\tmp\0606\AI\AI
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-number">2</div>
+        <div class="step-content">
+          <h4>Dependencies install karo</h4>
+          <div class="code-block">
+            <span class="cmd">npm install</span>
+          </div>
+          <p>Yeh sab packages download karega (Next.js, React, Tailwind, etc.) — 2-5 min lagega</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-number">3</div>
+        <div class="step-content">
+          <h4>Dev server start karo</h4>
+          <div class="code-block">
+            <span class="cmd">npm run dev</span>
+          </div>
+          <p>Server start hoga → <span style="color:var(--cyan);">http://localhost:3000</span></p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-number">4</div>
+        <div class="step-content">
+          <h4>Browser mein kholo</h4>
+          <div class="code-block">
+            <span class="url">http://localhost:3000</span>
+          </div>
+          <p>Boom! 🎉 Pika AI Assistant Desktop Assistant open ho jaayega</p>
+        </div>
+      </div>
+
+      <div class="alert alert-info">
+        <span class="alert-icon">💡</span>
+        <span class="alert-text"><strong>Tip:</strong> Phone se bhi access kar sakte ho! Same WiFi pe hona chahiye, phir phone ke browser mein <code style="color:var(--cyan)">http://192.168.1.59:3000</code> (apna PC IP) type karo.</span>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ═══════════ 3. PC BRIDGE ═══════════ -->
+    <div class="section" id="pc-bridge">
+      <div class="section-header">
+        <div class="section-icon" style="background: linear-gradient(135deg, #10b981, #34d399);">🔌</div>
+        <h2 class="section-title">3. PC Bridge — Python Server Setup</h2>
+      </div>
+
+      <div class="alert alert-warn">
+        <span class="alert-icon">⚠️</span>
+        <span class="alert-text"><strong>Zaroori:</strong> PC Bridge SIRF PC Control features ke liye chahiye (volume, apps, shutdown, etc.). Agar sirf AI chat use karna hai toh iske bina bhi kaam chalega!</span>
+      </div>
+
+      <div class="card">
+        <h3>🐍 PC Bridge kya hai?</h3>
+        <p>Yeh ek Python WebSocket server hai jo tumhare PC pe run hota hai. Web UI isse connect hota hai aur commands bhejta hai jaise "volume up karo", "Chrome kholo", "PC shutdown karo" etc.</p>
+        <br>
+        <p><strong>Flow:</strong></p>
+        <div class="code-block" style="color: var(--text-muted);">
+Web UI (Browser) ──WebSocket──► Python Bridge (pc_bridge.py) ──► PC Actions
+   localhost:3000                   localhost:8765                 Volume, Apps, etc.
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-number">1</div>
+        <div class="step-content">
+          <h4>Nayi Terminal/CMD kholo (Web server wali band mat karna!)</h4>
+          <p>Yeh alag terminal honi chahiye — ek mein web server chalega, ek mein Python bridge</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-number">2</div>
+        <div class="step-content">
+          <h4>PC Bridge folder mein jaao</h4>
+          <div class="code-block">
+            <span class="cmd">cd</span> E:\tmp\0606\AI\AI\pc-bridge
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-number">3</div>
+        <div class="step-content">
+          <h4>Python dependencies install karo (sirf pehli baar)</h4>
+          <div class="code-block">
+            <span class="cmd">pip install -r requirements.txt</span>
+          </div>
+          <p>Yeh install karega: websockets, psutil, pyautogui, pyperclip, pygetwindow, Pillow</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-number">4</div>
+        <div class="step-content">
+          <h4>Python Bridge start karo</h4>
+          <div class="code-block">
+            <span class="cmd">python pc_bridge.py</span>
+          </div>
+          <p>Output aayega:</p>
+          <div class="code-block" style="color: var(--green);">
++--------------------------------------------------------------+
+|          PC Bridge -- WebSocket Server                       |
+|          Pika AI Assistant Desktop Assistant                          |
+|                                                              |
+|  Server running on: ws://0.0.0.0:8765                       |
+|  Local access:      ws://localhost:8765                      |
++--------------------------------------------------------------+
+  Your LAN IP:       ws://192.168.1.59:8765
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-number">5</div>
+        <div class="step-content">
+          <h4>Web UI mein Settings karo</h4>
+          <p>Browser mein <code style="color:var(--cyan)">http://localhost:3000</code> kholo → Sidebar mein ⚙️ <strong>Settings</strong> click karo → Neeche scroll karo → <strong>"PC Bridge (WebSocket)"</strong> section mein:</p>
+          <div class="code-block">
+            <span class="url">ws://localhost:8765</span>
+          </div>
+          <p>Yeh URL paste karo aur <strong>Save Settings</strong> button dabao!</p>
+        </div>
+      </div>
+
+      <div class="alert alert-success">
+        <span class="alert-icon">✅</span>
+        <span class="alert-text"><strong>Done!</strong> Ab sidebar mein 💻 <strong>PC Control</strong> tab pe jaao — connected dikhega aur saare controls kaam karenge!</span>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ═══════════ 4. SETTINGS ═══════════ -->
+    <div class="section" id="settings">
+      <div class="section-header">
+        <div class="section-icon" style="background: linear-gradient(135deg, var(--purple), #ec4899);">⚙️</div>
+        <h2 class="section-title">4. Settings — Configure Karna</h2>
+      </div>
+
+      <div class="card">
+        <h3>⚡ Provider & Model</h3>
+        <p>Kaunsa AI provider use karna hai choose karo. 4 options hain:</p>
+        <ul>
+          <li><strong>Groq</strong> (Default) — Sabse fast, free, recommended for beginners</li>
+          <li><strong>Gemini</strong> — Google ka AI, bahut smart</li>
+          <li><strong>Mistral</strong> — European AI, coding mein strong</li>
+          <li><strong>Cerebras</strong> — Ultra fast inference</li>
+        </ul>
+        <p style="margin-top:8px;">Provider select karne ke baad uska <strong>model</strong> choose karo (har provider ke multiple models hain)</p>
+      </div>
+
+      <div class="card">
+        <h3>🔑 API Keys</h3>
+        <p>Jo bhi provider use karna hai uski API key daalni hogi. Example Groq ke liye:</p>
+        <div class="step" style="margin:12px 0 0;">
+          <div class="step-number" style="width:28px;height:28px;font-size:0.8rem;">1</div>
+          <div class="step-content">
+            <p><a href="https://console.groq.com" style="color:var(--cyan);">console.groq.com</a> pe jaao → Sign up karo (Google se) → API Keys section mein "Create API Key" → Key copy karo</p>
+          </div>
+        </div>
+        <div class="step" style="margin:0;">
+          <div class="step-number" style="width:28px;height:28px;font-size:0.8rem;">2</div>
+          <div class="step-content">
+            <p>Web UI → Settings → <strong>Groq API Key</strong> field mein paste karo → <strong>Save Settings</strong></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>🔊 Voice Settings</h3>
+        <ul>
+          <li><strong>TTS Voice</strong> — Text-to-Speech ki voice (default: en-US-Neural2-A)</li>
+          <li><strong>Wake Word</strong> — Voice activate karne ka word (default: "Hey Assistant")</li>
+          <li><strong>Conversation History Limit</strong> — Kitni purani messages yaad rakhe (default: 50)</li>
+          <li><strong>Auto-fallback</strong> — Agar ek provider fail ho toh automatically doosre pe switch kare</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>🔌 PC Bridge (WebSocket)</h3>
+        <p>PC Control features ke liye Python bridge ka URL daalo:</p>
+        <div class="code-block">
+          <span class="comment"># Agar same PC pe hai:</span><br>
+          <span class="url">ws://localhost:8765</span><br><br>
+          <span class="comment"># Agar doosre PC pe hai (uska IP daalo):</span><br>
+          <span class="url">ws://192.168.1.100:8765</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ═══════════ 5. CHAT ═══════════ -->
+    <div class="section" id="chat">
+      <div class="section-header">
+        <div class="section-icon" style="background: linear-gradient(135deg, var(--blue), var(--cyan));">💬</div>
+        <h2 class="section-title">5. Chat — AI Se Baat Karna</h2>
+      </div>
+
+      <div class="card">
+        <h3>📝 Kaise use karein?</h3>
+        <ul>
+          <li>Sidebar mein <strong>💬 Chat</strong> tab select karo (default mein selected hota hai)</li>
+          <li>Neeche input box mein apna message/question type karo</li>
+          <li>Enter dabao ya Send button click karo</li>
+          <li>AI reply karega — Hindi mein bhi puch sakte ho!</li>
+          <li>🗑️ Chat clear karne ke liye top-right mein delete icon hai</li>
+          <li>🌙/☀️ Dark/Light mode toggle bhi top-right mein hai</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>💡 Example Questions</h3>
+        <ul>
+          <li>"Python mein fibonacci series ka code likh do"</li>
+          <li>"React hooks kya hote hain? Simple mein samjhao"</li>
+          <li>"Mujhe ek motivational quote do Hindi mein"</li>
+          <li>"JavaScript aur TypeScript mein kya fark hai?"</li>
+          <li>"Ek todo app ka design banao"</li>
+        </ul>
+      </div>
+
+      <div class="alert alert-info">
+        <span class="alert-icon">💡</span>
+        <span class="alert-text"><strong>Header mein</strong> current status dikhta hai (Idle/Listening/Thinking/Speaking) aur kaunsa provider+model active hai.</span>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ═══════════ 6. PC CONTROL ═══════════ -->
+    <div class="section" id="pc-control">
+      <div class="section-header">
+        <div class="section-icon" style="background: linear-gradient(135deg, #10b981, #059669);">💻</div>
+        <h2 class="section-title">6. PC Control — Computer Control</h2>
+      </div>
+
+      <div class="alert alert-warn">
+        <span class="alert-icon">⚠️</span>
+        <span class="alert-text"><strong>Pre-requisite:</strong> PC Bridge Python server chalana zaroori hai (Section 3 dekho). Bina uske yeh panel kaam nahi karega.</span>
+      </div>
+
+      <p style="color:var(--text-muted);margin-bottom:20px;">PC Control panel mein 13+ collapsible sections hain. Har section expand karke buttons se control kar sakte ho:</p>
+
+      <div class="feature-grid">
+        <div class="feature-item">
+          <h4>⚡ System Commands</h4>
+          <p><strong>Shutdown</strong> — PC band karo (5 sec delay)<br>
+             <strong>Restart</strong> — PC restart karo<br>
+             <strong>Sleep</strong> — Neend mein bhejo<br>
+             <strong>Lock</strong> — Screen lock karo<br>
+             <strong>Log Off</strong> — Account se log out</p>
+        </div>
+
+        <div class="feature-item">
+          <h4>🔊 Volume Control</h4>
+          <p><strong>Volume Up/Down</strong> — 10% zyada/kam<br>
+             <strong>Mute/Unmute</strong> — Awaaz band/chalu<br>
+             <strong>Set Level</strong> — Specific % pe set karo</p>
+        </div>
+
+        <div class="feature-item">
+          <h4>🎵 Media Controls</h4>
+          <p><strong>Play/Pause</strong> — Music/video toggle<br>
+             <strong>Next Track</strong> — Agla gaana<br>
+             <strong>Previous Track</strong> — Pichla gaana<br>
+             Spotify, YouTube, VLC — sab ke saath kaam karta hai</p>
+        </div>
+
+        <div class="feature-item">
+          <h4>📱 App Launcher</h4>
+          <p><strong>Open</strong> — Chrome, Notepad, Calculator, VS Code, etc.<br>
+             <strong>Close</strong> — Koi bhi running app band karo<br>
+             25+ pre-configured apps supported</p>
+        </div>
+
+        <div class="feature-item">
+          <h4>🌐 URL & Web</h4>
+          <p>Koi bhi URL browser mein kholo — YouTube, GitHub, Google, etc. Bina browser switch kiye!</p>
+        </div>
+
+        <div class="feature-item">
+          <h4>🪟 Window Management</h4>
+          <p><strong>Minimize/Maximize</strong> — Window resize<br>
+             <strong>Close</strong> — Alt+F4<br>
+             <strong>Switch</strong> — Alt+Tab<br>
+             <strong>Show Desktop</strong> — Win+D</p>
+        </div>
+
+        <div class="feature-item">
+          <h4>📊 System Info</h4>
+          <p>Real-time PC info dekho:<br>
+             Battery %, CPU usage, RAM, Disk space, IP address, uptime, running processes</p>
+        </div>
+
+        <div class="feature-item">
+          <h4>📋 Clipboard</h4>
+          <p><strong>Get</strong> — Current clipboard content dekho<br>
+             <strong>Set</strong> — Clipboard mein text copy karo<br>
+             <strong>Paste</strong> — Auto paste (Ctrl+V)</p>
+        </div>
+
+        <div class="feature-item">
+          <h4>📁 File Manager</h4>
+          <p><strong>Create</strong> — Nayi file banao (Desktop pe)<br>
+             <strong>Delete</strong> — File/folder delete karo<br>
+             <strong>List Directory</strong> — Folder contents dekho</p>
+        </div>
+
+        <div class="feature-item">
+          <h4>📸 Screenshot</h4>
+          <p>Ek click mein screenshot lo! Desktop pe save hota hai aur thumbnail bhi dikhata hai.</p>
+        </div>
+
+        <div class="feature-item">
+          <h4>⏰ Reminders</h4>
+          <p>Timer set karo — "5 minute baad yaad dilao ki meeting hai". Desktop notification aayega!</p>
+        </div>
+
+        <div class="feature-item">
+          <h4>🔔 Notifications</h4>
+          <p>Custom Windows desktop notifications bhejo — title aur message ke saath!</p>
+        </div>
+
+        <div class="feature-item">
+          <h4>⌨️ Keyboard Shortcuts</h4>
+          <p>Koi bhi hotkey press karo remotely: Ctrl+C, Ctrl+V, Win+E, Alt+Tab, etc.</p>
+        </div>
+
+        <div class="feature-item">
+          <h4>🔆 Brightness</h4>
+          <p>Screen brightness control karo — set karo ya current level dekho (laptops pe best)</p>
+        </div>
+
+        <div class="feature-item">
+          <h4>📶 WiFi Control</h4>
+          <p><strong>List Networks</strong> — Available WiFi dekho<br>
+             <strong>Connect/Disconnect</strong> — WiFi switch karo</p>
+        </div>
+
+        <div class="feature-item">
+          <h4>🔍 Web Search</h4>
+          <p>Google, Bing, YouTube, GitHub, StackOverflow, Wikipedia pe search karo — browser mein open hoga</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ═══════════ 7. REMINDERS ═══════════ -->
+    <div class="section" id="reminders">
+      <div class="section-header">
+        <div class="section-icon" style="background: linear-gradient(135deg, var(--yellow), var(--orange));">⏰</div>
+        <h2 class="section-title">7. Reminders — Yaad-Dehani</h2>
+      </div>
+
+      <div class="card">
+        <h3>📝 Kaise use karein?</h3>
+        <ul>
+          <li>Sidebar mein <strong>🔔 Reminders</strong> tab click karo</li>
+          <li>Text likho (kya yaad dilana hai) aur time set karo</li>
+          <li>Add Reminder button click karo</li>
+          <li>Time hone pe notification aayega!</li>
+          <li>Active reminders ki list bhi dikhti hai — cancel bhi kar sakte ho</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ═══════════ 8. CLIPBOARD ═══════════ -->
+    <div class="section" id="clipboard">
+      <div class="section-header">
+        <div class="section-icon" style="background: linear-gradient(135deg, #f472b6, var(--purple));">📋</div>
+        <h2 class="section-title">8. Clipboard — Copy History</h2>
+      </div>
+
+      <div class="card">
+        <h3>📝 Kaise use karein?</h3>
+        <ul>
+          <li>Sidebar mein <strong>📋 Clipboard</strong> tab click karo</li>
+          <li>Saari copied items ki history dikhegi</li>
+          <li>Kisi bhi item pe click karke wapas use kar sakte ho</li>
+          <li>Individual items delete karo ya poora clipboard clear karo</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ═══════════ 9. SYSTEM MONITOR ═══════════ -->
+    <div class="section" id="system-monitor">
+      <div class="section-header">
+        <div class="section-icon" style="background: linear-gradient(135deg, var(--green), #22d3ee);">📊</div>
+        <h2 class="section-title">9. System Monitor — PC Ki Health</h2>
+      </div>
+
+      <div class="card">
+        <h3>📝 Kya dikhta hai?</h3>
+        <ul>
+          <li><strong>CPU Usage</strong> — Processor kitna busy hai (%)</li>
+          <li><strong>RAM Usage</strong> — Memory kitni use ho rahi hai (GB & %)</li>
+          <li><strong>Disk Space</strong> — Hard disk kitni bhari hai</li>
+          <li><strong>Battery</strong> — Battery % aur charging status</li>
+          <li><strong>Network</strong> — IP address aur hostname</li>
+          <li><strong>OS Info</strong> — Windows version, uptime, etc.</li>
+        </ul>
+        <p style="margin-top:8px;">Auto-refresh hota hai — real-time data dikhata hai!</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ═══════════ 10. AI PROVIDERS ═══════════ -->
+    <div class="section" id="providers">
+      <div class="section-header">
+        <div class="section-icon" style="background: linear-gradient(135deg, var(--orange), var(--red));">🤖</div>
+        <h2 class="section-title">10. AI Providers — Kaunsa Choose Karein</h2>
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Provider</th>
+              <th>Best Models</th>
+              <th>Speed</th>
+              <th>Free?</th>
+              <th>Best For</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong style="color:var(--orange);">Groq</strong></td>
+              <td>Llama 3.3 70B, Llama 4 Scout, DeepSeek R1</td>
+              <td>⚡⚡⚡ Ultra Fast</td>
+              <td>✅ Haan</td>
+              <td>General use, fast replies</td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--blue);">Gemini</strong></td>
+              <td>Gemini 2.0 Flash, Gemini 2.5 Flash, Gemini 1.5 Pro</td>
+              <td>⚡⚡ Fast</td>
+              <td>✅ Haan</td>
+              <td>Complex reasoning, coding</td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--green);">Mistral</strong></td>
+              <td>Mistral Large, Codestral, Mixtral 8x7B</td>
+              <td>⚡⚡ Fast</td>
+              <td>✅ Haan</td>
+              <td>Coding, European languages</td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--purple);">Cerebras</strong></td>
+              <td>Llama 4 Scout, Llama 3.3 70B, Qwen 3 32B</td>
+              <td>⚡⚡⚡ Ultra Fast</td>
+              <td>✅ Haan</td>
+              <td>Speed, batch processing</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="alert alert-success" style="margin-top:16px;">
+        <span class="alert-icon">🏆</span>
+        <span class="alert-text"><strong>Recommendation:</strong> Beginners ke liye <strong>Groq + Llama 3.3 70B</strong> best hai — free, fast, aur smart! API key banane mein 1 minute lagega.</span>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ═══════════ 11. TROUBLESHOOTING ═══════════ -->
+    <div class="section" id="troubleshoot">
+      <div class="section-header">
+        <div class="section-icon" style="background: linear-gradient(135deg, var(--red), var(--orange));">🔧</div>
+        <h2 class="section-title">11. Troubleshooting — Problems Fix Karna</h2>
+      </div>
+
+      <div class="card">
+        <h3>❌ "No API key configured" error</h3>
+        <p><strong>Fix:</strong> Settings → apne provider ki API key daalo → Save Settings</p>
+      </div>
+
+      <div class="card">
+        <h3>❌ PC Control kaam nahi kar raha</h3>
+        <p><strong>Fix:</strong> Check karo ki:</p>
+        <ul>
+          <li>Python bridge chal raha hai (<code style="color:var(--cyan)">python pc_bridge.py</code>)</li>
+          <li>Settings mein <code style="color:var(--orange)">ws://localhost:8765</code> daala hai</li>
+          <li>Save Settings button dabaya hai</li>
+          <li>Firewall block nahi kar raha (Windows Defender mein allow karo)</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>❌ npm run dev error</h3>
+        <p><strong>Fix:</strong></p>
+        <div class="code-block">
+          <span class="comment"># node_modules delete karke reinstall karo:</span><br>
+          <span class="cmd">rmdir /s /q node_modules</span><br>
+          <span class="cmd">del package-lock.json</span><br>
+          <span class="cmd">npm install</span><br>
+          <span class="cmd">npm run dev</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>❌ Port 3000 already in use</h3>
+        <p><strong>Fix:</strong></p>
+        <div class="code-block">
+          <span class="comment"># Pehle wala process kill karo:</span><br>
+          <span class="cmd">npx kill-port 3000</span><br>
+          <span class="cmd">npm run dev</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>❌ Python bridge crash / Unicode error</h3>
+        <p><strong>Fix:</strong> Terminal mein UTF-8 set karo:</p>
+        <div class="code-block">
+          <span class="cmd">chcp 65001</span><br>
+          <span class="cmd">python pc_bridge.py</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>❌ Volume/Media controls kaam nahi kar rahe</h3>
+        <p><strong>Fix:</strong> <code style="color:var(--cyan)">pip install pyautogui</code> — yeh zaroori hai volume/media/keyboard controls ke liye</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ═══════════ QUICK REFERENCE ═══════════ -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-icon" style="background: linear-gradient(135deg, var(--cyan), var(--purple));">📌</div>
+        <h2 class="section-title">Quick Reference — Ek Nazar Mein</h2>
+      </div>
+
+      <div class="card" style="background: rgba(34,211,238,0.05); border-color: rgba(34,211,238,0.15);">
+        <h3>🖥️ Saari Commands Ek Jagah</h3>
+        <div class="code-block" style="font-size:0.82rem;">
+<span class="comment"># ── Terminal 1: Web Server ──</span>
+<span class="cmd">cd</span> E:\tmp\0606\AI\AI
+<span class="cmd">npm run dev</span>
+<span class="comment"># → http://localhost:3000 open karo</span>
+
+<span class="comment"># ── Terminal 2: PC Bridge ──</span>
+<span class="cmd">cd</span> E:\tmp\0606\AI\AI\pc-bridge
+<span class="cmd">pip install -r requirements.txt</span>  <span class="comment"># (sirf pehli baar)</span>
+<span class="cmd">python pc_bridge.py</span>
+<span class="comment"># → ws://localhost:8765 pe server start hoga</span>
+
+<span class="comment"># ── Web UI Settings ──</span>
+<span class="comment"># 1. Settings → API Key daalo (Groq recommended)</span>
+<span class="comment"># 2. Settings → PC Bridge URL: ws://localhost:8765</span>
+<span class="comment"># 3. Save Settings ✅</span>
+<span class="comment"># 4. Chat ya PC Control use karo! 🎉</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ FOOTER ═══════════ -->
+    <div style="text-align:center; margin-top:60px; padding:24px; color:var(--text-muted); font-size:0.85rem;">
+      <p style="font-size:1.2rem; margin-bottom:8px;">🎙️ Pika AI Assistant Desktop Assistant</p>
+      <p>Built with ❤️ using Next.js 15 + React 19 + Python WebSocket</p>
+      <div style="display:flex; gap:8px; justify-content:center; margin-top:16px; flex-wrap:wrap;">
+        <span class="badge badge-cyan">v0.2.0</span>
+        <span class="badge badge-green">Stable</span>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>
