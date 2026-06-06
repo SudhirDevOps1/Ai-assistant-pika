@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { toast } from 'sonner'
+import { cn } from '@/lib/utils'
 
 export function SettingsPanel() {
   const {
@@ -28,10 +29,13 @@ export function SettingsPanel() {
     setTtsVoice,
     pcBridgeUrl,
     setPcBridgeUrl,
+    auroraTheme,
+    setAuroraTheme,
   } = useAssistantStore()
   const [showKeys, setShowKeys] = useState<Record<string, boolean>>({})
   const [localTtsVoice, setLocalTtsVoice] = useState(ttsVoice)
   const [localWakeWord, setLocalWakeWord] = useState(wakeWord)
+  const [localAuroraTheme, setLocalAuroraTheme] = useState(auroraTheme)
   const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
@@ -51,11 +55,15 @@ export function SettingsPanel() {
             setTtsVoice(data.ttsVoice)
             setLocalTtsVoice(data.ttsVoice)
           }
+          if (data.auroraTheme) {
+            setAuroraTheme(data.auroraTheme)
+            setLocalAuroraTheme(data.auroraTheme)
+          }
           setLoaded(true)
         })
         .catch(() => setLoaded(true))
     }
-  }, [loaded, setProvider, setModel, setApiKey, setAutoFallback, setConversationLimit, setWakeWord, setTtsVoice])
+  }, [loaded, setProvider, setModel, setApiKey, setAutoFallback, setConversationLimit, setWakeWord, setTtsVoice, setAuroraTheme])
 
   const handleSave = async () => {
     try {
@@ -68,10 +76,12 @@ export function SettingsPanel() {
           apiKeys,
           ttsVoice: localTtsVoice,
           wakeWord: localWakeWord,
+          auroraTheme: localAuroraTheme,
         }),
       })
       setTtsVoice(localTtsVoice)
       setWakeWord(localWakeWord)
+      setAuroraTheme(localAuroraTheme)
       toast.success('Settings saved successfully!')
     } catch {
       toast.error('Failed to save settings')
@@ -240,6 +250,60 @@ export function SettingsPanel() {
                 checked={autoFallback}
                 onCheckedChange={(checked) => setAutoFallback(checked)}
               />
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Ambient Glow Theme Settings */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.32 }}
+          className="glass-card p-5 space-y-4"
+        >
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-4 h-4 rounded-full bg-gradient-to-tr from-cyan-400 to-purple-500 animate-pulse" />
+            <h3 className="text-sm font-semibold">Ambient Glow Theme</h3>
+          </div>
+          <div className="space-y-3">
+            <Label className="text-xs text-muted-foreground">Select Preset Profile</Label>
+            <div className="grid grid-cols-2 gap-3">
+              {[
+                { id: 'neon', name: 'Neon Quantum', desc: 'Classic Cyan & Purple', colors: ['bg-[#06b6d4]', 'bg-[#a855f7]'] },
+                { id: 'cyber', name: 'Hyper Cyber', desc: 'Neon Pink & Neon Blue', colors: ['bg-[#ff007f]', 'bg-[#00f0ff]'] },
+                { id: 'sunset', name: 'Solar Sunset', desc: 'Warm Red & Gold Sunset', colors: ['bg-[#ff4e50]', 'bg-[#f9d423]'] },
+                { id: 'emerald', name: 'Emerald Forest', desc: 'Tech Green & Mint Teal', colors: ['bg-[#059669]', 'bg-[#34d399]'] }
+              ].map((themePreset) => {
+                const isSelected = localAuroraTheme === themePreset.id
+                return (
+                  <motion.button
+                    key={themePreset.id}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => setLocalAuroraTheme(themePreset.id)}
+                    className={cn(
+                      'p-3.5 rounded-xl text-left border flex flex-col justify-between transition-all duration-300 relative overflow-hidden group',
+                      isSelected
+                        ? 'border-cyan-500 bg-cyan-500/10 shadow-lg shadow-cyan-500/5'
+                        : 'border-white/5 bg-white/5 hover:bg-white/10 hover:border-white/10'
+                    )}
+                  >
+                    <div className="flex justify-between items-center w-full">
+                      <span className={cn('text-xs font-semibold', isSelected ? 'text-white' : 'text-muted-foreground')}>
+                        {themePreset.name}
+                      </span>
+                      <div className="flex gap-1">
+                        {themePreset.colors.map((c, idx) => (
+                          <div key={idx} className={cn('w-2.5 h-2.5 rounded-full shadow-sm', c)} />
+                        ))}
+                      </div>
+                    </div>
+                    <span className="text-[10px] text-muted-foreground/60 mt-1 truncate">
+                      {themePreset.desc}
+                    </span>
+                  </motion.button>
+                )
+              })}
             </div>
           </div>
         </motion.div>

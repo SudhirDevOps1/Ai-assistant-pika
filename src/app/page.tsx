@@ -113,9 +113,22 @@ function Starfield() {
 }
 
 export default function HomePage() {
-  const { activePanel, sidebarOpen, reminders } = useAssistantStore()
+  const { activePanel, sidebarOpen, auroraTheme } = useAssistantStore()
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
 
-  // Load reminders from API on mount
+  // Cursor tracking for ambient parallax
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePos({
+        x: (e.clientX / window.innerWidth - 0.5) * 35,
+        y: (e.clientY / window.innerHeight - 0.5) * 35,
+      })
+    }
+    window.addEventListener('mousemove', handleMouseMove)
+    return () => window.removeEventListener('mousemove', handleMouseMove)
+  }, [])
+
+  // Load reminders and clipboard from API on mount
   useEffect(() => {
     fetch('/api/reminders')
       .then((r) => r.json())
@@ -138,7 +151,26 @@ export default function HomePage() {
         }
       })
       .catch(() => {/* silent */})
+
+    // Also fetch initial auroraTheme config from API
+    fetch('/api/config')
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.auroraTheme) {
+          useAssistantStore.getState().setAuroraTheme(data.auroraTheme)
+        }
+      })
+      .catch(() => {/* silent */})
   }, [])
+
+  const AURORA_THEMES: Record<string, { a1: string; a2: string; a3: string; a4: string }> = {
+    neon: { a1: '#06b6d4', a2: '#a855f7', a3: '#06b6d4', a4: '#a855f7' },
+    cyber: { a1: '#ff007f', a2: '#00f0ff', a3: '#ff007f', a4: '#00f0ff' },
+    sunset: { a1: '#ff4e50', a2: '#f9d423', a3: '#f9d423', a4: '#ff4e50' },
+    emerald: { a1: '#059669', a2: '#34d399', a3: '#10b981', a4: '#a7f3d0' }
+  }
+
+  const currentThemeColors = AURORA_THEMES[auroraTheme] || AURORA_THEMES.neon
 
   const renderPanel = () => {
     switch (activePanel) {
@@ -164,13 +196,26 @@ export default function HomePage() {
   }
 
   return (
-    <div className="fixed inset-0 bg-[#0a0a1a] overflow-hidden">
-      {/* Aurora Background */}
+    <div
+      className="fixed inset-0 bg-[#0a0a1a] overflow-hidden"
+      style={{
+        '--aurora-1': currentThemeColors.a1,
+        '--aurora-2': currentThemeColors.a2,
+        '--aurora-3': currentThemeColors.a3,
+        '--aurora-4': currentThemeColors.a4,
+      } as any}
+    >
+      {/* Aurora Background with Parallax */}
       <div className="aurora-bg">
-        <div className="aurora-blob" />
-        <div className="aurora-blob" />
-        <div className="aurora-blob" />
-        <div className="aurora-blob" />
+        <div
+          className="absolute inset-0 transition-transform duration-300 ease-out"
+          style={{ transform: `translate(${mousePos.x}px, ${mousePos.y}px)` }}
+        >
+          <div className="aurora-blob" />
+          <div className="aurora-blob" />
+          <div className="aurora-blob" />
+          <div className="aurora-blob" />
+        </div>
       </div>
 
       {/* Starfield */}
@@ -179,31 +224,31 @@ export default function HomePage() {
       {/* Main Content */}
       <PcBridgeProvider>
         <div className="relative z-10 h-full flex">
-        {/* Sidebar */}
-        <Sidebar />
+          {/* Sidebar */}
+          <Sidebar />
 
-        {/* Main Area */}
-        <motion.div
-          initial={false}
-          animate={{ marginLeft: sidebarOpen ? 0 : 0 }}
-          className="flex-1 flex flex-col min-w-0"
-        >
-          <HeaderBar />
+          {/* Main Area */}
+          <motion.div
+            initial={false}
+            animate={{ marginLeft: sidebarOpen ? 0 : 0 }}
+            className="flex-1 flex flex-col min-w-0"
+          >
+            <HeaderBar />
 
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activePanel}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.2 }}
-              className="flex-1 flex flex-col min-h-0"
-            >
-              {renderPanel()}
-            </motion.div>
-          </AnimatePresence>
-        </motion.div>
-      </div>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activePanel}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.2 }}
+                className="flex-1 flex flex-col min-h-0"
+              >
+                {renderPanel()}
+              </motion.div>
+            </AnimatePresence>
+          </motion.div>
+        </div>
       </PcBridgeProvider>
     </div>
   )

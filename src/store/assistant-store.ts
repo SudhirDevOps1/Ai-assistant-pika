@@ -83,6 +83,14 @@ interface AssistantStore {
 
   speechResult: { text: string, isFinal: boolean } | null
   setSpeechResult: (result: { text: string, isFinal: boolean } | null) => void
+
+  // Ambient Theme
+  auroraTheme: string
+  setAuroraTheme: (t: string) => void
+
+  // Real-time voice visualizer
+  micVolume: number
+  setMicVolume: (v: number) => void
 }
 
 export const useAssistantStore = create<AssistantStore>((set, get) => ({
@@ -278,4 +286,12 @@ Please briefly summarize this result for me.`)
 
   speechResult: null,
   setSpeechResult: (result) => set({ speechResult: result }),
+
+  // Ambient Theme
+  auroraTheme: 'neon',
+  setAuroraTheme: (t) => set({ auroraTheme: t }),
+
+  // Real-time voice visualizer
+  micVolume: 0,
+  setMicVolume: (v) => set({ micVolume: v }),
 }))

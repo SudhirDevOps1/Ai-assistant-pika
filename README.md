@@ -19,6 +19,9 @@
 
 ## 🚀 Quick Start Guide
 
+> [!TIP]
+> **Detailed Offline Guide Available**: For a complete setup and usage guide in Hindi/English, double-click/open the [index.html](file:///e:/tmp/0606/AI/AI/index.html) file in your browser.
+
 ### 1. Requirements
 - **Node.js**: v18 or higher (Download from [nodejs.org](https://nodejs.org/))
 - **Python**: v3.10 or higher (Download from [python.org](https://www.python.org/))

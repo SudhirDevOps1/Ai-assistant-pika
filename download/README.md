@@ -2,6 +2,9 @@
 
 A powerful **Hindi + English** voice-controlled desktop assistant with an advanced **web UI**, a **Python WebSocket backend** for PC control, and **multi-provider LLM chat** — all running locally on your machine.
 
+> [!TIP]
+> **Setup Guide**: A complete, step-by-step Setup & Usage Guide in Hindi/English is available offline. Double-click/open the [index.html](file:///e:/tmp/0606/AI/AI/index.html) file in your browser to read it.
+
 ```
 Python Backend (WebSocket)  <───WebSocket────>  Web Frontend (Next.js)
 pc_bridge.py (Port 8765)                          localhost:3000

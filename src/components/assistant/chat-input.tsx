@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils'
 import { QuickActions } from './quick-actions'
 
 export function VoiceButton() {
-  const { status, setStatus, sendAudioChunk, sendMessage } = useAssistantStore()
+  const { status, setStatus, sendAudioChunk, micVolume, setMicVolume } = useAssistantStore()
   const [isRecording, setIsRecording] = useState(false)
   const audioContextRef = useRef<AudioContext | null>(null)
   const streamRef = useRef<MediaStream | null>(null)
@@ -29,7 +29,8 @@ export function VoiceButton() {
     }
     setIsRecording(false)
     setStatus('idle')
-  }, [setStatus])
+    setMicVolume(0)
+  }, [setStatus, setMicVolume])
 
   const toggleRecording = useCallback(async () => {
     if (isRecording) {
@@ -45,8 +46,18 @@ export function VoiceButton() {
         processor.connect(audioContext.destination)
 
         processor.onaudioprocess = (e) => {
-          if (!sendAudioChunk) return
           const inputData = e.inputBuffer.getChannelData(0)
+
+          // Calculate RMS volume level
+          let sum = 0
+          for (let i = 0; i < inputData.length; i++) {
+            sum += inputData[i] * inputData[i]
+          }
+          const rms = Math.sqrt(sum / inputData.length)
+          const volume = Math.min(100, Math.round(rms * 400))
+          setMicVolume(volume)
+
+          if (!sendAudioChunk) return
           // Convert float32 to int16 PCM
           const pcm16 = new Int16Array(inputData.length)
           for (let i = 0; i < inputData.length; i++) {
@@ -67,12 +78,19 @@ export function VoiceButton() {
         alert("Microphone access denied or not available.")
       }
     }
-  }, [isRecording, setStatus, sendAudioChunk, stopRecording])
+  }, [isRecording, setStatus, sendAudioChunk, stopRecording, setMicVolume])
 
   return (
     <div className="relative">
       {isRecording && (
-        <div className="absolute inset-0 rounded-full mic-pulse-ring bg-cyan-400/30" />
+        <motion.div
+          animate={{
+            scale: 1 + (micVolume / 100) * 0.7,
+            opacity: 0.3 + (micVolume / 100) * 0.4
+          }}
+          transition={{ duration: 0.1 }}
+          className="absolute inset-0 rounded-full bg-cyan-400/30 pointer-events-none"
+        />
       )}
       <motion.button
         whileHover={{ scale: 1.05 }}
@@ -86,30 +104,27 @@ export function VoiceButton() {
         )}
       >
         {isRecording ? (
-          <Mic className="w-5 h-5" />
+          <Mic className="w-5 h-5 animate-pulse" />
         ) : (
           <MicOff className="w-5 h-5" />
         )}
       </motion.button>
 
-      {/* Waveform when recording */}
+      {/* Dynamic Waveform Equalizer when recording */}
       {isRecording && (
-        <div className="absolute -top-2 left-1/2 -translate-x-1/2 flex items-end gap-0.5">
-          {[...Array(5)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="w-0.5 bg-cyan-400 rounded-full"
-              animate={{
-                height: [4, 16, 4],
-              }}
-              transition={{
-                duration: 0.6,
-                repeat: Infinity,
-                delay: i * 0.1,
-                ease: 'easeInOut',
-              }}
-            />
-          ))}
+        <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 flex items-end gap-0.5 px-2 py-0.5 rounded-full bg-[#0a0a1a]/85 backdrop-blur-sm border border-cyan-500/20 shadow-md">
+          {[...Array(7)].map((_, i) => {
+            // Give each bar a slightly different response factor
+            const factor = 0.3 + (i % 3) * 0.25
+            const height = Math.max(4, Math.min(22, Math.round(micVolume * factor)))
+            return (
+              <motion.div
+                key={i}
+                className="w-0.5 bg-gradient-to-t from-cyan-400 to-purple-500 rounded-full transition-all duration-75 ease-out"
+                style={{ height: `${height}px` }}
+              />
+            )
+          })}
         </div>
       )}
     </div>

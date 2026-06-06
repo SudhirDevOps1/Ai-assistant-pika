@@ -18,6 +18,7 @@ const DEFAULT_CONFIG = {
   autoFallback: true,
   conversationLimit: 50,
   wakeWord: 'Hey Assistant',
+  auroraTheme: 'neon',
 }
 
 async function readConfig() {
