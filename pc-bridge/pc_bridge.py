@@ -995,12 +995,50 @@ async def handler(websocket):
                 if recognizer is not None:
                     if recognizer.AcceptWaveform(message):
                         res = json.loads(recognizer.Result())
-                        if res.get("text"):
+                        recognized_text = res.get("text", "").strip().lower()
+                        if recognized_text:
+                            # ─── Speech Shortcut Command Bypass triggers ───
+                            handled_locally = False
+                            local_reply = ""
+                            
+                            if any(k in recognized_text for k in ["screenshot", "screen shot", "photo", "tasveer"]):
+                                result = cmd_screenshot({})
+                                handled_locally = True
+                                local_reply = f"Screenshot taken safely: {result.get('message', '')}"
+                            elif any(k in recognized_text for k in ["lock", "computer lock", "pc lock"]):
+                                result = cmd_system("lock", {})
+                                handled_locally = True
+                                local_reply = "PC screen locked successfully."
+                            elif any(k in recognized_text for k in ["volume up", "badhao", "volume badhao"]):
+                                result = cmd_volume("up", {"amount": 10})
+                                handled_locally = True
+                                local_reply = "Volume increased."
+                            elif any(k in recognized_text for k in ["volume down", "kam karo", "volume kam"]):
+                                result = cmd_volume("down", {"amount": 10})
+                                handled_locally = True
+                                local_reply = "Volume decreased."
+                            elif any(k in recognized_text for k in ["mute", "silent"]):
+                                result = cmd_volume("mute", {})
+                                handled_locally = True
+                                local_reply = "Volume muted/unmuted."
+                            elif any(k in recognized_text for k in ["show desktop", "desktop dikhao"]):
+                                result = cmd_window("show_desktop", {})
+                                handled_locally = True
+                                local_reply = "Desktop shown."
+                            
+                            if handled_locally:
+                                await websocket.send(json.dumps({
+                                    "type": "event",
+                                    "event": "shortcut_executed",
+                                    "message": local_reply
+                                }))
+                            
+                            # Forward normal speech result payload
                             await websocket.send(json.dumps({
                                 "type": "speech_result",
                                 "isFinal": True,
                                 "text": res["text"]
-                            }))
+                             }))
                     else:
                         res = json.loads(recognizer.PartialResult())
                         if res.get("partial"):

@@ -143,6 +143,14 @@ export function usePcBridge() {
           if (msg.type === 'event' && msg.event === 'connected') {
             setSystemData(msg.data || null)
           }
+          if (msg.type === 'event' && msg.event === 'shortcut_executed') {
+            const toastContent = msg.message || 'Shortcut executed!'
+            // Dynamically show sonner toast if window available
+            if (typeof window !== 'undefined') {
+              const { toast } = require('sonner')
+              toast.success(`🎤 Voice Command: ${toastContent}`)
+            }
+          }
           if (msg.type === 'event' && msg.event === 'reminder' && msg.data?.text) {
             const store = useAssistantStore.getState()
             store.addMessage({

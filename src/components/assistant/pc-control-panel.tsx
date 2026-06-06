@@ -365,6 +365,9 @@ export function PcControlPanel() {
           </div>
         </SectionCard>
 
+        {/* ── Visual File Explorer ── */}
+        <FileExplorerSection isConnected={isConnected} sendCommand={sendCommand} />
+
         {/* ── Screen & Display ── */}
         <SectionCard title="Screen & Display" icon={<Sun className="w-4 h-4 text-amber-400" />} defaultOpen={false}>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
@@ -466,6 +469,114 @@ export function PcControlPanel() {
         </AnimatePresence>
       </div>
     </div>
+  )
+}
+
+// Visual File Explorer Section Component
+function FileExplorerSection({
+  isConnected,
+  sendCommand,
+}: {
+  isConnected: boolean
+  sendCommand: any
+}) {
+  const [currentPath, setCurrentPath] = useState('')
+  const [files, setFiles] = useState<any[]>([])
+  const [loading, setLoading] = useState(false)
+
+  const loadDirectory = async (pathStr: string) => {
+    if (!isConnected) return
+    setLoading(true)
+    const res = await sendCommand('file', 'list_dir', { path: pathStr })
+    if (res.success && res.data) {
+      setCurrentPath(res.data.path)
+      setFiles(res.data.items || [])
+    } else {
+      toast.error(res.message || 'Failed to list directory')
+    }
+    setLoading(false)
+  }
+
+  // Load initial root directory
+  useEffect(() => {
+    if (isConnected) {
+      loadDirectory('')
+    } else {
+      setFiles([])
+      setCurrentPath('')
+    }
+  }, [isConnected])
+
+  const navigateUp = () => {
+    if (!currentPath) return
+    const parts = currentPath.split(/[\\/]/)
+    parts.pop()
+    const parent = parts.join('\\')
+    loadDirectory(parent || 'C:\\')
+  }
+
+  const handleItemClick = (item: any) => {
+    const fullPath = `${currentPath}\\${item.name}`
+    if (item.type === 'dir') {
+      loadDirectory(fullPath)
+    } else {
+      // Direct execute / open
+      sendCommand('app', 'open', { name: fullPath })
+      toast.success(`Opening file: ${item.name}`)
+    }
+  }
+
+  return (
+    <SectionCard title="Visual File Explorer" icon={<FileText className="w-4 h-4 text-emerald-400" />}>
+      <div className="space-y-3">
+        {/* Navigation Breadcrumb header */}
+        <div className="flex items-center gap-2 py-1.5 px-3 rounded-lg bg-white/5 border border-white/5 text-xs text-muted-foreground">
+          <button
+            onClick={navigateUp}
+            disabled={!isConnected || !currentPath}
+            className="px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 border border-white/5 text-[10px] font-semibold transition-colors disabled:opacity-40 shrink-0"
+          >
+            ◀ Back
+          </button>
+          <span className="font-mono truncate select-all">{currentPath || 'Not connected'}</span>
+        </div>
+
+        {/* Directory Files List grid */}
+        <div className="border border-white/5 rounded-xl bg-slate-950/20 max-h-60 overflow-y-auto custom-scrollbar p-2 space-y-1">
+          {loading ? (
+            <div className="flex justify-center items-center py-10">
+              <Loader2 className="w-5 h-5 animate-spin text-cyan-400" />
+            </div>
+          ) : files.length === 0 ? (
+            <div className="text-center py-8 text-xs text-muted-foreground">
+              {isConnected ? 'Empty folder' : 'Connect PC Bridge to browse files'}
+            </div>
+          ) : (
+            files.map((item, idx) => (
+              <button
+                key={idx}
+                onClick={() => handleItemClick(item)}
+                className="w-full flex items-center justify-between py-2 px-3 rounded-lg hover:bg-white/5 text-xs text-left group transition-colors"
+              >
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <span className="text-sm shrink-0">
+                    {item.type === 'dir' ? '📁' : '📄'}
+                  </span>
+                  <span className="truncate text-muted-foreground group-hover:text-white transition-colors">
+                    {item.name}
+                  </span>
+                </div>
+                {item.size !== null && (
+                  <span className="text-[10px] text-muted-foreground/50 font-mono">
+                    {Math.round(item.size / 1024)} KB
+                  </span>
+                )}
+              </button>
+            ))
+          )}
+        </div>
+      </div>
+    </SectionCard>
   )
 }
 
