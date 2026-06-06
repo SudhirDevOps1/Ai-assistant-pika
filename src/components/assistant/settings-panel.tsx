@@ -59,6 +59,9 @@ export function SettingsPanel() {
             setAuroraTheme(data.auroraTheme)
             setLocalAuroraTheme(data.auroraTheme)
           }
+          if (data.pcBridgeUrl) {
+            setPcBridgeUrl(data.pcBridgeUrl)
+          }
           setLoaded(true)
         })
         .catch(() => setLoaded(true))
@@ -77,6 +80,7 @@ export function SettingsPanel() {
           ttsVoice: localTtsVoice,
           wakeWord: localWakeWord,
           auroraTheme: localAuroraTheme,
+          pcBridgeUrl,
         }),
       })
       setTtsVoice(localTtsVoice)

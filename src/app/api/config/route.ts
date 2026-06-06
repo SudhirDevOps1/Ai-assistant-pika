@@ -19,6 +19,7 @@ const DEFAULT_CONFIG = {
   conversationLimit: 50,
   wakeWord: 'Hey Assistant',
   auroraTheme: 'neon',
+  pcBridgeUrl: 'ws://localhost:8765',
 }
 
 async function readConfig() {

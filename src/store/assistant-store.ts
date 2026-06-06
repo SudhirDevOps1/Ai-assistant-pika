@@ -272,7 +272,7 @@ Please briefly summarize this result for me.`)
   clearClipboard: () => set({ clipboardItems: [] }),
 
   // PC Bridge
-  pcBridgeUrl: '',
+  pcBridgeUrl: 'ws://localhost:8765',
   setPcBridgeUrl: (url) => set({ pcBridgeUrl: url }),
   pcBridgeConnected: false,
   setPcBridgeConnected: (v) => set({ pcBridgeConnected: v }),
