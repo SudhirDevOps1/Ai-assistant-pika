@@ -352,6 +352,19 @@ def cmd_window(action: str, params: dict) -> dict:
             pyautogui.hotkey("win", "d")
             return {"success": True, "message": "Desktop shown."}
 
+        elif action == "focus":
+            name = params.get("title", "").lower()
+            if not name:
+                return {"success": False, "message": "No window title provided to focus."}
+            if gw:
+                all_wins = gw.getAllWindows()
+                for w in all_wins:
+                    if name in w.title.lower():
+                        w.activate()
+                        return {"success": True, "message": f"Focussed window: {w.title}"}
+                return {"success": False, "message": f"No active window found containing '{name}'"}
+            return {"success": False, "message": "pygetwindow not available"}
+
         else:
             return {"success": False, "message": f"Unknown window action: {action}"}
     except Exception as e:
@@ -523,7 +536,19 @@ def cmd_file(action: str, params: dict) -> dict:
 
         elif action == "delete":
             path_str = params.get("path", "")
-            path = Path(path_str)
+            path = Path(path_str).resolve()
+            
+            # Absolute critical directory protection safety check
+            forbidden_patterns = [
+                r"^[a-zA-Z]:\\$", r"^[a-zA-Z]:\\Windows", r"^[a-zA-Z]:\\Program Files",
+                r"^[a-zA-Z]:\\Users\\[^\\]+\\AppData", r"^[a-zA-Z]:\\SystemVolumeInformation",
+                r"^[a-zA-Z]:\\VoiceAI"
+            ]
+            path_abs = str(path)
+            for pattern in forbidden_patterns:
+                if re.search(pattern, path_abs, re.IGNORECASE):
+                    return {"success": False, "message": f"Security Violation: Deleting '{path_abs}' is restricted to protect your PC!"}
+                    
             if path.exists():
                 if path.is_dir():
                     shutil.rmtree(path)
