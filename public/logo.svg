@@ -1,189 +1,173 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
   <defs>
-    <!-- Background gradient -->
+    <!-- Deep Space Background Gradient -->
     <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0f0a2e" />
-      <stop offset="50%" stop-color="#1a1145" />
-      <stop offset="100%" stop-color="#2d1b69" />
+      <stop offset="0%" stop-color="#050510" />
+      <stop offset="50%" stop-color="#0a0a2a" />
+      <stop offset="100%" stop-color="#150b2e" />
     </linearGradient>
 
-    <!-- Neon glow for P -->
+    <!-- Pulsing Core Aura -->
+    <radialGradient id="auraGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#7c3aed" stop-opacity="0.4" />
+      <stop offset="50%" stop-color="#00d4ff" stop-opacity="0.1" />
+      <stop offset="100%" stop-color="#050510" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Neon Gradient for P -->
     <linearGradient id="neonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#00d4ff" />
-      <stop offset="50%" stop-color="#7c3aed" />
+      <stop offset="0%" stop-color="#00f3ff" /> <!-- Bright Cyan -->
+      <stop offset="50%" stop-color="#7000ff" /> <!-- Deep Purple -->
+      <stop offset="100%" stop-color="#ff00e4" /> <!-- Neon Pink -->
+    </linearGradient>
+
+    <!-- Glass Reflection Gradient -->
+    <linearGradient id="glassHighlight" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.8" />
+      <stop offset="30%" stop-color="#ffffff" stop-opacity="0.1" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+    </linearGradient>
+
+    <!-- Text Gradient -->
+    <linearGradient id="textGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00f3ff" />
       <stop offset="100%" stop-color="#c084fc" />
     </linearGradient>
 
-    <!-- Accent gradient -->
-    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#38bdf8" />
-      <stop offset="100%" stop-color="#a78bfa" />
-    </linearGradient>
-
-    <!-- Strong glow filter -->
-    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
-      <feGaussianBlur stdDeviation="8" result="blur" />
-      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    <!-- Multi-layered Neon Glow Filter -->
+    <filter id="ultraGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur1" />
+      <feGaussianBlur in="SourceGraphic" stdDeviation="12" result="blur2" />
+      <feGaussianBlur in="SourceGraphic" stdDeviation="24" result="blur3" />
+      <feMerge>
+        <feMergeNode in="blur3" />
+        <feMergeNode in="blur2" />
+        <feMergeNode in="blur1" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
     </filter>
 
-    <!-- Soft glow -->
-    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur stdDeviation="4" result="blur" />
-      <feComposite in="SourceGraphic" in2="blur" operator="over" />
-    </filter>
-
-    <!-- Text glow -->
-    <filter id="textGlow" x="-20%" y="-20%" width="140%" height="140%">
+    <!-- Subtle Glow for Accents -->
+    <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
       <feGaussianBlur stdDeviation="3" result="blur" />
       <feComposite in="SourceGraphic" in2="blur" operator="over" />
     </filter>
 
-    <!-- Ring gradient -->
-    <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.9" />
-      <stop offset="50%" stop-color="#7c3aed" stop-opacity="0.4" />
-      <stop offset="100%" stop-color="#c084fc" stop-opacity="0.1" />
-    </linearGradient>
-
-    <!-- Circular text path -->
-    <path id="textCircle" d="M 128 128 m -95 0 a 95 95 0 1 1 190 0 a 95 95 0 1 1 -190 0" fill="none" />
+    <!-- Grid Pattern -->
+    <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#ffffff" stroke-opacity="0.03" stroke-width="1"/>
+    </pattern>
   </defs>
 
-  <!-- Main background -->
-  <rect width="256" height="256" rx="48" fill="url(#bgGrad)" />
+  <!-- Base Background -->
+  <rect width="400" height="400" rx="40" fill="url(#bgGrad)" />
+  <rect width="400" height="400" rx="40" fill="url(#grid)" />
 
-  <!-- Subtle grid pattern -->
-  <g stroke="#ffffff" stroke-width="0.3" opacity="0.04">
-    <line x1="0" y1="64" x2="256" y2="64" />
-    <line x1="0" y1="128" x2="256" y2="128" />
-    <line x1="0" y1="192" x2="256" y2="192" />
-    <line x1="64" y1="0" x2="64" y2="256" />
-    <line x1="128" y1="0" x2="128" y2="256" />
-    <line x1="192" y1="0" x2="192" y2="256" />
-  </g>
-
-  <!-- Outer orbital ring -->
-  <circle cx="128" cy="128" r="105" fill="none" stroke="url(#ringGrad)" stroke-width="1.5" stroke-dasharray="12 8" opacity="0.6">
-    <animateTransform attributeName="transform" type="rotate" from="0 128 128" to="360 128 128" dur="30s" repeatCount="indefinite" />
+  <!-- Pulsing Aura Behind Logo -->
+  <circle cx="200" cy="180" r="140" fill="url(#auraGrad)">
+    <animate attributeName="opacity" values="0.4; 0.8; 0.4" dur="4s" repeatCount="indefinite" />
   </circle>
 
-  <!-- Second orbital ring -->
-  <circle cx="128" cy="128" r="95" fill="none" stroke="#7c3aed" stroke-width="0.8" stroke-dasharray="4 12" opacity="0.3">
-    <animateTransform attributeName="transform" type="rotate" from="360 128 128" to="0 128 128" dur="20s" repeatCount="indefinite" />
-  </circle>
-
-  <!-- Inner glow circle -->
-  <circle cx="128" cy="128" r="75" fill="none" stroke="#38bdf8" stroke-width="0.5" opacity="0.15" />
-
-  <!-- ===== STYLIZED 'P' ===== -->
-  <g filter="url(#glow)">
-    <!-- Vertical bar of P -->
-    <rect x="88" y="68" width="22" height="110" rx="11" fill="url(#neonGrad)" />
-
-    <!-- Top curve of P (rounded) -->
-    <path d="M 110 68
-             C 110 68, 155 68, 160 88
-             C 165 108, 155 128, 135 128
-             L 110 128"
-          fill="none"
-          stroke="url(#neonGrad)"
-          stroke-width="22"
-          stroke-linecap="round"
-          stroke-linejoin="round" />
-
-    <!-- Inner cutout effect (darker) -->
-    <path d="M 110 85
-             C 110 85, 140 85, 143 98
-             C 146 111, 140 120, 130 120
-             L 110 120"
-          fill="#1a1145"
-          opacity="0.6" />
+  <!-- Orbital Rings (HUD Style) -->
+  <g opacity="0.6">
+    <circle cx="200" cy="180" r="130" fill="none" stroke="#00f3ff" stroke-width="1" stroke-dasharray="2 8">
+      <animateTransform attributeName="transform" type="rotate" from="0 200 180" to="360 200 180" dur="40s" repeatCount="indefinite" />
+    </circle>
+    <circle cx="200" cy="180" r="115" fill="none" stroke="#c084fc" stroke-width="1.5" stroke-dasharray="20 10 5 10">
+      <animateTransform attributeName="transform" type="rotate" from="360 200 180" to="0 200 180" dur="25s" repeatCount="indefinite" />
+    </circle>
   </g>
 
-  <!-- ===== AI BRAIN NODE on the P ===== -->
-  <!-- Main node -->
-  <circle cx="145" cy="98" r="14" fill="#ffffff" filter="url(#softGlow)" opacity="0.9" />
-  <circle cx="145" cy="98" r="6" fill="#1a1145" />
-  <circle cx="145" cy="98" r="3" fill="#38bdf8" opacity="0.8">
-    <animate attributeName="opacity" values="0.8;1;0.8" dur="2s" repeatCount="indefinite" />
-  </circle>
+  <!-- MAIN FLOATING LOGO GROUP -->
+  <g>
+    <!-- Floating Animation -->
+    <animateTransform attributeName="transform" type="translate" values="0,0; 0,-8; 0,0" dur="5s" calcMode="spline" keySplines="0.4 0 0.6 1; 0.4 0 0.6 1" repeatCount="indefinite" />
 
-  <!-- Neural connections from node -->
-  <g stroke="#a78bfa" stroke-width="1.5" opacity="0.5">
-    <!-- Up -->
-    <line x1="145" y1="84" x2="145" y2="72">
-      <animate attributeName="opacity" values="0.5;0.8;0.5" dur="3s" repeatCount="indefinite" />
+    <!-- The 'P' Shape -->
+    <g filter="url(#ultraGlow)">
+      <!-- Vertical Bar -->
+      <rect x="140" y="100" width="24" height="130" rx="12" fill="url(#neonGrad)" />
+      <!-- Top Curve -->
+      <path d="M 164 100 C 230 100, 240 160, 190 170 L 164 170" fill="none" stroke="url(#neonGrad)" stroke-width="24" stroke-linecap="round" stroke-linejoin="round" />
+    </g>
+
+    <!-- 3D Glass Highlights on 'P' -->
+    <rect x="142" y="102" width="8" height="126" rx="4" fill="url(#glassHighlight)" opacity="0.7" />
+    <path d="M 164 104 C 220 104, 228 150, 190 160" fill="none" stroke="url(#glassHighlight)" stroke-width="4" stroke-linecap="round" opacity="0.7" />
+
+    <!-- AI Brain Node -->
+    <g transform="translate(205, 135)">
+      <!-- Outer rotating dashed ring around node -->
+      <circle cx="0" cy="0" r="22" fill="none" stroke="#00f3ff" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.8">
+        <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="10s" repeatCount="indefinite" />
+      </circle>
+      
+      <!-- Core Node -->
+      <circle cx="0" cy="0" r="14" fill="#ffffff" filter="url(#softGlow)" />
+      <circle cx="0" cy="0" r="6" fill="#050510" />
+      <circle cx="0" cy="0" r="3" fill="#00f3ff">
+        <animate attributeName="opacity" values="0.3; 1; 0.3" dur="1.5s" repeatCount="indefinite" />
+      </circle>
+    </g>
+
+    <!-- Flowing Data Connections -->
+    <g stroke="#c084fc" stroke-width="2" opacity="0.8">
+      <!-- Top Flow -->
+      <line x1="205" y1="110" x2="205" y2="80" stroke-dasharray="4 6">
+        <animate attributeName="stroke-dashoffset" from="20" to="0" dur="1s" repeatCount="indefinite" />
+      </line>
+      <circle cx="205" cy="75" r="3" fill="#00f3ff" filter="url(#softGlow)" />
+
+      <!-- Right Flow -->
+      <line x1="230" y1="135" x2="260" y2="135" stroke-dasharray="4 6">
+        <animate attributeName="stroke-dashoffset" from="20" to="0" dur="1.2s" repeatCount="indefinite" />
+      </line>
+      <circle cx="265" cy="135" r="3" fill="#ff00e4" filter="url(#softGlow)" />
+
+      <!-- Bottom Flow -->
+      <line x1="205" y1="160" x2="205" y2="190" stroke-dasharray="4 6">
+        <animate attributeName="stroke-dashoffset" from="20" to="0" dur="0.8s" repeatCount="indefinite" />
+      </line>
+      <circle cx="205" cy="195" r="3" fill="#00f3ff" filter="url(#softGlow)" />
+    </g>
+
+    <!-- Energy Sparks (Lightning) -->
+    <path d="M 245 90 L 255 90 L 250 100 L 260 100 L 240 115 L 245 105 L 235 105 Z" fill="#00f3ff" filter="url(#softGlow)">
+      <animate attributeName="opacity" values="0.2; 1; 0.2" dur="2s" repeatCount="indefinite" />
+    </path>
+    <path d="M 120 210 L 128 210 L 124 218 L 132 218 L 116 230 L 120 222 L 112 222 Z" fill="#c084fc" filter="url(#softGlow)">
+      <animate attributeName="opacity" values="1; 0.2; 1" dur="2.5s" repeatCount="indefinite" />
+    </path>
+  </g>
+
+  <!-- Floating Ambient Particles -->
+  <g fill="#ffffff" filter="url(#softGlow)">
+    <circle cx="80" cy="120" r="2" opacity="0.5"><animate attributeName="cy" values="120; 100; 120" dur="6s" repeatCount="indefinite"/></circle>
+    <circle cx="320" cy="220" r="2.5" fill="#00f3ff" opacity="0.6"><animate attributeName="cy" values="220; 240; 220" dur="5s" repeatCount="indefinite"/></circle>
+    <circle cx="100" cy="260" r="1.5" fill="#ff00e4" opacity="0.4"><animate attributeName="cy" values="260; 250; 260" dur="4s" repeatCount="indefinite"/></circle>
+  </g>
+
+  <!-- ===== HUD TYPOGRAPHY SECTION ===== -->
+  <g transform="translate(0, 310)">
+    <!-- Tech Brackets -->
+    <path d="M 110 0 L 90 0 L 90 30 L 110 30" fill="none" stroke="#00f3ff" stroke-width="2" opacity="0.5" />
+    <path d="M 290 0 L 310 0 L 310 30 L 290 30" fill="none" stroke="#c084fc" stroke-width="2" opacity="0.5" />
+
+    <!-- Main Title -->
+    <text x="200" y="22" text-anchor="middle" font-family="'Orbitron', system-ui, sans-serif" font-size="26" font-weight="900" letter-spacing="6" fill="url(#textGrad)" filter="url(#softGlow)">
+      PIKA AI
+    </text>
+
+    <!-- Subtitle -->
+    <text x="200" y="45" text-anchor="middle" font-family="monospace" font-size="10" font-weight="600" letter-spacing="3" fill="#a78bfa" opacity="0.8">
+      DEVOPS ASSISTANT
+    </text>
+
+    <!-- Animated Scanning Line under text -->
+    <line x1="130" y1="55" x2="270" y2="55" stroke="url(#textGrad)" stroke-width="1" opacity="0.3" />
+    <line x1="130" y1="55" x2="170" y2="55" stroke="#00f3ff" stroke-width="2" filter="url(#softGlow)">
+      <animate attributeName="x1" values="130; 230; 130" dur="3s" repeatCount="indefinite" />
+      <animate attributeName="x2" values="170; 270; 170" dur="3s" repeatCount="indefinite" />
     </line>
-    <!-- Down -->
-    <line x1="145" y1="112" x2="145" y2="124">
-      <animate attributeName="opacity" values="0.5;0.8;0.5" dur="3s" begin="0.5s" repeatCount="indefinite" />
-    </line>
-    <!-- Left -->
-    <line x1="131" y1="98" x2="115" y2="98">
-      <animate attributeName="opacity" values="0.5;0.8;0.5" dur="3s" begin="1s" repeatCount="indefinite" />
-    </line>
-    <!-- Diagonal top-right -->
-    <line x1="155" y1="88" x2="170" y2="76" opacity="0.3" />
-    <!-- Diagonal bottom-right -->
-    <line x1="155" y1="108" x2="170" y2="118" opacity="0.3" />
   </g>
-
-  <!-- Sub-nodes on connections -->
-  <circle cx="145" cy="72" r="3" fill="#38bdf8" opacity="0.5" filter="url(#softGlow)" />
-  <circle cx="115" cy="98" r="3" fill="#a78bfa" opacity="0.5" filter="url(#softGlow)" />
-  <circle cx="170" cy="76" r="2.5" fill="#38bdf8" opacity="0.3" />
-  <circle cx="170" cy="118" r="2.5" fill="#a78bfa" opacity="0.3" />
-
-  <!-- ===== SPARK ACCENTS ===== -->
-  <!-- Top-right lightning bolt -->
-  <g transform="translate(180, 55)" opacity="0.9" filter="url(#softGlow)">
-    <polygon points="0,0 14,0 9,-10" fill="#00d4ff" />
-    <polygon points="18,3 30,3 25,-7" fill="#a78bfa" opacity="0.6" />
-  </g>
-
-  <!-- Bottom-left spark -->
-  <g transform="translate(65, 195)" opacity="0.7">
-    <polygon points="0,0 10,0 7,-8" fill="#38bdf8" filter="url(#softGlow)" />
-  </g>
-
-  <!-- ===== FLOATING PARTICLES ===== -->
-  <g filter="url(#softGlow)">
-    <circle cx="195" cy="155" r="4" fill="#38bdf8" opacity="0.6">
-      <animate attributeName="opacity" values="0.6;1;0.6" dur="4s" repeatCount="indefinite" />
-    </circle>
-    <circle cx="58" cy="140" r="3" fill="#a78bfa" opacity="0.5">
-      <animate attributeName="opacity" values="0.5;0.9;0.5" dur="3.5s" begin="1s" repeatCount="indefinite" />
-    </circle>
-    <circle cx="200" cy="95" r="2.5" fill="#c084fc" opacity="0.4">
-      <animate attributeName="opacity" values="0.4;0.7;0.4" dur="5s" repeatCount="indefinite" />
-    </circle>
-    <circle cx="55" cy="180" r="2" fill="#38bdf8" opacity="0.3" />
-    <circle cx="180" cy="195" r="2.5" fill="#7c3aed" opacity="0.4">
-      <animate attributeName="opacity" values="0.4;0.8;0.4" dur="3s" begin="2s" repeatCount="indefinite" />
-    </circle>
-  </g>
-
-  <!-- ===== BOTTOM TEXT: "PIKA" ===== -->
-  <g filter="url(#textGlow)">
-    <text x="128" y="222"
-          text-anchor="middle"
-          font-family="'Orbitron', 'Segoe UI', Arial, sans-serif"
-          font-size="28"
-          font-weight="700"
-          letter-spacing="8"
-          fill="url(#accentGrad)">PIKA</text>
-  </g>
-
-  <!-- Subtle underline under text -->
-  <line x1="85" y1="230" x2="171" y2="230" stroke="url(#accentGrad)" stroke-width="1.5" opacity="0.4" stroke-linecap="round" />
-
-  <!-- ===== TOP LABEL: "AI ASSISTANT" ===== -->
-  <text x="128" y="42"
-        text-anchor="middle"
-        font-family="'Segoe UI', Arial, sans-serif"
-        font-size="10"
-        font-weight="400"
-        letter-spacing="4"
-        fill="#a78bfa"
-        opacity="0.6">AI ASSISTANT</text>
 </svg>
