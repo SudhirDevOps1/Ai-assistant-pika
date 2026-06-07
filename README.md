@@ -97,9 +97,19 @@
 | **Mistral** | [console.mistral.ai](https://console.mistral.ai) | ✅ Yes | ⚡⚡ Fast |
 | **Cerebras** | [cloud.cerebras.ai](https://cloud.cerebras.ai) | ✅ Yes | ⚡⚡⚡ Ultra Fast |
 
-### 📥 Installation
+## 📥 Installation
 
-\`\`\`bash
+### Prerequisites
+
+Make sure the following are installed on your system:
+
+- **Node.js** 18+ ([download](https://nodejs.org/))
+- **Python** 3.10+ ([download](https://python.org/))
+- **Git** ([download](https://git-scm.com/))
+
+### 🚀 Quick Setup
+
+```bash
 # 1. Clone the repository
 git clone https://github.com/SudhirDevOps1/Ai-assistant-pika.git
 cd Ai-assistant-pika
@@ -111,9 +121,9 @@ npm install
 cd pc-bridge
 pip install -r requirements.txt
 cd ..
-\`\`\`
-
+```
 ### ▶️ Running the Assistant
+
 
 **Option 1 — One Click (Recommended):**
 Just double-click the **\`start.bat\`** file in the root folder.
@@ -124,14 +134,14 @@ This will automatically:
 
 **Option 2 — Manual (Two Terminals):**
 
-\`\`\`bash
+```bash
 # Terminal 1 — Web UI
 npm run dev
 
 # Terminal 2 — PC Bridge
 cd pc-bridge
 python pc_bridge.py
-\`\`\`
+```
 
 Then open **http://localhost:3000** in your browser.
 
@@ -139,9 +149,11 @@ Then open **http://localhost:3000** in your browser.
 
 Connect your phone to the **same WiFi** as your PC, then open:
 
-\`\`\`
+
+```bash
 http://YOUR_PC_IP:3000
-\`\`\`
+
+```
 
 Find your PC IP by running \`ipconfig\` in terminal.
 
@@ -174,14 +186,16 @@ The Python Bridge (\`pc_bridge.py\`) runs on your PC and accepts WebSocket comma
 
 ### Architecture
 
-\`\`\`
+
+```bash
 ┌─────────────┐     WebSocket      ┌─────────────────┐     ┌──────────────┐
 │   Web UI    │◄──────────────────►│  Python Bridge   │────►│   PC Actions │
 │  (Browser)  │  ws://localhost:    │  (pc_bridge.py)  │     │              │
 │  :3000      │      8765          │  :8765           │     │  Volume,Apps │
 └─────────────┘                    └─────────────────┘     │  Shutdown,etc│
                                                             └──────────────┘
-\`\`\`
+
+```
 
 ### Features (16 Categories)
 
@@ -263,7 +277,8 @@ The Python Bridge (\`pc_bridge.py\`) runs on your PC and accepts WebSocket comma
 
 ## 📁 Project Structure
 
-\`\`\`
+
+```bash
 Ai-assistant-pika/
 │
 ├── 📄 start.bat                 # One-click startup (Windows)
@@ -304,7 +319,8 @@ Ai-assistant-pika/
 └── 📁 pc-bridge/
     ├── 📄 pc_bridge.py          # Python WebSocket server
     └── 📄 requirements.txt      # Python dependencies
-\`\`\`
+
+```
 
 ---
 
@@ -323,29 +339,29 @@ Get key from: [console.groq.com](https://console.groq.com) (recommended)
 - ✅ Windows Firewall allows the app
 
 ### ❌ npm install fails
-\`\`\`bash
+```bash
 rmdir /s /q node_modules
 del package-lock.json
 npm install
 npm run dev
-\`\`\`
+```
 
 ### ❌ Port 3000 already in use
-\`\`\`bash
+```bash
 npx kill-port 3000
 npm run dev
-\`\`\`
+```
 
 ### ❌ Python bridge Unicode error
-\`\`\`bash
+```bash
 chcp 65001
 python pc_bridge.py
-\`\`\`
+```
 
 ### ❌ Volume/Media not working
-\`\`\`bash
+```bash
 pip install pyautogui
-\`\`\`
+```
 
 ### ❌ Voice recognition not working
 - Grant **microphone permission** to browser
@@ -390,22 +406,24 @@ Contributions are welcome! Here's how:
 
 1. **Fork** this repository
 2. **Clone** your fork:
-   \`\`\`bash
+      ```bash
+   
    git clone https://github.com/YOUR_USERNAME/Ai-assistant-pika.git
-   \`\`\`
+   
+     ```
 3. **Create** a branch:
-   \`\`\`bash
+   ```bash
    git checkout -b feature/amazing-feature
-   \`\`\`
+    ```
 4. **Make** your changes
 5. **Commit**:
-   \`\`\`bash
+   ```bash
    git commit -m "Add amazing feature"
-   \`\`\`
+   ```
 6. **Push**:
-   \`\`\`bash
-   git push origin feature/amazing-feature
-   \`\`\`
+      ```bash
+       git push origin feature/amazing-feature
+      ```
 7. **Open** a Pull Request
 
 ### 💡 Ideas for Contributions
@@ -419,12 +437,12 @@ Contributions are welcome! Here's how:
 
 ## 📄 License
 
-This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
+This project is licensed under the **MIT License** – see the [LICENSE](LICENSE) file for details.
 
-\`\`\`
+```text
 MIT License
 
-Copyright (c) 2025 SudhirDevOps1
+Copyright (c) 2026 SudhirDevOps1
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -443,8 +461,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-\`\`\`
-
+```
 ---
 
 ## 👤 Author
