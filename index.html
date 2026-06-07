@@ -7,255 +7,86 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
   <style>
-    /* ══════════════════════════════════════
-       RESET & ROOT
-    ══════════════════════════════════════ */
     *{margin:0;padding:0;box-sizing:border-box}
     html{scroll-behavior:smooth;scroll-padding-top:80px}
-
     :root{
-      --bg:#06060e;
-      --bg-1:#0a0a18;
+      --bg:#06060e;--bg-1:#0a0a18;
       --bg-card:rgba(255,255,255,0.025);
       --bg-card-hover:rgba(255,255,255,0.055);
       --border:rgba(255,255,255,0.06);
       --border-hover:rgba(255,255,255,0.14);
-      --text:#eef2ff;
-      --text-2:#94a3c8;
-      --text-3:#5b6488;
-      --cyan:#00e5ff;
-      --cyan-2:#22d3ee;
-      --purple:#a855f7;
-      --purple-2:#c084fc;
-      --green:#4ade80;
-      --orange:#fb923c;
-      --red:#f87171;
-      --yellow:#facc15;
-      --blue:#60a5fa;
-      --pink:#ec4899;
-      --radius:16px;
-      --radius-sm:10px;
+      --text:#eef2ff;--text-2:#94a3c8;--text-3:#5b6488;
+      --cyan:#00e5ff;--cyan-2:#22d3ee;
+      --purple:#a855f7;--purple-2:#c084fc;
+      --green:#4ade80;--orange:#fb923c;
+      --red:#f87171;--yellow:#facc15;
+      --blue:#60a5fa;--pink:#ec4899;
+      --radius:16px;--radius-sm:10px;
       --glass:rgba(255,255,255,0.03);
       --shadow:0 8px 32px rgba(0,0,0,0.4);
       --nav-h:64px;
     }
-
-    body{
-      font-family:'Inter',-apple-system,sans-serif;
-      background:var(--bg);
-      color:var(--text);
-      line-height:1.7;
-      overflow-x:hidden;
-      -webkit-font-smoothing:antialiased;
-    }
-
+    body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden;-webkit-font-smoothing:antialiased}
     a{color:var(--cyan);text-decoration:none;transition:.2s}
     a:hover{color:var(--cyan-2);text-decoration:underline}
     code{font-family:'JetBrains Mono',monospace;font-size:.85em;background:rgba(0,229,255,0.08);padding:2px 7px;border-radius:5px;color:var(--cyan)}
-
-    /* ══════════════════════════════════════
-       SCROLLBAR
-    ══════════════════════════════════════ */
     ::-webkit-scrollbar{width:7px}
     ::-webkit-scrollbar-track{background:transparent}
     ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.08);border-radius:10px}
     ::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,0.16)}
 
-    /* ══════════════════════════════════════
-       ANIMATED BACKGROUND
-    ══════════════════════════════════════ */
-    .bg-wrap{
-      position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
-    }
-    .bg-orb{
-      position:absolute;border-radius:50%;
-      filter:blur(140px);opacity:.12;
-      animation:orbFloat 25s ease-in-out infinite alternate;
-    }
+    .bg-wrap{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+    .bg-orb{position:absolute;border-radius:50%;filter:blur(140px);opacity:.12;animation:orbFloat 25s ease-in-out infinite alternate}
     .bg-orb:nth-child(1){width:700px;height:700px;background:var(--cyan);top:-15%;left:-10%;animation-delay:0s}
     .bg-orb:nth-child(2){width:600px;height:600px;background:var(--purple);bottom:-10%;right:-8%;animation-delay:-8s}
     .bg-orb:nth-child(3){width:500px;height:500px;background:var(--pink);top:50%;left:40%;animation-delay:-14s}
     .bg-orb:nth-child(4){width:350px;height:350px;background:var(--blue);top:20%;right:15%;animation-delay:-20s}
+    @keyframes orbFloat{0%{transform:translate(0,0) scale(1)}50%{transform:translate(40px,-30px) scale(1.08)}100%{transform:translate(-30px,20px) scale(.94)}}
 
-    @keyframes orbFloat{
-      0%{transform:translate(0,0) scale(1)}
-      50%{transform:translate(40px,-30px) scale(1.08)}
-      100%{transform:translate(-30px,20px) scale(.94)}
-    }
+    .bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.015) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.015) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 70% 70% at 50% 30%,black 30%,transparent 100%)}
 
-    /* Grid overlay */
-    .bg-grid{
-      position:fixed;inset:0;z-index:0;pointer-events:none;
-      background-image:
-        linear-gradient(rgba(255,255,255,.015) 1px,transparent 1px),
-        linear-gradient(90deg,rgba(255,255,255,.015) 1px,transparent 1px);
-      background-size:60px 60px;
-      mask-image:radial-gradient(ellipse 70% 70% at 50% 30%,black 30%,transparent 100%);
-    }
-
-    /* ══════════════════════════════════════
-       NAVBAR
-    ══════════════════════════════════════ */
-    .nav{
-      position:fixed;top:0;left:0;right:0;z-index:100;
-      height:var(--nav-h);
-      display:flex;align-items:center;justify-content:space-between;
-      padding:0 32px;
-      background:rgba(6,6,14,.75);
-      backdrop-filter:blur(24px) saturate(1.4);
-      border-bottom:1px solid var(--border);
-      transition:background .3s;
-    }
-    .nav-logo{
-      display:flex;align-items:center;gap:10px;
-      font-family:'Orbitron',sans-serif;font-weight:700;font-size:1.1rem;
-      background:linear-gradient(135deg,var(--cyan),var(--purple));
-      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-      background-clip:text;
-    }
+    .nav{position:fixed;top:0;left:0;right:0;z-index:100;height:var(--nav-h);display:flex;align-items:center;justify-content:space-between;padding:0 32px;background:rgba(6,6,14,.75);backdrop-filter:blur(24px) saturate(1.4);border-bottom:1px solid var(--border);transition:background .3s}
+    .nav-logo{display:flex;align-items:center;gap:10px;font-family:'Orbitron',sans-serif;font-weight:700;font-size:1.1rem;background:linear-gradient(135deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
     .nav-logo svg{width:32px;height:32px;flex-shrink:0}
     .nav-links{display:flex;gap:6px;align-items:center}
-    .nav-link{
-      padding:6px 14px;border-radius:8px;font-size:.82rem;font-weight:500;
-      color:var(--text-2);transition:.2s;cursor:pointer;
-    }
+    .nav-link{padding:6px 14px;border-radius:8px;font-size:.82rem;font-weight:500;color:var(--text-2);transition:.2s;cursor:pointer}
     .nav-link:hover{color:var(--text);background:rgba(255,255,255,.05)}
     .nav-link.active{color:var(--cyan);background:rgba(0,229,255,.08)}
-    .nav-cta{
-      padding:8px 20px;border-radius:10px;font-size:.82rem;font-weight:600;
-      background:linear-gradient(135deg,var(--cyan),var(--purple));
-      color:#000;cursor:pointer;border:none;transition:.3s;
-    }
+    .nav-cta{padding:8px 20px;border-radius:10px;font-size:.82rem;font-weight:600;background:linear-gradient(135deg,var(--cyan),var(--purple));color:#000;cursor:pointer;border:none;transition:.3s}
     .nav-cta:hover{transform:scale(1.04);box-shadow:0 0 24px rgba(0,229,255,.3)}
-    .nav-mobile-btn{
-      display:none;background:none;border:none;color:var(--text);font-size:1.4rem;cursor:pointer;
-    }
-
+    .nav-mobile-btn{display:none;background:none;border:none;color:var(--text);font-size:1.4rem;cursor:pointer}
     @media(max-width:768px){
       .nav-links{display:none}
       .nav-mobile-btn{display:block}
-      .nav-links.open{
-        display:flex;flex-direction:column;position:absolute;
-        top:var(--nav-h);left:0;right:0;
-        background:rgba(6,6,14,.95);backdrop-filter:blur(24px);
-        border-bottom:1px solid var(--border);padding:16px;
-      }
+      .nav-links.open{display:flex;flex-direction:column;position:absolute;top:var(--nav-h);left:0;right:0;background:rgba(6,6,14,.95);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);padding:16px}
     }
 
-    /* ══════════════════════════════════════
-       LAYOUT
-    ══════════════════════════════════════ */
-    .page-wrap{
-      position:relative;z-index:1;
-      display:flex;
-      max-width:1400px;margin:0 auto;
-      padding-top:var(--nav-h);
-    }
+    .page-wrap{position:relative;z-index:1;display:flex;max-width:1400px;margin:0 auto;padding-top:var(--nav-h)}
 
-    /* ── Sidebar TOC ── */
-    .sidebar{
-      position:sticky;top:var(--nav-h);
-      width:260px;height:calc(100vh - var(--nav-h));
-      flex-shrink:0;
-      padding:32px 16px 32px 24px;
-      overflow-y:auto;
-      border-right:1px solid var(--border);
-    }
-    .sidebar-title{
-      font-size:.7rem;font-weight:700;text-transform:uppercase;
-      letter-spacing:2px;color:var(--text-3);margin-bottom:16px;
-    }
-    .sidebar-link{
-      display:flex;align-items:center;gap:10px;
-      padding:9px 14px;border-radius:10px;
-      font-size:.84rem;color:var(--text-2);
-      transition:.2s;cursor:pointer;margin-bottom:2px;
-    }
+    .sidebar{position:sticky;top:var(--nav-h);width:260px;height:calc(100vh - var(--nav-h));flex-shrink:0;padding:32px 16px 32px 24px;overflow-y:auto;border-right:1px solid var(--border)}
+    .sidebar-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--text-3);margin-bottom:16px}
+    .sidebar-link{display:flex;align-items:center;gap:10px;padding:9px 14px;border-radius:10px;font-size:.84rem;color:var(--text-2);transition:.2s;cursor:pointer;margin-bottom:2px}
     .sidebar-link:hover{color:var(--text);background:rgba(255,255,255,.04)}
     .sidebar-link.active{color:var(--cyan);background:rgba(0,229,255,.06);font-weight:600}
-    .sidebar-link .s-num{
-      width:22px;height:22px;border-radius:6px;
-      display:flex;align-items:center;justify-content:center;
-      font-size:.65rem;font-weight:700;
-      background:rgba(255,255,255,.04);color:var(--text-3);flex-shrink:0;
-    }
+    .sidebar-link .s-num{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;background:rgba(255,255,255,.04);color:var(--text-3);flex-shrink:0}
     .sidebar-link.active .s-num{background:rgba(0,229,255,.12);color:var(--cyan)}
+    @media(max-width:1024px){.sidebar{display:none}}
 
-    @media(max-width:1024px){
-      .sidebar{display:none}
-    }
+    .main{flex:1;min-width:0;padding:40px 48px 100px;max-width:900px}
+    @media(max-width:768px){.main{padding:24px 18px 80px}}
 
-    /* ── Main Content ── */
-    .main{
-      flex:1;min-width:0;
-      padding:40px 48px 100px;
-      max-width:900px;
-    }
-    @media(max-width:768px){
-      .main{padding:24px 18px 80px}
-    }
-
-    /* ══════════════════════════════════════
-       HERO
-    ══════════════════════════════════════ */
-    .hero{
-      text-align:center;padding:60px 0 48px;
-      animation:fadeUp .8s ease-out;
-    }
+    .hero{text-align:center;padding:60px 0 48px;animation:fadeUp .8s ease-out}
     @keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
-
-    .hero-badge{
-      display:inline-flex;align-items:center;gap:8px;
-      padding:6px 16px;border-radius:40px;
-      background:rgba(0,229,255,.06);border:1px solid rgba(0,229,255,.18);
-      font-size:.78rem;font-weight:600;color:var(--cyan);
-      margin-bottom:24px;
-    }
-    .hero-badge .pulse{
-      width:8px;height:8px;border-radius:50%;background:var(--green);
-      animation:pulse 2s infinite;
-    }
+    .hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:40px;background:rgba(0,229,255,.06);border:1px solid rgba(0,229,255,.18);font-size:.78rem;font-weight:600;color:var(--cyan);margin-bottom:24px}
+    .hero-badge .pulse{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
     @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.4)}}
-
-    .hero-icon{
-      width:96px;height:96px;margin:0 auto 28px;
-      border-radius:28px;
-      background:linear-gradient(135deg,var(--cyan),var(--purple));
-      display:flex;align-items:center;justify-content:center;
-      font-size:44px;
-      box-shadow:
-        0 0 0 4px rgba(0,229,255,.08),
-        0 0 80px rgba(0,229,255,.25),
-        0 0 160px rgba(168,85,247,.15);
-      animation:iconPulse 4s ease-in-out infinite;
-    }
-    @keyframes iconPulse{
-      0%,100%{box-shadow:0 0 0 4px rgba(0,229,255,.08),0 0 80px rgba(0,229,255,.25),0 0 160px rgba(168,85,247,.15)}
-      50%{box-shadow:0 0 0 8px rgba(0,229,255,.12),0 0 120px rgba(0,229,255,.35),0 0 200px rgba(168,85,247,.25)}
-    }
-
-    .hero h1{
-      font-size:clamp(2rem,5vw,3.2rem);font-weight:900;
-      background:linear-gradient(135deg,#fff 0%,var(--cyan) 40%,var(--purple) 70%,var(--pink) 100%);
-      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-      background-clip:text;
-      line-height:1.15;margin-bottom:16px;
-    }
-    .hero .subtitle{
-      font-size:1.08rem;color:var(--text-2);
-      max-width:560px;margin:0 auto 28px;
-    }
+    .hero-icon{width:96px;height:96px;margin:0 auto 28px;border-radius:28px;background:linear-gradient(135deg,var(--cyan),var(--purple));display:flex;align-items:center;justify-content:center;font-size:44px;box-shadow:0 0 0 4px rgba(0,229,255,.08),0 0 80px rgba(0,229,255,.25),0 0 160px rgba(168,85,247,.15);animation:iconPulse 4s ease-in-out infinite}
+    @keyframes iconPulse{0%,100%{box-shadow:0 0 0 4px rgba(0,229,255,.08),0 0 80px rgba(0,229,255,.25),0 0 160px rgba(168,85,247,.15)}50%{box-shadow:0 0 0 8px rgba(0,229,255,.12),0 0 120px rgba(0,229,255,.35),0 0 200px rgba(168,85,247,.25)}}
+    .hero h1{font-size:clamp(2rem,5vw,3.2rem);font-weight:900;background:linear-gradient(135deg,#fff 0%,var(--cyan) 40%,var(--purple) 70%,var(--pink) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.15;margin-bottom:16px}
+    .hero .subtitle{font-size:1.08rem;color:var(--text-2);max-width:560px;margin:0 auto 28px}
     .hero-tags{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
 
-    /* ══════════════════════════════════════
-       TAG / BADGE
-    ══════════════════════════════════════ */
-    .tag{
-      display:inline-flex;align-items:center;gap:5px;
-      padding:5px 13px;border-radius:20px;
-      font-size:.72rem;font-weight:600;letter-spacing:.3px;
-      border:1px solid;transition:.2s;
-    }
+    .tag{display:inline-flex;align-items:center;gap:5px;padding:5px 13px;border-radius:20px;font-size:.72rem;font-weight:600;letter-spacing:.3px;border:1px solid;transition:.2s}
     .tag-cyan{background:rgba(0,229,255,.08);border-color:rgba(0,229,255,.2);color:var(--cyan)}
     .tag-purple{background:rgba(168,85,247,.08);border-color:rgba(168,85,247,.2);color:var(--purple)}
     .tag-green{background:rgba(74,222,128,.08);border-color:rgba(74,222,128,.2);color:var(--green)}
@@ -265,299 +96,104 @@
     .tag-yellow{background:rgba(250,204,21,.08);border-color:rgba(250,204,21,.2);color:var(--yellow)}
     .tag-blue{background:rgba(96,165,250,.08);border-color:rgba(96,165,250,.2);color:var(--blue)}
 
-    /* ══════════════════════════════════════
-       SECTION
-    ══════════════════════════════════════ */
     .section{margin-top:56px}
-    .section-head{
-      display:flex;align-items:center;gap:14px;
-      margin-bottom:24px;
-    }
-    .section-icon{
-      width:44px;height:44px;border-radius:14px;
-      display:flex;align-items:center;justify-content:center;
-      font-size:22px;flex-shrink:0;
-    }
+    .section-head{display:flex;align-items:center;gap:14px;margin-bottom:24px}
+    .section-icon{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
     .section-title{font-size:1.55rem;font-weight:800;letter-spacing:-.3px}
 
-    /* ══════════════════════════════════════
-       GLASS CARD
-    ══════════════════════════════════════ */
-    .card{
-      background:var(--bg-card);
-      border:1px solid var(--border);
-      border-radius:var(--radius);
-      padding:24px;
-      margin-bottom:14px;
-      backdrop-filter:blur(16px);
-      transition:all .3s ease;
-      position:relative;
-      overflow:hidden;
-    }
-    .card::before{
-      content:'';position:absolute;top:0;left:0;right:0;height:1px;
-      background:linear-gradient(90deg,transparent,rgba(0,229,255,.12),transparent);
-      opacity:0;transition:.3s;
-    }
-    .card:hover{
-      background:var(--bg-card-hover);
-      border-color:var(--border-hover);
-      transform:translateY(-3px);
-      box-shadow:var(--shadow);
-    }
+    .card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:14px;backdrop-filter:blur(16px);transition:all .3s ease;position:relative;overflow:hidden}
+    .card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,229,255,.12),transparent);opacity:0;transition:.3s}
+    .card:hover{background:var(--bg-card-hover);border-color:var(--border-hover);transform:translateY(-3px);box-shadow:var(--shadow)}
     .card:hover::before{opacity:1}
-    .card h3{
-      font-size:1.05rem;font-weight:700;margin-bottom:12px;
-      display:flex;align-items:center;gap:8px;
-    }
+    .card h3{font-size:1.05rem;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
     .card p,.card li{color:var(--text-2);font-size:.9rem}
     .card ul{list-style:none;padding:0}
     .card li{padding:5px 0 5px 24px;position:relative}
-    .card li::before{
-      content:'';position:absolute;left:6px;top:14px;
-      width:6px;height:6px;border-radius:50%;
-      background:linear-gradient(135deg,var(--cyan),var(--purple));
-    }
+    .card li::before{content:'';position:absolute;left:6px;top:14px;width:6px;height:6px;border-radius:50%;background:linear-gradient(135deg,var(--cyan),var(--purple))}
     .card li strong{color:var(--text)}
 
-    /* ══════════════════════════════════════
-       STEP CARDS
-    ══════════════════════════════════════ */
     .steps{display:flex;flex-direction:column;gap:18px;margin:16px 0}
-    .step{
-      display:flex;gap:16px;
-      padding:20px;border-radius:var(--radius);
-      background:var(--bg-card);border:1px solid var(--border);
-      transition:all .3s;
-    }
-    .step:hover{
-      background:var(--bg-card-hover);
-      border-color:var(--border-hover);
-      transform:translateX(4px);
-    }
-    .step-num{
-      width:44px;height:44px;border-radius:50%;
-      background:linear-gradient(135deg,var(--cyan),var(--purple));
-      display:flex;align-items:center;justify-content:center;
-      font-weight:900;font-size:1rem;flex-shrink:0;
-      color:#000;
-      box-shadow:0 0 20px rgba(0,229,255,.2);
-    }
+    .step{display:flex;gap:16px;padding:20px;border-radius:var(--radius);background:var(--bg-card);border:1px solid var(--border);transition:all .3s}
+    .step:hover{background:var(--bg-card-hover);border-color:var(--border-hover);transform:translateX(4px)}
+    .step-num{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--cyan),var(--purple));display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1rem;flex-shrink:0;color:#000;box-shadow:0 0 20px rgba(0,229,255,.2)}
     .step-body{flex:1}
     .step-body h4{font-size:.98rem;font-weight:700;margin-bottom:8px;color:var(--text)}
     .step-body p{color:var(--text-2);font-size:.88rem}
 
-    /* ══════════════════════════════════════
-       CODE BLOCK
-    ══════════════════════════════════════ */
-    .code-wrap{
-      position:relative;margin:14px 0;
-      border-radius:var(--radius-sm);
-      border:1px solid rgba(0,229,255,.1);
-      overflow:hidden;
-    }
-    .code-header{
-      display:flex;align-items:center;justify-content:space-between;
-      padding:8px 16px;
-      background:rgba(0,229,255,.04);
-      border-bottom:1px solid rgba(0,229,255,.06);
-    }
+    .code-wrap{position:relative;margin:14px 0;border-radius:var(--radius-sm);border:1px solid rgba(0,229,255,.1);overflow:hidden}
+    .code-header{display:flex;align-items:center;justify-content:space-between;padding:8px 16px;background:rgba(0,229,255,.04);border-bottom:1px solid rgba(0,229,255,.06)}
     .code-dots{display:flex;gap:6px}
     .code-dots span{width:10px;height:10px;border-radius:50%}
     .code-dots span:nth-child(1){background:#ff5f57}
     .code-dots span:nth-child(2){background:#febc2e}
     .code-dots span:nth-child(3){background:#28c840}
-    .code-label{
-      font-family:'JetBrains Mono',monospace;font-size:.7rem;
-      color:var(--text-3);text-transform:uppercase;letter-spacing:1px;
-    }
-    .code-copy{
-      background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.15);
-      color:var(--cyan);padding:4px 12px;border-radius:6px;
-      font-size:.7rem;font-weight:600;cursor:pointer;transition:.2s;
-      font-family:'Inter',sans-serif;
-    }
+    .code-label{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text-3);text-transform:uppercase;letter-spacing:1px}
+    .code-copy{background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.15);color:var(--cyan);padding:4px 12px;border-radius:6px;font-size:.7rem;font-weight:600;cursor:pointer;transition:.2s;font-family:'Inter',sans-serif}
     .code-copy:hover{background:rgba(0,229,255,.16)}
     .code-copy.copied{background:rgba(74,222,128,.12);color:var(--green);border-color:rgba(74,222,128,.2)}
-
-    .code-block{
-      background:rgba(0,0,0,.45);
-      padding:18px 20px;
-      font-family:'JetBrains Mono',monospace;
-      font-size:.82rem;line-height:1.8;
-      color:var(--text-2);
-      overflow-x:auto;
-      white-space:pre;
-    }
+    .code-block{background:rgba(0,0,0,.45);padding:18px 20px;font-family:'JetBrains Mono',monospace;font-size:.82rem;line-height:1.8;color:var(--text-2);overflow-x:auto;white-space:pre}
     .code-block .cm{color:#5b6488}
     .code-block .cmd{color:var(--green)}
     .code-block .url{color:var(--orange)}
     .code-block .str{color:var(--yellow)}
     .code-block .hl{color:var(--cyan)}
 
-    /* ══════════════════════════════════════
-       ALERT BOX
-    ══════════════════════════════════════ */
-    .alert{
-      border-radius:var(--radius);padding:16px 20px;margin:16px 0;
-      display:flex;gap:12px;align-items:flex-start;
-      font-size:.88rem;
-    }
+    .alert{border-radius:var(--radius);padding:16px 20px;margin:16px 0;display:flex;gap:12px;align-items:flex-start;font-size:.88rem}
     .alert-icon{font-size:1.25rem;flex-shrink:0;margin-top:1px}
     .alert-text{color:var(--text-2)}
     .alert-text strong{color:var(--text)}
-
     .alert-info{background:rgba(0,229,255,.05);border:1px solid rgba(0,229,255,.15)}
     .alert-warn{background:rgba(250,204,21,.05);border:1px solid rgba(250,204,21,.15)}
     .alert-success{background:rgba(74,222,128,.05);border:1px solid rgba(74,222,128,.15)}
     .alert-danger{background:rgba(248,113,113,.05);border:1px solid rgba(248,113,113,.15)}
 
-    /* ══════════════════════════════════════
-       TABLE
-    ══════════════════════════════════════ */
-    .table-wrap{
-      overflow-x:auto;border-radius:var(--radius);
-      border:1px solid var(--border);margin:16px 0;
-    }
+    .table-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);margin:16px 0}
     table{width:100%;border-collapse:collapse}
     thead{background:rgba(0,229,255,.04)}
-    th{
-      padding:13px 18px;text-align:left;font-size:.74rem;
-      font-weight:700;text-transform:uppercase;letter-spacing:.8px;
-      color:var(--cyan);border-bottom:1px solid var(--border);
-    }
-    td{
-      padding:12px 18px;font-size:.86rem;color:var(--text-2);
-      border-bottom:1px solid var(--border);
-    }
+    th{padding:13px 18px;text-align:left;font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--cyan);border-bottom:1px solid var(--border)}
+    td{padding:12px 18px;font-size:.86rem;color:var(--text-2);border-bottom:1px solid var(--border)}
     tr:last-child td{border-bottom:none}
     tr:hover td{background:rgba(255,255,255,.015)}
     td strong{color:var(--text)}
 
-    /* ══════════════════════════════════════
-       FEATURE GRID
-    ══════════════════════════════════════ */
-    .feat-grid{
-      display:grid;
-      grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
-      gap:14px;margin:16px 0;
-    }
-    .feat-card{
-      background:var(--bg-card);border:1px solid var(--border);
-      border-radius:var(--radius);padding:20px;
-      transition:all .3s;position:relative;overflow:hidden;
-    }
-    .feat-card::after{
-      content:'';position:absolute;top:0;left:0;
-      width:3px;height:0;
-      background:linear-gradient(180deg,var(--cyan),var(--purple));
-      transition:.4s;border-radius:0 0 4px 0;
-    }
-    .feat-card:hover{
-      background:var(--bg-card-hover);
-      border-color:var(--border-hover);
-      transform:translateY(-4px);
-      box-shadow:var(--shadow);
-    }
+    .feat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin:16px 0}
+    .feat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;transition:all .3s;position:relative;overflow:hidden}
+    .feat-card::after{content:'';position:absolute;top:0;left:0;width:3px;height:0;background:linear-gradient(180deg,var(--cyan),var(--purple));transition:.4s;border-radius:0 0 4px 0}
+    .feat-card:hover{background:var(--bg-card-hover);border-color:var(--border-hover);transform:translateY(-4px);box-shadow:var(--shadow)}
     .feat-card:hover::after{height:100%}
-    .feat-card h4{
-      font-size:.95rem;font-weight:700;margin-bottom:8px;
-      display:flex;align-items:center;gap:8px;
-    }
+    .feat-card h4{font-size:.95rem;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:8px}
     .feat-card p{color:var(--text-2);font-size:.82rem;line-height:1.6}
 
-    /* ══════════════════════════════════════
-       DIVIDER
-    ══════════════════════════════════════ */
-    .divider{
-      height:1px;margin:48px 0;
-      background:linear-gradient(90deg,transparent,var(--border),transparent);
-    }
+    .divider{height:1px;margin:48px 0;background:linear-gradient(90deg,transparent,var(--border),transparent)}
 
-    /* ══════════════════════════════════════
-       ARCHITECTURE DIAGRAM
-    ══════════════════════════════════════ */
-    .arch-diagram{
-      display:flex;align-items:center;justify-content:center;gap:12px;
-      flex-wrap:wrap;padding:28px 20px;
-      background:var(--bg-card);border:1px solid var(--border);
-      border-radius:var(--radius);margin:16px 0;
-    }
-    .arch-box{
-      padding:14px 22px;border-radius:var(--radius-sm);
-      font-size:.82rem;font-weight:600;text-align:center;
-      border:1px solid;min-width:130px;
-    }
+    .arch-diagram{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;padding:28px 20px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);margin:16px 0}
+    .arch-box{padding:14px 22px;border-radius:var(--radius-sm);font-size:.82rem;font-weight:600;text-align:center;border:1px solid;min-width:130px}
     .arch-arrow{font-size:1.4rem;color:var(--text-3)}
 
-    /* ══════════════════════════════════════
-       PROGRESS BAR (scroll)
-    ══════════════════════════════════════ */
-    .scroll-progress{
-      position:fixed;top:var(--nav-h);left:0;height:2px;z-index:99;
-      background:linear-gradient(90deg,var(--cyan),var(--purple),var(--pink));
-      width:0;transition:width .1s;
-    }
+    .scroll-progress{position:fixed;top:var(--nav-h);left:0;height:2px;z-index:99;background:linear-gradient(90deg,var(--cyan),var(--purple),var(--pink));width:0;transition:width .1s}
 
-    /* ══════════════════════════════════════
-       FOOTER
-    ══════════════════════════════════════ */
-    .footer{
-      text-align:center;padding:40px 24px 48px;
-      border-top:1px solid var(--border);
-      margin-top:60px;
-    }
+    .footer{text-align:center;padding:40px 24px 48px;border-top:1px solid var(--border);margin-top:60px}
     .footer p{color:var(--text-3);font-size:.84rem}
-    .footer .brand{
-      font-size:1.2rem;font-weight:800;margin-bottom:8px;
-      background:linear-gradient(135deg,var(--cyan),var(--purple));
-      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-    }
+    .footer .brand{font-size:1.2rem;font-weight:800;margin-bottom:8px;background:linear-gradient(135deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
     .footer-tags{display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap}
 
-    /* ══════════════════════════════════════
-       BACK TO TOP
-    ══════════════════════════════════════ */
-    .back-top{
-      position:fixed;bottom:28px;right:28px;z-index:90;
-      width:44px;height:44px;border-radius:50%;
-      background:linear-gradient(135deg,var(--cyan),var(--purple));
-      display:flex;align-items:center;justify-content:center;
-      color:#000;font-size:1.1rem;font-weight:900;
-      cursor:pointer;border:none;
-      opacity:0;transform:translateY(16px);
-      transition:all .3s;
-      box-shadow:0 0 24px rgba(0,229,255,.25);
-    }
+    .back-top{position:fixed;bottom:28px;right:28px;z-index:90;width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--cyan),var(--purple));display:flex;align-items:center;justify-content:center;color:#000;font-size:1.1rem;font-weight:900;cursor:pointer;border:none;opacity:0;transform:translateY(16px);transition:all .3s;box-shadow:0 0 24px rgba(0,229,255,.25)}
     .back-top.show{opacity:1;transform:translateY(0)}
     .back-top:hover{transform:scale(1.1);box-shadow:0 0 40px rgba(0,229,255,.4)}
 
-    /* ══════════════════════════════════════
-       ANIMATIONS (Intersection Observer)
-    ══════════════════════════════════════ */
-    .reveal{
-      opacity:0;transform:translateY(28px);
-      transition:opacity .7s ease,transform .7s ease;
-    }
+    .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
     .reveal.visible{opacity:1;transform:translateY(0)}
-    .reveal-delay-1{transition-delay:.1s}
-    .reveal-delay-2{transition-delay:.2s}
-    .reveal-delay-3{transition-delay:.3s}
   </style>
 </head>
 <body>
 
-<!-- ══════════ BACKGROUND ══════════ -->
 <div class="bg-wrap">
   <div class="bg-orb"></div><div class="bg-orb"></div>
   <div class="bg-orb"></div><div class="bg-orb"></div>
 </div>
 <div class="bg-grid"></div>
-
-<!-- ══════════ SCROLL PROGRESS ══════════ -->
 <div class="scroll-progress" id="scrollProgress"></div>
 
-<!-- ══════════ NAVBAR ══════════ -->
 <nav class="nav" id="navbar">
   <div class="nav-logo">
     <svg viewBox="0 0 120 120" fill="none">
@@ -577,18 +213,16 @@
     <a class="nav-link" href="#features">Features</a>
     <a class="nav-link" href="#providers">AI Providers</a>
     <a class="nav-link" href="#troubleshoot">Help</a>
-    <a class="nav-cta" href="https://github.com/SudhirDevOps1/Ai-assistant-pika" target="_blank">⭐ GitHub</a>
+    <a class="nav-cta" href="https://github.com/SudhirDevOps1/Ai-assistant-pika" target="_blank">GitHub</a>
   </div>
-  <button class="nav-mobile-btn" onclick="document.getElementById('navLinks').classList.toggle('open')">☰</button>
+  <button class="nav-mobile-btn" onclick="document.getElementById('navLinks').classList.toggle('open')">&#9776;</button>
 </nav>
 
-<!-- ══════════ PAGE WRAP ══════════ -->
 <div class="page-wrap">
 
-  <!-- ──────── SIDEBAR ──────── -->
   <aside class="sidebar">
     <div class="sidebar-title">Guide Contents</div>
-    <a class="sidebar-link active" href="#hero"><span class="s-num">✦</span> Overview</a>
+    <a class="sidebar-link active" href="#hero"><span class="s-num">&#10022;</span> Overview</a>
     <a class="sidebar-link" href="#requirements"><span class="s-num">1</span> Requirements</a>
     <a class="sidebar-link" href="#setup"><span class="s-num">2</span> Setup</a>
     <a class="sidebar-link" href="#pc-bridge"><span class="s-num">3</span> PC Bridge</a>
@@ -602,54 +236,52 @@
     <a class="sidebar-link" href="#troubleshoot"><span class="s-num">11</span> Troubleshoot</a>
   </aside>
 
-  <!-- ──────── MAIN CONTENT ──────── -->
   <main class="main">
 
-    <!-- ═══════ HERO ═══════ -->
+    <!-- HERO -->
     <section class="hero" id="hero">
       <div class="hero-badge"><span class="pulse"></span> v0.2.0 — Stable Release</div>
-      <div class="hero-icon">🎙️</div>
+      <div class="hero-icon">&#127908;</div>
       <h1>Pika AI Desktop Assistant</h1>
       <p class="subtitle">Complete Setup & Usage Guide — Hindi/English Voice Assistant jo aapke PC ko AI se control karega. Chat, Voice Commands, PC Control sab ek jagah.</p>
       <div class="hero-tags">
-        <span class="tag tag-cyan">⚡ Next.js 15</span>
-        <span class="tag tag-purple">⚛️ React 19</span>
-        <span class="tag tag-green">🐍 Python WebSocket</span>
-        <span class="tag tag-orange">🤖 4 AI Providers</span>
-        <span class="tag tag-pink">🎤 Voice Control</span>
+        <span class="tag tag-cyan">Next.js 15</span>
+        <span class="tag tag-purple">React 19</span>
+        <span class="tag tag-green">Python WebSocket</span>
+        <span class="tag tag-orange">4 AI Providers</span>
+        <span class="tag tag-pink">Voice Control</span>
       </div>
     </section>
 
-    <!-- ═══════ ARCHITECTURE ═══════ -->
+    <!-- ARCHITECTURE -->
     <div class="arch-diagram reveal">
       <div class="arch-box" style="background:rgba(0,229,255,.06);border-color:rgba(0,229,255,.2);color:var(--cyan)">
-        🖥️ Web UI<br><small style="color:var(--text-3)">Next.js + React</small>
+        Web UI<br><small style="color:var(--text-3)">Next.js + React</small>
       </div>
-      <span class="arch-arrow">⟶</span>
+      <span class="arch-arrow">&#10230;</span>
       <div class="arch-box" style="background:rgba(168,85,247,.06);border-color:rgba(168,85,247,.2);color:var(--purple)">
-        🤖 AI Engine<br><small style="color:var(--text-3)">Groq / Gemini / Mistral</small>
+        AI Engine<br><small style="color:var(--text-3)">Groq / Gemini / Mistral</small>
       </div>
-      <span class="arch-arrow">⟶</span>
+      <span class="arch-arrow">&#10230;</span>
       <div class="arch-box" style="background:rgba(74,222,128,.06);border-color:rgba(74,222,128,.2);color:var(--green)">
-        🔌 PC Bridge<br><small style="color:var(--text-3)">Python WebSocket</small>
+        PC Bridge<br><small style="color:var(--text-3)">Python WebSocket</small>
       </div>
-      <span class="arch-arrow">⟶</span>
+      <span class="arch-arrow">&#10230;</span>
       <div class="arch-box" style="background:rgba(251,146,60,.06);border-color:rgba(251,146,60,.2);color:var(--orange)">
-        💻 PC Actions<br><small style="color:var(--text-3)">Volume, Apps, Files…</small>
+        PC Actions<br><small style="color:var(--text-3)">Volume, Apps, Files...</small>
       </div>
     </div>
 
     <div class="divider"></div>
 
-    <!-- ═══════ 1. REQUIREMENTS ═══════ -->
+    <!-- 1. REQUIREMENTS -->
     <section class="section reveal" id="requirements">
       <div class="section-head">
-        <div class="section-icon" style="background:linear-gradient(135deg,var(--cyan),var(--blue))">📦</div>
+        <div class="section-icon" style="background:linear-gradient(135deg,var(--cyan),var(--blue))">&#128230;</div>
         <h2 class="section-title">1. Requirements — Kya Chahiye</h2>
       </div>
-
       <div class="card">
-        <h3>💻 Software Requirements</h3>
+        <h3>Software Requirements</h3>
         <ul>
           <li><strong>Node.js v18+</strong> — JavaScript runtime (check: <code>node -v</code>)</li>
           <li><strong>Python 3.10+</strong> — PC Bridge ke liye (check: <code>python --version</code>)</li>
@@ -658,44 +290,48 @@
           <li><strong>Modern Browser</strong> — Chrome / Edge / Firefox (koi bhi)</li>
         </ul>
       </div>
-
       <div class="card">
-        <h3>🔑 API Keys — Koi EK chahiye</h3>
+        <h3>API Keys — Koi EK chahiye</h3>
         <ul>
-          <li><strong>Groq</strong> — Free, sabse fast ⚡ → <a href="https://console.groq.com" target="_blank">console.groq.com</a></li>
-          <li><strong>Google Gemini</strong> — Free tier available → <a href="https://aistudio.google.com" target="_blank">aistudio.google.com</a></li>
-          <li><strong>Mistral</strong> — Free tier → <a href="https://console.mistral.ai" target="_blank">console.mistral.ai</a></li>
-          <li><strong>Cerebras</strong> — Free, ultra fast → <a href="https://cloud.cerebras.ai" target="_blank">cloud.cerebras.ai</a></li>
+          <li><strong>Groq</strong> — Free, sabse fast &#9889; &#8594; <a href="https://console.groq.com" target="_blank">console.groq.com</a></li>
+          <li><strong>Google Gemini</strong> — Free tier available &#8594; <a href="https://aistudio.google.com" target="_blank">aistudio.google.com</a></li>
+          <li><strong>Mistral</strong> — Free tier &#8594; <a href="https://console.mistral.ai" target="_blank">console.mistral.ai</a></li>
+          <li><strong>Cerebras</strong> — Free, ultra fast &#8594; <a href="https://cloud.cerebras.ai" target="_blank">cloud.cerebras.ai</a></li>
         </ul>
       </div>
-
       <div class="alert alert-info">
-        <span class="alert-icon">💡</span>
+        <span class="alert-icon">&#128161;</span>
         <span class="alert-text"><strong>Beginner?</strong> Groq use karo — free hai, fast hai, aur sign-up mein sirf 1 minute lagega. Google account se directly login ho jaata hai.</span>
       </div>
     </section>
 
     <div class="divider"></div>
 
-    <!-- ═══════ 2. SETUP ═══════ -->
+    <!-- 2. SETUP -->
     <section class="section reveal" id="setup">
       <div class="section-head">
-        <div class="section-icon" style="background:linear-gradient(135deg,var(--green),var(--cyan))">🚀</div>
+        <div class="section-icon" style="background:linear-gradient(135deg,var(--green),var(--cyan))">&#128640;</div>
         <h2 class="section-title">2. Setup — Install Kaise Karein</h2>
+      </div>
+
+      <div class="alert alert-info">
+        <span class="alert-icon">&#128218;</span>
+        <span class="alert-text"><strong>One-Click Start:</strong> Sirf <code>start.bat</code> file double-click karo — frontend aur backend dono ek saath start ho jaayenge! Neeche manual steps bhi hain.</span>
       </div>
 
       <div class="steps">
         <div class="step">
           <div class="step-num">1</div>
           <div class="step-body">
-            <h4>Terminal kholein aur project folder mein jaayein</h4>
+            <h4>Repository clone karo ya download karo</h4>
             <div class="code-wrap">
               <div class="code-header">
                 <div class="code-dots"><span></span><span></span><span></span></div>
                 <span class="code-label">Terminal</span>
                 <button class="code-copy" onclick="copyCode(this)">Copy</button>
               </div>
-              <div class="code-block"><span class="cmd">cd</span> E:\tmp\0606\AI\AI</div>
+              <div class="code-block"><span class="cmd">git clone</span> https://github.com/SudhirDevOps1/Ai-assistant-pika.git
+<span class="cmd">cd</span> Ai-assistant-pika</div>
             </div>
           </div>
         </div>
@@ -726,7 +362,8 @@
                 <span class="code-label">npm</span>
                 <button class="code-copy" onclick="copyCode(this)">Copy</button>
               </div>
-              <div class="code-block"><span class="cmd">npm run dev</span></div>
+              <div class="code-block"><span class="cmd">npm run dev</span>
+<span class="cm"># Ya seedha start.bat double-click karo (Windows)</span></div>
             </div>
           </div>
         </div>
@@ -743,47 +380,47 @@
               </div>
               <div class="code-block"><span class="url">http://localhost:3000</span></div>
             </div>
-            <p style="margin-top:8px">Boom! 🎉 Pika AI Assistant open ho jaayega</p>
+            <p style="margin-top:8px">Boom! Pika AI Assistant open ho jaayega</p>
           </div>
         </div>
       </div>
 
       <div class="alert alert-info">
-        <span class="alert-icon">📱</span>
-        <span class="alert-text"><strong>Phone se bhi access karo!</strong> Same WiFi pe hona chahiye — phone browser mein <code>http://YOUR_PC_IP:3000</code> type karo. IP check karo: <code>ipconfig</code> command se.</span>
+        <span class="alert-icon">&#128241;</span>
+        <span class="alert-text"><strong>Phone se bhi access karo!</strong> Same WiFi pe hona chahiye — phone browser mein <code>http://YOUR_PC_IP:3000</code> type karo. Apna PC IP check karo: <code>ipconfig</code> (Windows) ya <code>ifconfig</code> (Mac/Linux) command se.</span>
       </div>
     </section>
 
     <div class="divider"></div>
 
-    <!-- ═══════ 3. PC BRIDGE ═══════ -->
+    <!-- 3. PC BRIDGE -->
     <section class="section reveal" id="pc-bridge">
       <div class="section-head">
-        <div class="section-icon" style="background:linear-gradient(135deg,#10b981,#34d399)">🔌</div>
+        <div class="section-icon" style="background:linear-gradient(135deg,#10b981,#34d399)">&#128268;</div>
         <h2 class="section-title">3. PC Bridge — Python Server</h2>
       </div>
 
       <div class="alert alert-warn">
-        <span class="alert-icon">⚠️</span>
+        <span class="alert-icon">&#9888;&#65039;</span>
         <span class="alert-text"><strong>Zaroori:</strong> PC Bridge sirf <strong>PC Control</strong> features ke liye chahiye (volume, apps, shutdown etc.). Agar sirf AI chat use karna hai toh iske bina bhi chalega!</span>
       </div>
 
       <div class="card">
-        <h3>🐍 PC Bridge kya hai?</h3>
-        <p>Yeh ek Python WebSocket server hai jo tumhare PC pe run hota hai. Web UI isse connect hokar commands bhejta hai — "volume up karo", "Chrome kholo", "PC shutdown karo" etc.</p>
+        <h3>PC Bridge kya hai?</h3>
+        <p>Yeh ek Python WebSocket server hai jo tumhare PC pe run hota hai. Web UI isse connect hokar commands bhejta hai — "volume up karo", "Chrome kholo", "PC shutdown karo" etc. Ya phir <code>start.bat</code> se sab ek saath start ho jaata hai.</p>
       </div>
 
       <div class="arch-diagram" style="margin:20px 0">
         <div class="arch-box" style="background:rgba(0,229,255,.06);border-color:rgba(0,229,255,.2);color:var(--cyan);font-size:.78rem">
-          🌐 Web UI<br><code style="font-size:.7rem;color:var(--text-3)">localhost:3000</code>
+          Web UI<br><code style="font-size:.7rem;color:var(--text-3)">localhost:3000</code>
         </div>
-        <span class="arch-arrow" style="font-size:1.1rem">──WebSocket──</span>
+        <span class="arch-arrow" style="font-size:1.1rem">—WebSocket—</span>
         <div class="arch-box" style="background:rgba(74,222,128,.06);border-color:rgba(74,222,128,.2);color:var(--green);font-size:.78rem">
-          🐍 Python Bridge<br><code style="font-size:.7rem;color:var(--text-3)">localhost:8765</code>
+          Python Bridge<br><code style="font-size:.7rem;color:var(--text-3)">localhost:8765</code>
         </div>
-        <span class="arch-arrow" style="font-size:1.1rem">──►</span>
+        <span class="arch-arrow" style="font-size:1.1rem">&#10132;</span>
         <div class="arch-box" style="background:rgba(251,146,60,.06);border-color:rgba(251,146,60,.2);color:var(--orange);font-size:.78rem">
-          💻 PC Actions
+          PC Actions
         </div>
       </div>
 
@@ -792,7 +429,7 @@
           <div class="step-num">1</div>
           <div class="step-body">
             <h4>Nayi Terminal kholo (pehli wali band mat karna!)</h4>
-            <p>Ek terminal mein web server chalega, doosri mein Python bridge — dono saath mein chalenge.</p>
+            <p>Ek terminal mein web server chalega, doosri mein Python bridge — dono saath mein chalenge. Ya phir <code>start.bat</code> se dono ek saath start karo.</p>
           </div>
         </div>
 
@@ -806,7 +443,7 @@
                 <span class="code-label">Terminal 2</span>
                 <button class="code-copy" onclick="copyCode(this)">Copy</button>
               </div>
-              <div class="code-block"><span class="cmd">cd</span> E:\tmp\0606\AI\AI\pc-bridge</div>
+              <div class="code-block"><span class="cmd">cd</span> pc-bridge</div>
             </div>
           </div>
         </div>
@@ -839,13 +476,13 @@
               </div>
               <div class="code-block"><span class="cmd">python pc_bridge.py</span>
 
-<span class="hl">✅ Output:</span>
-┌──────────────────────────────────────────────┐
-│  PC Bridge — WebSocket Server                │
-│  Server running on: <span class="url">ws://0.0.0.0:8765</span>       │
-│  Local access:      <span class="url">ws://localhost:8765</span>      │
-│  Your LAN IP:       <span class="url">ws://192.168.x.x:8765</span>   │
-└──────────────────────────────────────────────┘</div>
+<span class="hl">Output aayega:</span>
++------------------------------------------------------+
+|  PC Bridge — WebSocket Server                        |
+|  Server running on: <span class="url">ws://0.0.0.0:8765</span>               |
+|  Local access:      <span class="url">ws://localhost:8765</span>              |
+|  Your LAN IP:       <span class="url">ws://YOUR_LAN_IP:8765</span>           |
++------------------------------------------------------+</div>
             </div>
           </div>
         </div>
@@ -854,7 +491,7 @@
           <div class="step-num">5</div>
           <div class="step-body">
             <h4>Web UI mein Settings karo</h4>
-            <p>Browser → <code>http://localhost:3000</code> → Sidebar → ⚙️ <strong>Settings</strong> → <strong>"PC Bridge (WebSocket)"</strong> section mein:</p>
+            <p>Browser &#8594; <code>http://localhost:3000</code> &#8594; Sidebar &#8594; Settings &#8594; <strong>"PC Bridge (WebSocket)"</strong> section mein:</p>
             <div class="code-wrap">
               <div class="code-header">
                 <div class="code-dots"><span></span><span></span><span></span></div>
@@ -863,28 +500,28 @@
               </div>
               <div class="code-block"><span class="url">ws://localhost:8765</span></div>
             </div>
-            <p style="margin-top:8px">Paste karo → <strong>Save Settings</strong> dabao!</p>
+            <p style="margin-top:8px">Paste karo &#8594; <strong>Save Settings</strong> dabao!</p>
           </div>
         </div>
       </div>
 
       <div class="alert alert-success">
-        <span class="alert-icon">✅</span>
-        <span class="alert-text"><strong>Done!</strong> Ab sidebar mein 💻 <strong>PC Control</strong> tab pe jaao — connected dikhega aur saare controls kaam karenge!</span>
+        <span class="alert-icon">&#9989;</span>
+        <span class="alert-text"><strong>Done!</strong> Ab sidebar mein <strong>PC Control</strong> tab pe jaao — connected dikhega aur saare controls kaam karenge!</span>
       </div>
     </section>
 
     <div class="divider"></div>
 
-    <!-- ═══════ 4. SETTINGS ═══════ -->
+    <!-- 4. SETTINGS -->
     <section class="section reveal" id="settings">
       <div class="section-head">
-        <div class="section-icon" style="background:linear-gradient(135deg,var(--purple),var(--pink))">⚙️</div>
+        <div class="section-icon" style="background:linear-gradient(135deg,var(--purple),var(--pink))">&#9881;&#65039;</div>
         <h2 class="section-title">4. Settings — Configure Karna</h2>
       </div>
 
       <div class="card">
-        <h3>⚡ Provider & Model</h3>
+        <h3>Provider & Model</h3>
         <p>Settings mein sabse pehle AI provider choose karo:</p>
         <ul>
           <li><strong>Groq</strong> (Default) — Sabse fast, free, beginners ke liye best</li>
@@ -896,35 +533,35 @@
       </div>
 
       <div class="card">
-        <h3>🔑 API Keys Setup</h3>
+        <h3>API Keys Setup</h3>
         <div class="steps" style="margin:12px 0 0">
           <div class="step" style="padding:14px 18px">
             <div class="step-num" style="width:32px;height:32px;font-size:.82rem">1</div>
             <div class="step-body">
-              <p><a href="https://console.groq.com" target="_blank">console.groq.com</a> pe jaao → Google se sign up → API Keys → <strong>"Create API Key"</strong> → Copy</p>
+              <p><a href="https://console.groq.com" target="_blank">console.groq.com</a> pe jaao &#8594; Google se sign up &#8594; API Keys &#8594; <strong>"Create API Key"</strong> &#8594; Copy</p>
             </div>
           </div>
           <div class="step" style="padding:14px 18px">
             <div class="step-num" style="width:32px;height:32px;font-size:.82rem">2</div>
             <div class="step-body">
-              <p>Web UI → ⚙️ Settings → <strong>Groq API Key</strong> field mein paste → <strong>Save Settings</strong> ✅</p>
+              <p>Web UI &#8594; Settings &#8594; <strong>Groq API Key</strong> field mein paste &#8594; <strong>Save Settings</strong></p>
             </div>
           </div>
         </div>
       </div>
 
       <div class="card">
-        <h3>🔊 Voice & Other Settings</h3>
+        <h3>Voice & Other Settings</h3>
         <ul>
           <li><strong>TTS Voice</strong> — Text-to-Speech voice select karo (default: en-US-Neural2-A)</li>
           <li><strong>Wake Word</strong> — Voice activate word (default: "Hey Assistant")</li>
           <li><strong>Conversation History Limit</strong> — Kitni messages yaad rakhe (default: 50)</li>
-          <li><strong>Auto-fallback</strong> — Provider fail ho toh automatically switch kare ✅</li>
+          <li><strong>Auto-fallback</strong> — Provider fail ho toh automatically switch kare</li>
         </ul>
       </div>
 
       <div class="card">
-        <h3>🔌 PC Bridge URL</h3>
+        <h3>PC Bridge URL</h3>
         <div class="code-wrap">
           <div class="code-header">
             <div class="code-dots"><span></span><span></span><span></span></div>
@@ -935,34 +572,34 @@
 <span class="url">ws://localhost:8765</span>
 
 <span class="cm"># Doosre PC pe hai toh (uska IP daalo):</span>
-<span class="url">ws://192.168.1.100:8765</span></div>
+<span class="url">ws://YOUR_PC_IP:8765</span></div>
         </div>
       </div>
     </section>
 
     <div class="divider"></div>
 
-    <!-- ═══════ 5. CHAT ═══════ -->
+    <!-- 5. CHAT -->
     <section class="section reveal" id="chat">
       <div class="section-head">
-        <div class="section-icon" style="background:linear-gradient(135deg,var(--blue),var(--cyan))">💬</div>
+        <div class="section-icon" style="background:linear-gradient(135deg,var(--blue),var(--cyan))">&#128172;</div>
         <h2 class="section-title">5. Chat — AI Se Baat Karna</h2>
       </div>
 
       <div class="card">
-        <h3>📝 Kaise use karein?</h3>
+        <h3>Kaise use karein?</h3>
         <ul>
-          <li>Sidebar mein <strong>💬 Chat</strong> tab select karo (default hota hai)</li>
+          <li>Sidebar mein <strong>Chat</strong> tab select karo (default hota hai)</li>
           <li>Neeche input box mein question type karo</li>
           <li><strong>Enter</strong> dabao ya <strong>Send</strong> button click karo</li>
           <li>AI reply karega — <strong>Hindi mein bhi puch sakte ho!</strong></li>
-          <li>🗑️ Clear chat — top-right delete icon</li>
-          <li>🌙/☀️ Dark/Light mode toggle — top-right</li>
+          <li>Clear chat — top-right delete icon</li>
+          <li>Dark/Light mode toggle — top-right</li>
         </ul>
       </div>
 
       <div class="card">
-        <h3>💡 Example Questions Try Karo</h3>
+        <h3>Example Questions Try Karo</h3>
         <ul>
           <li>"Python mein fibonacci series ka code likh do"</li>
           <li>"React hooks kya hote hain? Simple mein samjhao"</li>
@@ -974,22 +611,22 @@
       </div>
 
       <div class="alert alert-info">
-        <span class="alert-icon">📊</span>
+        <span class="alert-icon">&#128202;</span>
         <span class="alert-text"><strong>Header mein status dikhta hai:</strong> Idle / Listening / Thinking / Speaking — aur kaunsa provider+model active hai.</span>
       </div>
     </section>
 
     <div class="divider"></div>
 
-    <!-- ═══════ 6. PC CONTROL ═══════ -->
+    <!-- 6. PC CONTROL -->
     <section class="section reveal" id="features">
       <div class="section-head">
-        <div class="section-icon" style="background:linear-gradient(135deg,#10b981,#059669)">💻</div>
+        <div class="section-icon" style="background:linear-gradient(135deg,#10b981,#059669)">&#128187;</div>
         <h2 class="section-title">6. PC Control — Complete Guide</h2>
       </div>
 
       <div class="alert alert-warn">
-        <span class="alert-icon">⚠️</span>
+        <span class="alert-icon">&#9888;&#65039;</span>
         <span class="alert-text"><strong>Pre-requisite:</strong> PC Bridge Python server chalana zaroori hai (Section 3). Bina uske yeh panel kaam nahi karega.</span>
       </div>
 
@@ -997,67 +634,67 @@
 
       <div class="feat-grid">
         <div class="feat-card">
-          <h4>⚡ System Commands</h4>
+          <h4>System Commands</h4>
           <p><strong>Shutdown</strong> — PC band (5s delay)<br><strong>Restart</strong> — PC restart<br><strong>Sleep</strong> — Neend mode<br><strong>Lock</strong> — Screen lock<br><strong>Log Off</strong> — Sign out</p>
         </div>
         <div class="feat-card">
-          <h4>🔊 Volume Control</h4>
+          <h4>Volume Control</h4>
           <p><strong>Up/Down</strong> — 10% change<br><strong>Mute/Unmute</strong> — Toggle<br><strong>Set Level</strong> — Specific % pe set karo</p>
         </div>
         <div class="feat-card">
-          <h4>🎵 Media Controls</h4>
+          <h4>Media Controls</h4>
           <p><strong>Play/Pause</strong> — Toggle<br><strong>Next/Previous</strong> — Track change<br>Spotify, YouTube, VLC — sab supported</p>
         </div>
         <div class="feat-card">
-          <h4>📱 App Launcher</h4>
-          <p><strong>25+ Apps:</strong> Chrome, Notepad, Calculator, VS Code, Spotify, Word, Excel…<br><strong>Close</strong> koi bhi running app</p>
+          <h4>App Launcher</h4>
+          <p><strong>25+ Apps:</strong> Chrome, Notepad, Calculator, VS Code, Spotify, Word, Excel...<br><strong>Close</strong> koi bhi running app</p>
         </div>
         <div class="feat-card">
-          <h4>🌐 URL & Web</h4>
+          <h4>URL & Web</h4>
           <p>Koi bhi URL browser mein kholo directly — YouTube, GitHub, Google. Bina browser switch kiye!</p>
         </div>
         <div class="feat-card">
-          <h4>🪟 Window Management</h4>
+          <h4>Window Management</h4>
           <p><strong>Minimize/Maximize</strong><br><strong>Close</strong> (Alt+F4)<br><strong>Switch</strong> (Alt+Tab)<br><strong>Show Desktop</strong> (Win+D)</p>
         </div>
         <div class="feat-card">
-          <h4>📊 System Info</h4>
+          <h4>System Info</h4>
           <p>Real-time: <strong>Battery</strong>, <strong>CPU</strong>, <strong>RAM</strong>, <strong>Disk</strong>, IP, Uptime, Running Processes</p>
         </div>
         <div class="feat-card">
-          <h4>📋 Clipboard</h4>
+          <h4>Clipboard</h4>
           <p><strong>Get</strong> — Current content dekho<br><strong>Set</strong> — Text copy karo<br><strong>Paste</strong> — Auto paste (Ctrl+V)</p>
         </div>
         <div class="feat-card">
-          <h4>📁 File Manager</h4>
+          <h4>File Manager</h4>
           <p><strong>Create</strong> — Nayi file<br><strong>Delete</strong> — File/folder<br><strong>List</strong> — Directory contents</p>
         </div>
         <div class="feat-card">
-          <h4>📸 Screenshot</h4>
+          <h4>Screenshot</h4>
           <p>Ek click mein screenshot! Desktop pe save hota hai aur thumbnail preview bhi dikhata hai.</p>
         </div>
         <div class="feat-card">
-          <h4>⏰ Reminders</h4>
+          <h4>Reminders</h4>
           <p>Timer set karo — "5 min baad yaad dilao". Desktop notification aayega automatically!</p>
         </div>
         <div class="feat-card">
-          <h4>🔔 Notifications</h4>
+          <h4>Notifications</h4>
           <p>Custom Windows desktop notifications bhejo — title aur message ke saath.</p>
         </div>
         <div class="feat-card">
-          <h4>⌨️ Keyboard Shortcuts</h4>
+          <h4>Keyboard Shortcuts</h4>
           <p>Koi bhi hotkey remotely: <strong>Ctrl+C</strong>, <strong>Ctrl+V</strong>, <strong>Win+E</strong>, <strong>Alt+Tab</strong>, etc.</p>
         </div>
         <div class="feat-card">
-          <h4>🔆 Brightness</h4>
+          <h4>Brightness</h4>
           <p>Screen brightness control — set level ya current dekho (laptops pe best kaam karta hai)</p>
         </div>
         <div class="feat-card">
-          <h4>📶 WiFi Control</h4>
+          <h4>WiFi Control</h4>
           <p><strong>List</strong> — Available networks<br><strong>Connect/Disconnect</strong> — WiFi switch karo</p>
         </div>
         <div class="feat-card">
-          <h4>🔍 Web Search</h4>
+          <h4>Web Search</h4>
           <p>Google, Bing, YouTube, GitHub, StackOverflow, Wikipedia — sab pe search karo</p>
         </div>
       </div>
@@ -1065,44 +702,41 @@
 
     <div class="divider"></div>
 
-    <!-- ═══════ 7. REMINDERS ═══════ -->
+    <!-- 7. REMINDERS -->
     <section class="section reveal" id="reminders">
       <div class="section-head">
-        <div class="section-icon" style="background:linear-gradient(135deg,var(--yellow),var(--orange))">⏰</div>
+        <div class="section-icon" style="background:linear-gradient(135deg,var(--yellow),var(--orange))">&#9200;</div>
         <h2 class="section-title">7. Reminders — Yaad-Dehani</h2>
       </div>
-
       <div class="card">
-        <h3>📝 Kaise Set Karein?</h3>
+        <h3>Kaise Set Karein?</h3>
         <ul>
-          <li>Sidebar mein <strong>🔔 Reminders</strong> tab click karo</li>
+          <li>Sidebar mein <strong>Reminders</strong> tab click karo</li>
           <li>Text likho — kya yaad dilana hai</li>
           <li>Time set karo (minutes/hours)</li>
           <li><strong>Add Reminder</strong> button click karo</li>
-          <li>⏰ Time hone pe desktop notification aayega!</li>
+          <li>Time hone pe desktop notification aayega!</li>
           <li>Active reminders list mein dikhengi — cancel bhi kar sakte ho</li>
         </ul>
       </div>
-
       <div class="alert alert-info">
-        <span class="alert-icon">💡</span>
+        <span class="alert-icon">&#128161;</span>
         <span class="alert-text"><strong>Pro Tip:</strong> Chat mein bhi reminder set kar sakte ho — "Mujhe 10 minute baad yaad dilana ki chai banana hai" type karo!</span>
       </div>
     </section>
 
     <div class="divider"></div>
 
-    <!-- ═══════ 8. CLIPBOARD ═══════ -->
+    <!-- 8. CLIPBOARD -->
     <section class="section reveal" id="clipboard">
       <div class="section-head">
-        <div class="section-icon" style="background:linear-gradient(135deg,#f472b6,var(--purple))">📋</div>
+        <div class="section-icon" style="background:linear-gradient(135deg,#f472b6,var(--purple))">&#128203;</div>
         <h2 class="section-title">8. Clipboard — Copy History</h2>
       </div>
-
       <div class="card">
-        <h3>📝 Kaise Use Karein?</h3>
+        <h3>Kaise Use Karein?</h3>
         <ul>
-          <li>Sidebar mein <strong>📋 Clipboard</strong> tab click karo</li>
+          <li>Sidebar mein <strong>Clipboard</strong> tab click karo</li>
           <li>Saari copied items ki history dikhegi (last 50 items)</li>
           <li>Kisi bhi item pe click karke wapas use karo</li>
           <li>Individual items delete karo ya poora clear karo</li>
@@ -1113,137 +747,127 @@
 
     <div class="divider"></div>
 
-    <!-- ═══════ 9. SYSTEM MONITOR ═══════ -->
+    <!-- 9. SYSTEM MONITOR -->
     <section class="section reveal" id="monitor">
       <div class="section-head">
-        <div class="section-icon" style="background:linear-gradient(135deg,var(--green),var(--cyan))">📊</div>
+        <div class="section-icon" style="background:linear-gradient(135deg,var(--green),var(--cyan))">&#128202;</div>
         <h2 class="section-title">9. System Monitor — PC Health</h2>
       </div>
-
       <div class="feat-grid" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr))">
         <div class="feat-card" style="text-align:center">
-          <div style="font-size:2rem;margin-bottom:8px">🖥️</div>
+          <div style="font-size:2rem;margin-bottom:8px">&#128421;</div>
           <h4 style="justify-content:center">CPU Usage</h4>
           <p>Processor kitna busy hai (%)</p>
         </div>
         <div class="feat-card" style="text-align:center">
-          <div style="font-size:2rem;margin-bottom:8px">🧠</div>
+          <div style="font-size:2rem;margin-bottom:8px">&#129504;</div>
           <h4 style="justify-content:center">RAM Usage</h4>
           <p>Memory — GB & percentage</p>
         </div>
         <div class="feat-card" style="text-align:center">
-          <div style="font-size:2rem;margin-bottom:8px">💾</div>
+          <div style="font-size:2rem;margin-bottom:8px">&#128190;</div>
           <h4 style="justify-content:center">Disk Space</h4>
           <p>Hard disk kitni bhari hai</p>
         </div>
         <div class="feat-card" style="text-align:center">
-          <div style="font-size:2rem;margin-bottom:8px">🔋</div>
+          <div style="font-size:2rem;margin-bottom:8px">&#128267;</div>
           <h4 style="justify-content:center">Battery</h4>
           <p>% aur charging status</p>
         </div>
         <div class="feat-card" style="text-align:center">
-          <div style="font-size:2rem;margin-bottom:8px">🌐</div>
+          <div style="font-size:2rem;margin-bottom:8px">&#127760;</div>
           <h4 style="justify-content:center">Network</h4>
           <p>IP address & hostname</p>
         </div>
         <div class="feat-card" style="text-align:center">
-          <div style="font-size:2rem;margin-bottom:8px">📋</div>
+          <div style="font-size:2rem;margin-bottom:8px">&#128203;</div>
           <h4 style="justify-content:center">OS Info</h4>
           <p>Windows version, uptime</p>
         </div>
       </div>
-
       <div class="alert alert-success">
-        <span class="alert-icon">🔄</span>
+        <span class="alert-icon">&#128260;</span>
         <span class="alert-text"><strong>Auto-refresh:</strong> Data real-time update hota hai — manually refresh karne ki zaroorat nahi!</span>
       </div>
     </section>
 
     <div class="divider"></div>
 
-    <!-- ═══════ 10. AI PROVIDERS ═══════ -->
+    <!-- 10. AI PROVIDERS -->
     <section class="section reveal" id="providers">
       <div class="section-head">
-        <div class="section-icon" style="background:linear-gradient(135deg,var(--orange),var(--red))">🤖</div>
+        <div class="section-icon" style="background:linear-gradient(135deg,var(--orange),var(--red))">&#129302;</div>
         <h2 class="section-title">10. AI Providers — Comparison</h2>
       </div>
-
       <div class="table-wrap">
         <table>
           <thead>
-            <tr>
-              <th>Provider</th>
-              <th>Best Models</th>
-              <th>Speed</th>
-              <th>Free?</th>
-              <th>Best For</th>
-            </tr>
+            <tr><th>Provider</th><th>Best Models</th><th>Speed</th><th>Free?</th><th>Best For</th></tr>
           </thead>
           <tbody>
             <tr>
               <td><strong style="color:var(--orange)">Groq</strong></td>
               <td>Llama 3.3 70B, Llama 4 Scout, DeepSeek R1</td>
-              <td>⚡⚡⚡ Ultra</td>
+              <td>&#9889;&#9889;&#9889; Ultra</td>
               <td><span class="tag tag-green" style="padding:2px 8px;font-size:.68rem">Free</span></td>
               <td>General use, fast replies</td>
             </tr>
             <tr>
               <td><strong style="color:var(--blue)">Gemini</strong></td>
               <td>Gemini 2.0 Flash, 2.5 Flash, 1.5 Pro</td>
-              <td>⚡⚡ Fast</td>
+              <td>&#9889;&#9889; Fast</td>
               <td><span class="tag tag-green" style="padding:2px 8px;font-size:.68rem">Free</span></td>
               <td>Complex reasoning, coding</td>
             </tr>
             <tr>
               <td><strong style="color:var(--green)">Mistral</strong></td>
               <td>Mistral Large, Codestral, Mixtral 8x7B</td>
-              <td>⚡⚡ Fast</td>
+              <td>&#9889;&#9889; Fast</td>
               <td><span class="tag tag-green" style="padding:2px 8px;font-size:.68rem">Free</span></td>
               <td>Coding, multilingual</td>
             </tr>
             <tr>
               <td><strong style="color:var(--purple)">Cerebras</strong></td>
               <td>Llama 4 Scout, Llama 3.3 70B, Qwen 3 32B</td>
-              <td>⚡⚡⚡ Ultra</td>
+              <td>&#9889;&#9889;&#9889; Ultra</td>
               <td><span class="tag tag-green" style="padding:2px 8px;font-size:.68rem">Free</span></td>
               <td>Speed, batch processing</td>
             </tr>
           </tbody>
         </table>
       </div>
-
       <div class="alert alert-success" style="margin-top:16px">
-        <span class="alert-icon">🏆</span>
+        <span class="alert-icon">&#127942;</span>
         <span class="alert-text"><strong>Recommendation:</strong> Beginners ke liye <strong>Groq + Llama 3.3 70B</strong> best hai — free, fast, aur smart! API key banane mein 1 minute lagega.</span>
       </div>
     </section>
 
     <div class="divider"></div>
 
-    <!-- ═══════ 11. TROUBLESHOOTING ═══════ -->
+    <!-- 11. TROUBLESHOOTING -->
     <section class="section reveal" id="troubleshoot">
       <div class="section-head">
-        <div class="section-icon" style="background:linear-gradient(135deg,var(--red),var(--orange))">🔧</div>
+        <div class="section-icon" style="background:linear-gradient(135deg,var(--red),var(--orange))">&#128295;</div>
         <h2 class="section-title">11. Troubleshooting — Fix Problems</h2>
       </div>
 
       <div class="card">
-        <h3>❌ "No API key configured"</h3>
-        <p><strong>Fix:</strong> Settings → API key daalo → Save Settings. Key <a href="https://console.groq.com" target="_blank">console.groq.com</a> se milegi.</p>
+        <h3>"No API key configured"</h3>
+        <p><strong>Fix:</strong> Settings &#8594; API key daalo &#8594; Save Settings. Key <a href="https://console.groq.com" target="_blank">console.groq.com</a> se milegi.</p>
       </div>
 
       <div class="card">
-        <h3>❌ PC Control kaam nahi kar raha</h3>
+        <h3>PC Control kaam nahi kar raha</h3>
         <ul>
-          <li>✅ Python bridge chal raha hai? (<code>python pc_bridge.py</code>)</li>
-          <li>✅ Settings mein <code>ws://localhost:8765</code> daala?</li>
-          <li>✅ Save Settings button dabaya?</li>
-          <li>✅ Firewall allow kiya? (Windows Defender → Allow an app)</li>
+          <li>Python bridge chal raha hai? (<code>python pc_bridge.py</code>)</li>
+          <li>Settings mein <code>ws://localhost:8765</code> daala?</li>
+          <li>Save Settings button dabaya?</li>
+          <li>Firewall allow kiya? (Windows Defender &#8594; Allow an app)</li>
         </ul>
       </div>
 
       <div class="card">
-        <h3>❌ npm run dev error aa raha</h3>
+        <h3>npm run dev error aa raha</h3>
         <div class="code-wrap">
           <div class="code-header">
             <div class="code-dots"><span></span><span></span><span></span></div>
@@ -1258,7 +882,7 @@
       </div>
 
       <div class="card">
-        <h3>❌ Port 3000 already in use</h3>
+        <h3>Port 3000 already in use</h3>
         <div class="code-wrap">
           <div class="code-header">
             <div class="code-dots"><span></span><span></span><span></span></div>
@@ -1271,7 +895,7 @@
       </div>
 
       <div class="card">
-        <h3>❌ Python bridge Unicode error</h3>
+        <h3>Python bridge Unicode error</h3>
         <div class="code-wrap">
           <div class="code-header">
             <div class="code-dots"><span></span><span></span><span></span></div>
@@ -1284,15 +908,15 @@
       </div>
 
       <div class="card">
-        <h3>❌ Volume/Media controls kaam nahi</h3>
+        <h3>Volume/Media controls kaam nahi</h3>
         <p><strong>Fix:</strong> <code>pip install pyautogui</code> — yeh package zaroori hai volume, media, aur keyboard controls ke liye.</p>
       </div>
 
       <div class="card">
-        <h3>❌ Voice recognition kaam nahi kar raha</h3>
+        <h3>Voice recognition kaam nahi kar raha</h3>
         <p><strong>Fix:</strong></p>
         <ul>
-          <li>Browser ko <strong>microphone permission</strong> do (lock icon → Allow)</li>
+          <li>Browser ko <strong>microphone permission</strong> do (lock icon &#8594; Allow)</li>
           <li>Chrome ya Edge use karo (Firefox mein limited support)</li>
           <li>HTTPS ya localhost pe hona chahiye</li>
         </ul>
@@ -1301,46 +925,51 @@
 
     <div class="divider"></div>
 
-    <!-- ═══════ QUICK REFERENCE ═══════ -->
+    <!-- QUICK REFERENCE -->
     <section class="section reveal">
       <div class="section-head">
-        <div class="section-icon" style="background:linear-gradient(135deg,var(--cyan),var(--purple))">📌</div>
+        <div class="section-icon" style="background:linear-gradient(135deg,var(--cyan),var(--purple))">&#128206;</div>
         <h2 class="section-title">Quick Reference — Cheat Sheet</h2>
       </div>
 
       <div class="card" style="background:rgba(0,229,255,.03);border-color:rgba(0,229,255,.12)">
-        <h3>🖥️ Saari Commands Ek Jagah</h3>
+        <h3>Saari Commands Ek Jagah</h3>
         <div class="code-wrap" style="margin:12px 0 0">
           <div class="code-header">
             <div class="code-dots"><span></span><span></span><span></span></div>
             <span class="code-label">Complete Setup</span>
             <button class="code-copy" onclick="copyCode(this)">Copy</button>
           </div>
-          <div class="code-block"><span class="cm"># ═══ Terminal 1: Web Server ═══</span>
-<span class="cmd">cd</span> E:\tmp\0606\AI\AI
+          <div class="code-block"><span class="cm"># ===== Option 1: One Click (Windows) =====</span>
+<span class="cm"># start.bat double-click karo — sab ek saath start!</span>
+
+<span class="cm"># ===== Option 2: Manual (Two Terminals) =====</span>
+
+<span class="cm"># Terminal 1: Web Server</span>
+<span class="cmd">cd</span> Ai-assistant-pika
 <span class="cmd">npm install</span>               <span class="cm"># sirf pehli baar</span>
 <span class="cmd">npm run dev</span>
-<span class="cm"># → http://localhost:3000 open karo</span>
+<span class="cm"># -> http://localhost:3000 open karo</span>
 
-<span class="cm"># ═══ Terminal 2: PC Bridge ═══</span>
-<span class="cmd">cd</span> E:\tmp\0606\AI\AI\pc-bridge
+<span class="cm"># Terminal 2: PC Bridge</span>
+<span class="cmd">cd</span> Ai-assistant-pika/pc-bridge
 <span class="cmd">pip install -r requirements.txt</span>  <span class="cm"># sirf pehli baar</span>
 <span class="cmd">python pc_bridge.py</span>
-<span class="cm"># → ws://localhost:8765 pe server start</span>
+<span class="cm"># -> ws://localhost:8765 pe server start</span>
 
-<span class="cm"># ═══ Web UI Settings ═══</span>
-<span class="cm"># 1. Settings → API Key daalo (Groq recommended)</span>
-<span class="cm"># 2. Settings → PC Bridge URL: ws://localhost:8765</span>
-<span class="cm"># 3. Save Settings ✅</span>
-<span class="cm"># 4. Chat ya PC Control use karo! 🎉</span></div>
+<span class="cm"># ===== Web UI Settings =====</span>
+<span class="cm"># 1. Settings -> API Key daalo (Groq recommended)</span>
+<span class="cm"># 2. Settings -> PC Bridge URL: ws://localhost:8765</span>
+<span class="cm"># 3. Save Settings</span>
+<span class="cm"># 4. Chat ya PC Control use karo!</span></div>
         </div>
       </div>
     </section>
 
-    <!-- ═══════ FOOTER ═══════ -->
+    <!-- FOOTER -->
     <footer class="footer">
-      <p class="brand">🎙️ Pika AI Desktop Assistant</p>
-      <p>Built with ❤️ using Next.js 15 + React 19 + Python WebSocket</p>
+      <p class="brand">Pika AI Desktop Assistant</p>
+      <p>Built with Next.js 15 + React 19 + Python WebSocket</p>
       <div class="footer-tags">
         <span class="tag tag-cyan">v0.2.0</span>
         <span class="tag tag-green">Stable</span>
@@ -1354,12 +983,9 @@
   </main>
 </div>
 
-<!-- ══════════ BACK TO TOP ══════════ -->
-<button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#8593;</button>
 
-<!-- ══════════ JAVASCRIPT ══════════ -->
 <script>
-// ── Scroll Progress Bar ──
 const progressBar = document.getElementById('scrollProgress');
 window.addEventListener('scroll', () => {
   const h = document.documentElement;
@@ -1367,15 +993,13 @@ window.addEventListener('scroll', () => {
   progressBar.style.width = pct + '%';
 });
 
-// ── Back to Top Button ──
 const backBtn = document.getElementById('backTop');
 window.addEventListener('scroll', () => {
   backBtn.classList.toggle('show', window.scrollY > 400);
 });
 
-// ── Active Sidebar Link ──
 const sidebarLinks = document.querySelectorAll('.sidebar-link');
-const navLinks = document.querySelectorAll('.nav-link');
+const navLinkEls = document.querySelectorAll('.nav-link');
 const sections = document.querySelectorAll('.section, .hero');
 
 function updateActiveLink() {
@@ -1387,38 +1011,30 @@ function updateActiveLink() {
   sidebarLinks.forEach(link => {
     link.classList.toggle('active', link.getAttribute('href') === '#' + current);
   });
-  navLinks.forEach(link => {
+  navLinkEls.forEach(link => {
     link.classList.toggle('active', link.getAttribute('href') === '#' + current);
   });
 }
 window.addEventListener('scroll', updateActiveLink);
 
-// ── Reveal on Scroll (Intersection Observer) ──
 const revealEls = document.querySelectorAll('.reveal');
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('visible');
-    }
+    if (entry.isIntersecting) entry.target.classList.add('visible');
   });
 }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
 revealEls.forEach(el => observer.observe(el));
 
-// ── Copy Code Button ──
 function copyCode(btn) {
   const codeBlock = btn.closest('.code-wrap').querySelector('.code-block');
   const text = codeBlock.innerText.replace(/^Copy\s*/gm, '').trim();
   navigator.clipboard.writeText(text).then(() => {
-    btn.textContent = '✓ Copied!';
+    btn.textContent = 'Copied!';
     btn.classList.add('copied');
-    setTimeout(() => {
-      btn.textContent = 'Copy';
-      btn.classList.remove('copied');
-    }, 2000);
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
   });
 }
 
-// ── Smooth anchor for sidebar ──
 sidebarLinks.forEach(link => {
   link.addEventListener('click', (e) => {
     e.preventDefault();
@@ -1427,8 +1043,7 @@ sidebarLinks.forEach(link => {
   });
 });
 
-// ── Mobile nav close on link click ──
-navLinks.forEach(link => {
+navLinkEls.forEach(link => {
   link.addEventListener('click', () => {
     document.getElementById('navLinks').classList.remove('open');
   });
