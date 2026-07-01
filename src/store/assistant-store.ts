@@ -87,6 +87,8 @@ interface AssistantStore {
   setExecuteCommand: (fn: ((category: string, action: string, params?: Record<string, unknown>) => Promise<any>) | null) => void
   currentCommandText: string
   setCurrentCommandText: (v: string) => void
+  showManualChat: boolean
+  setShowManualChat: (v: boolean) => void
 
   sendAudioChunk: ((chunk: ArrayBuffer | Blob) => void) | null
   setSendAudioChunk: (fn: ((chunk: ArrayBuffer | Blob) => void) | null) => void
@@ -324,6 +326,8 @@ Please briefly summarize this result for me.`)
   setExecuteCommand: (fn) => set({ executeCommand: fn }),
   currentCommandText: '',
   setCurrentCommandText: (v) => set({ currentCommandText: v }),
+  showManualChat: true,
+  setShowManualChat: (v) => set({ showManualChat: v }),
 
   sendAudioChunk: null,
   setSendAudioChunk: (fn) => set({ sendAudioChunk: fn }),

@@ -120,7 +120,7 @@ function Starfield() {
 }
 
 export default function HomePage() {
-  const { activePanel, sidebarOpen, auroraTheme, pipMode } = useAssistantStore()
+  const { activePanel, sidebarOpen, auroraTheme, pipMode, showManualChat } = useAssistantStore()
   const { systemData } = usePcBridge()
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
 
@@ -310,20 +310,27 @@ export default function HomePage() {
             </div>
 
             {/* Right Column: Stylized Transcript Feed */}
-            <div className="w-[320px] glass-card rounded-2xl border border-white/5 bg-[#040713]/80 flex flex-col shrink-0 overflow-hidden relative">
-              <div className="p-3 border-b border-white/5 flex items-center gap-2 select-none">
-                <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
-                <span className="text-[10px] uppercase font-bold tracking-wider text-cyan-400">
-                  📜 Transcript logs
-                </span>
-              </div>
-              <div className="flex-1 flex flex-col min-h-0">
-                <ChatArea />
-                <div className="p-2 border-t border-white/5">
-                  <ChatInput />
+            {showManualChat && (
+              <motion.div
+                initial={{ width: 0, opacity: 0 }}
+                animate={{ width: 320, opacity: 1 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+                className="w-[320px] glass-card rounded-2xl border border-white/5 bg-[#040713]/80 flex flex-col shrink-0 overflow-hidden relative"
+              >
+                <div className="p-3 border-b border-white/5 flex items-center gap-2 select-none">
+                  <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+                  <span className="text-[10px] uppercase font-bold tracking-wider text-cyan-400">
+                    📜 Transcript logs
+                  </span>
                 </div>
-              </div>
-            </div>
+                <div className="flex-1 flex flex-col min-h-0">
+                  <ChatArea />
+                  <div className="p-2 border-t border-white/5">
+                    <ChatInput />
+                  </div>
+                </div>
+              </motion.div>
+            )}
           </div>
         )
       }

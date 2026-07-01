@@ -1,12 +1,12 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Phone, PhoneOff, Mic, MicOff, ShieldAlert } from 'lucide-react'
+import { Phone, PhoneOff, Mic, MicOff, ShieldAlert, MessageSquare } from 'lucide-react'
 import { useAssistantStore } from '@/store/assistant-store'
 import { cn } from '@/lib/utils'
 
 export function NeuralNetVisualizer() {
-  const { status, setStatus } = useAssistantStore()
+  const { status, setStatus, showManualChat, setShowManualChat } = useAssistantStore()
 
   const handleToggleCall = () => {
     setStatus(status === 'listening' ? 'idle' : 'listening')
@@ -133,16 +133,18 @@ export function NeuralNetVisualizer() {
           )}
         </button>
 
-        {/* System Settings / Dashboard Shortcut */}
+        {/* Manual Keyboard Chat Toggle Control */}
         <button
-          onClick={() => {
-            const el = document.getElementById('sidebar-settings-btn')
-            if (el) el.click()
-          }}
-          className="w-12 h-12 rounded-full border border-white/5 bg-slate-950/60 hover:bg-white/5 flex items-center justify-center text-muted-foreground hover:text-white transition-all shadow-lg active:scale-95"
-          title="Open Settings Dashboard"
+          onClick={() => setShowManualChat(!showManualChat)}
+          className={cn(
+            "w-12 h-12 rounded-full border flex items-center justify-center transition-all shadow-lg active:scale-95",
+            showManualChat
+              ? "border-cyan-500 text-cyan-400 bg-cyan-500/10 shadow-cyan-500/5 animate-pulse"
+              : "border-white/5 bg-slate-950/60 text-muted-foreground hover:text-white hover:bg-white/5"
+          )}
+          title="Toggle Manual Typing Chat"
         >
-          <PhoneOff className="w-5 h-5 opacity-40 rotate-[135deg]" />
+          <MessageSquare className="w-5 h-5" />
         </button>
       </div>
     </div>
