@@ -23,6 +23,7 @@ import { PiPWindow } from '@/components/assistant/PiPWindow'
 import { usePcBridge } from '@/hooks/use-pc-bridge'
 import { WebcamFeed } from '@/components/assistant/webcam-feed'
 import { NeuralNetVisualizer } from '@/components/assistant/neural-net-visualizer'
+import { WeatherTelemetry } from '@/components/assistant/weather-telemetry'
 
 function HeaderBar() {
   const [mounted, setMounted] = useState(false)
@@ -206,9 +207,9 @@ export default function HomePage() {
         const osName = String(systemData?.os ?? 'Windows 11')
 
         return (
-          <div className="flex-1 flex flex-col lg:flex-row gap-4 p-4 min-h-0 overflow-y-auto lg:overflow-hidden text-white bg-[#03060f]/95">
+          <div className="flex-1 flex flex-col lg:flex-row gap-4 p-4 min-h-0 overflow-y-auto lg:overflow-hidden lg:h-full text-white bg-[#03060f]/95">
             {/* Left Column: Network Telemetry & Core Metrics */}
-            <div className="w-full lg:w-[280px] flex flex-col gap-4 select-none shrink-0 lg:overflow-y-auto pr-1">
+            <div className="w-full lg:w-[280px] h-auto lg:h-full flex flex-col gap-4 select-none shrink-0 lg:overflow-y-auto pr-1">
               {/* Network Telemetry */}
               <div className="glass-card rounded-2xl border border-white/5 bg-slate-950/40 p-4 space-y-2">
                 <span className="text-[10px] uppercase font-bold tracking-wider text-cyan-400">
@@ -261,6 +262,9 @@ export default function HomePage() {
 
               {/* Webcam Live Toggler */}
               <WebcamFeed />
+
+              {/* Weather & Environmental Telemetry */}
+              <WeatherTelemetry />
 
               {/* Built With the Best (Technology Blueprint) */}
               <div className="glass-card rounded-2xl border border-white/5 bg-slate-950/40 p-4 space-y-3">
@@ -315,7 +319,7 @@ export default function HomePage() {
                 initial={{ width: 0, opacity: 0 }}
                 animate={{ width: 320, opacity: 1 }}
                 transition={{ duration: 0.3, ease: "easeInOut" }}
-                className="w-full lg:w-[320px] h-[480px] lg:h-auto glass-card rounded-2xl border border-white/5 bg-[#040713]/80 flex flex-col shrink-0 overflow-hidden relative"
+                className="w-full lg:w-[320px] h-[480px] lg:h-full glass-card rounded-2xl border border-white/5 bg-[#040713]/80 flex flex-col shrink-0 overflow-hidden relative"
               >
                 <div className="p-3 border-b border-white/5 flex items-center gap-2 select-none">
                   <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
@@ -382,7 +386,7 @@ export default function HomePage() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.2 }}
-                className="flex-1 flex flex-col min-h-0"
+                className="flex-1 flex flex-col min-h-0 h-[calc(100vh-64px)] overflow-hidden"
               >
                 {renderPanel()}
               </motion.div>
