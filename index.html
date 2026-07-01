@@ -4,6 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <meta name="theme-color" content="#06060e">
+  <meta name="description" content="Pika AI — A sleek, voice-controlled Desktop Assistant built with Next.js &amp; Python. Offline Hindi/English voice recognition, 19+ PC control features, and chat with Groq, Gemini, Mistral &amp; Cerebras.">
+  <meta name="keywords" content="Pika AI, Desktop Assistant, Voice Assistant, Next.js, Python, Vosk, Groq, Gemini, Mistral, Cerebras, PC Control, WebSocket">
+  <meta name="author" content="SudhirDevOps1">
+  <!-- Open Graph / Social Preview -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Pika AI — Desktop Voice Assistant">
+  <meta property="og:description" content="Voice-controlled Desktop Assistant with offline Hindi/English recognition, 19+ PC control features, and 4 AI providers.">
+  <meta property="og:url" content="https://github.com/SudhirDevOps1/Ai-assistant-pika">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Pika AI — Desktop Voice Assistant">
+  <meta name="twitter:description" content="Voice-controlled Desktop Assistant with offline Hindi/English recognition, 19+ PC control features, and 4 AI providers.">
+  <!-- Favicon (inline SVG lightning bolt, matches brand) -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%2300e5ff'/%3E%3Cstop offset='1' stop-color='%23a855f7'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='24' height='24' rx='6' fill='%2305050c'/%3E%3Cpath d='M13 2 4 14h6l-1 8 9-12h-6z' fill='url(%23g)'/%3E%3C/svg%3E">
   <title>Pika AI — Desktop Assistant Setup Guide</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Orbitron:wght@500;700;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -270,6 +283,15 @@
     .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
     .reveal.visible{opacity:1;transform:translateY(0)}
 
+    /* ── Accessibility: Skip to content ── */
+    .skip-link{position:fixed;top:-100px;left:12px;z-index:9999;background:var(--cyan);color:#000;padding:10px 18px;border-radius:8px;font-weight:700;font-size:.85rem;text-decoration:none;transition:top .2s}
+    .skip-link:focus{top:12px}
+
+    /* ── GitHub Badges Row (mirrors README shields) ── */
+    .badges-row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:18px 0}
+    .gh-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:6px;font-size:.68rem;font-weight:700;font-family:'JetBrains Mono',monospace;border:1px solid var(--border);background:rgba(255,255,255,.03);color:var(--text-2);letter-spacing:.3px}
+    .gh-badge b{color:var(--text)}
+
     /* ── Screenshot Gallery ── */
     .screenshot-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(clamp(140px,38vw,260px),1fr));gap:clamp(8px,1.5vw,14px);margin:16px 0}
     .screenshot-card{position:relative;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);background:var(--bg-card);cursor:pointer;transition:all .3s;aspect-ratio:16/10}
@@ -454,6 +476,8 @@
 </head>
 <body>
 
+<a href="#hero" class="skip-link">Skip to main content</a>
+
 <div class="bg-wrap">
   <div class="bg-orb"></div><div class="bg-orb"></div>
   <div class="bg-orb"></div><div class="bg-orb"></div>
@@ -590,6 +614,16 @@
         <span class="tag tag-pink">Python WebSocket</span>
         <span class="tag tag-blue">4 AI Providers</span>
       </div>
+
+      <!-- GitHub-style badges (mirrors README shields.io badges) -->
+      <div class="badges-row">
+        <span class="gh-badge">Next.js <b>15</b></span>
+        <span class="gh-badge">React <b>19</b></span>
+        <span class="gh-badge">Python <b>3.10+</b></span>
+        <span class="gh-badge">Tailwind CSS <b>3</b></span>
+        <span class="gh-badge">License <b style="color:var(--green)">MIT</b></span>
+        <a class="gh-badge" href="https://github.com/SudhirDevOps1/Ai-assistant-pika/stargazers" target="_blank" rel="noopener" style="text-decoration:none;cursor:pointer">&#11088; Star on <b>GitHub</b></a>
+      </div>
     </section>
 
     <!-- INTERACTIVE TERMINAL SIMULATOR SHOWCASE -->
@@ -631,9 +665,19 @@
           <p>Utility-first CSS, responsive breakpoints, dark mode, glassmorphism</p>
         </div>
         <div class="bento-card">
+          <span class="bento-tag">Animations</span>
+          <h4>🎬 Framer Motion</h4>
+          <p>Smooth transitions, page animations, and micro-interactions</p>
+        </div>
+        <div class="bento-card">
+          <span class="bento-tag">Icons</span>
+          <h4>🖼️ Lucide React</h4>
+          <p>Lightweight, consistent icon set used across the whole UI</p>
+        </div>
+        <div class="bento-card">
           <span class="bento-tag">Backend</span>
           <h4>🐍 Python 3.10+</h4>
-          <p>Async WebSocket server, psutil, pyautogui, pyperclip, pillow</p>
+          <p>Async WebSocket server, psutil, pyautogui, pyperclip, Pillow, PyGetWindow</p>
         </div>
         <div class="bento-card">
           <span class="bento-tag">Voice STT</span>
@@ -645,10 +689,10 @@
           <h4>🔊 Edge-TTS + Pyttsx3</h4>
           <p>Neural online voices + offline fallback, zero-delay switching</p>
         </div>
-        <div class="bento-card">
+        <div class="bento-card bento-span-2">
           <span class="bento-tag">AI Models</span>
-          <h4>🤖 4 LLM Providers</h4>
-          <p>Groq (Llama 3.3), Gemini 2.0, Mistral Large, Cerebras (Llama 4)</p>
+          <h4>🤖 4 LLM Providers — 8 Models</h4>
+          <p>Groq (Llama 3.3 70B, Llama 4 Scout, DeepSeek R1) • Gemini (2.0/2.5 Flash, 1.5 Pro) • Mistral (Large, Codestral, Mixtral 8x7B) • Cerebras (Llama 4 Scout, Qwen 3 32B)</p>
         </div>
       </div>
     </section>
@@ -717,6 +761,11 @@
       <div class="alert alert-success">
         <span class="alert-icon">&#128640;</span>
         <span class="alert-text"><strong>One-Click Launcher &amp; Auto-Install:</strong> Sirf <code>start.bat</code> file double-click karo — yeh command pehli baar chalne par sabhi dependencies (Python libraries jaise psutil, edge-tts, pyautogui, pyttsx3 aur frontend Node modules) ko <strong>apne aap download aur install</strong> kar legi! Iske baad web UI aur backend dono server ek saath start ho jayenge.</span>
+      </div>
+
+      <div class="alert alert-info">
+        <span class="alert-icon">&#128032;</span>
+        <span class="alert-text"><strong>Mac / Linux users:</strong> <code>start.bat</code> ki jagah <code>start.sh</code> use karo. Terminal mein pehle permission do: <code>chmod +x start.sh</code>, phir chalao: <code>./start.sh</code> — yeh bhi frontend + PC Bridge dono ek saath start kar dega.</span>
       </div>
 
       <div class="steps">
@@ -1721,7 +1770,7 @@
       </div>
 
       <p style="color:var(--text-3);font-size:.75rem;text-align:center;margin-top:12px">
-        Images load ho rahe hain <code>screenshot/</code> folder se. Agar images nahi dikh rahi, toh files ko <code>screenshot/1.png</code> se <code>screenshot/5.png</code> tak rename karke refresh karo.
+        Gallery automatically checks multiple folders: <code>screenshot/</code>, <code>screenshots/</code>, aur <code>public/screenshots/</code> — jahan bhi <code>1.png</code>–<code>5.png</code> (ya <code>chat.png</code>, <code>pc-control.png</code>, <code>settings.png</code>, <code>monitor.png</code>) milenge, wahi load ho jayenge. Koi bhi ek folder use karo!
       </p>
     </section>
 
@@ -1957,15 +2006,26 @@
   const lightboxPrev = document.getElementById('lightboxPrev');
   const lightboxNext = document.getElementById('lightboxNext');
 
+  // NOTE: The repo's README shows screenshots in TWO different possible locations
+  // (root "screenshots/" folder AND "public/screenshots/"). To avoid confusion, this
+  // gallery now tries multiple candidate folders + filename patterns automatically,
+  // so it works no matter which convention you used when adding your images.
   const screenshots = [
-    { src: 'screenshot/1.png', title: 'Dashboard — Main Interface' },
-    { src: 'screenshot/2.png', title: 'Voice Control & Neural Visualizer' },
-    { src: 'screenshot/3.png', title: 'Settings Panel — AI Providers' },
-    { src: 'screenshot/4.png', title: 'PC Control Panel — System Commands' },
-    { src: 'screenshot/5.png', title: 'Chat Interface & Transcript Logs' }
+    { candidates: ['screenshot/1.png', 'screenshots/1.png', 'public/screenshots/1.png', 'screenshots/chat.png', 'public/screenshots/chat.png'], title: 'Chat Interface' },
+    { candidates: ['screenshot/2.png', 'screenshots/2.png', 'public/screenshots/2.png', 'screenshots/pc-control.png', 'public/screenshots/pc-control.png'], title: 'PC Control Panel' },
+    { candidates: ['screenshot/3.png', 'screenshots/3.png', 'public/screenshots/3.png', 'screenshots/settings.png', 'public/screenshots/settings.png'], title: 'Settings Page — AI Providers' },
+    { candidates: ['screenshot/4.png', 'screenshots/4.png', 'public/screenshots/4.png', 'screenshots/monitor.png', 'public/screenshots/monitor.png'], title: 'System Monitor' },
+    { candidates: ['screenshot/5.png', 'screenshots/5.png', 'public/screenshots/5.png'], title: 'Voice Control & Neural Visualizer' }
   ];
   let currentLightboxIndex = 0;
   let loadedScreenshots = [];
+
+  // Try each candidate path in order until one loads successfully
+  function tryLoadImage(img, candidates, i, onFail) {
+    if (i >= candidates.length) { onFail(); return; }
+    img.onerror = function () { tryLoadImage(img, candidates, i + 1, onFail); };
+    img.src = candidates[i];
+  }
 
   if (screenshotGrid) {
     screenshots.forEach(function (shot, idx) {
@@ -1985,15 +2045,15 @@
         const placeholder = card.querySelector('.ss-placeholder');
         if (placeholder) placeholder.remove();
         card.insertBefore(img, card.firstChild);
-        loadedScreenshots.push({ idx: idx, src: shot.src, title: shot.title, el: card });
+        shot.resolvedSrc = img.src;
+        loadedScreenshots.push({ idx: idx, src: img.src, title: shot.title, el: card });
       };
-      img.onerror = function () {
+      tryLoadImage(img, shot.candidates, 0, function () {
         const placeholder = card.querySelector('.ss-placeholder');
         if (placeholder) {
-          placeholder.innerHTML = '<span class="ss-ph-icon">&#128248;</span><span><strong>' + shot.title + '</strong><br><span style="font-size:.65rem;color:var(--text-3)">File missing:<br><code style="font-size:.6rem">' + shot.src + '</code></span></span>';
+          placeholder.innerHTML = '<span class="ss-ph-icon">&#128248;</span><span><strong>' + shot.title + '</strong><br><span style="font-size:.65rem;color:var(--text-3)">Not found. Tried:<br><code style="font-size:.58rem">' + shot.candidates[0] + '</code></span></span>';
         }
-      };
-      img.src = shot.src;
+      });
 
       card.addEventListener('click', function () {
         if (!img.complete || img.naturalWidth === 0) return;
@@ -2005,7 +2065,7 @@
   function openLightbox(idx) {
     currentLightboxIndex = idx;
     const shot = screenshots[idx];
-    lightboxImg.src = shot.src;
+    lightboxImg.src = shot.resolvedSrc || shot.candidates[0];
     lightboxImg.alt = shot.title;
     lightboxCaption.textContent = (idx + 1) + ' / ' + screenshots.length + '  —  ' + shot.title;
     lightbox.classList.add('open');
