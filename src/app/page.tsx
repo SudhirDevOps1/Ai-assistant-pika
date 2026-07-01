@@ -206,9 +206,9 @@ export default function HomePage() {
         const osName = String(systemData?.os ?? 'Windows 11')
 
         return (
-          <div className="flex-1 flex gap-4 p-4 min-h-0 overflow-hidden text-white bg-[#03060f]/95">
+          <div className="flex-1 flex flex-col lg:flex-row gap-4 p-4 min-h-0 overflow-y-auto lg:overflow-hidden text-white bg-[#03060f]/95">
             {/* Left Column: Network Telemetry & Core Metrics */}
-            <div className="w-[280px] flex flex-col gap-4 select-none shrink-0 overflow-y-auto pr-1">
+            <div className="w-full lg:w-[280px] flex flex-col gap-4 select-none shrink-0 lg:overflow-y-auto pr-1">
               {/* Network Telemetry */}
               <div className="glass-card rounded-2xl border border-white/5 bg-slate-950/40 p-4 space-y-2">
                 <span className="text-[10px] uppercase font-bold tracking-wider text-cyan-400">
@@ -305,7 +305,7 @@ export default function HomePage() {
             </div>
 
             {/* Center Column: Rotating Circular Gyroscope Orbits */}
-            <div className="flex-1 glass-card rounded-2xl border border-white/5 bg-slate-950/20 flex flex-col items-center justify-center p-4 min-w-[280px]">
+            <div className="flex-1 glass-card rounded-2xl border border-white/5 bg-slate-950/20 flex flex-col items-center justify-center p-4 min-w-[280px] min-h-[350px] lg:min-h-0">
               <NeuralNetVisualizer />
             </div>
 
@@ -315,7 +315,7 @@ export default function HomePage() {
                 initial={{ width: 0, opacity: 0 }}
                 animate={{ width: 320, opacity: 1 }}
                 transition={{ duration: 0.3, ease: "easeInOut" }}
-                className="w-[320px] glass-card rounded-2xl border border-white/5 bg-[#040713]/80 flex flex-col shrink-0 overflow-hidden relative"
+                className="w-full lg:w-[320px] h-[480px] lg:h-auto glass-card rounded-2xl border border-white/5 bg-[#040713]/80 flex flex-col shrink-0 overflow-hidden relative"
               >
                 <div className="p-3 border-b border-white/5 flex items-center gap-2 select-none">
                   <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
@@ -325,9 +325,7 @@ export default function HomePage() {
                 </div>
                 <div className="flex-1 flex flex-col min-h-0">
                   <ChatArea />
-                  <div className="p-2 border-t border-white/5">
-                    <ChatInput />
-                  </div>
+                  <ChatInput />
                 </div>
               </motion.div>
             )}

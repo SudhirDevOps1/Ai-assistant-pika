@@ -1750,6 +1750,23 @@ async def handler(websocket):
                         use_offline = (requested_engine == "pyttsx3")
                         
                         if not use_offline:
+                            # Perform a rapid DNS lookup to check if we can reach the Edge-TTS host
+                            # This skips the 4-second timeout delay when the user is disconnected!
+                            has_network = False
+                            try:
+                                await asyncio.wait_for(
+                                    asyncio.to_thread(socket.gethostbyname, "speech.platform.bing.com"),
+                                    timeout=0.6
+                                )
+                                has_network = True
+                            except Exception:
+                                has_network = False
+
+                            if not has_network:
+                                logger.info("Edge-TTS host unreachable. Forcing pyttsx3 offline fallback immediately.")
+                                use_offline = True
+
+                        if not use_offline:
                             try:
                                 # Try Edge TTS
                                 communicate = edge_tts.Communicate(clean_text, voice)

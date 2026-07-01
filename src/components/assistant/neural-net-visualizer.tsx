@@ -15,12 +15,12 @@ export function NeuralNetVisualizer() {
   return (
     <div className="flex-1 flex flex-col justify-between items-center py-6 h-full min-h-[350px]">
       {/* Upper Status Labels */}
-      <div className="w-full max-w-[420px] flex items-center justify-between px-6 text-[10px] font-bold tracking-widest text-emerald-400/80 uppercase select-none">
-        <span className="flex items-center gap-1.5">
+      <div className="w-full max-w-[420px] flex flex-wrap items-center justify-between gap-3 px-6 text-[10px] font-bold tracking-widest uppercase select-none">
+        <span className="flex items-center gap-1.5 text-emerald-400/80">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
           NEURAL_NET: READY
         </span>
-        <span className="text-cyan-400/90">DELEGATION_CORE: LOADED</span>
+        <span className="text-cyan-400/90 text-right">DELEGATION_CORE: LOADED</span>
       </div>
 
       {/* Main Circular Gyroscope Visualizer */}
