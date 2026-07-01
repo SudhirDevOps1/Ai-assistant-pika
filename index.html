@@ -2,7 +2,8 @@
 <html lang="hi">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#06060e">
   <title>Pika AI — Desktop Assistant Setup Guide</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
@@ -21,72 +22,95 @@
       --green:#4ade80;--orange:#fb923c;
       --red:#f87171;--yellow:#facc15;
       --blue:#60a5fa;--pink:#ec4899;
-      --radius:16px;--radius-sm:10px;
+      --radius:clamp(10px,2vw,16px);--radius-sm:clamp(6px,1.5vw,10px);
       --glass:rgba(255,255,255,0.03);
       --shadow:0 8px 32px rgba(0,0,0,0.4);
-      --nav-h:64px;
+      --nav-h:clamp(52px,7vw,64px);
     }
-    body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+    body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden;-webkit-font-smoothing:antialiased;min-height:100dvh}
     a{color:var(--cyan);text-decoration:none;transition:.2s}
     a:hover{color:var(--cyan-2);text-decoration:underline}
-    code{font-family:'JetBrains Mono',monospace;font-size:.85em;background:rgba(0,229,255,0.08);padding:2px 7px;border-radius:5px;color:var(--cyan)}
-    ::-webkit-scrollbar{width:7px}
+    a:focus-visible{outline:2px solid var(--cyan);outline-offset:3px;border-radius:4px}
+    code{font-family:'JetBrains Mono',monospace;font-size:.85em;background:rgba(0,229,255,0.08);padding:2px 7px;border-radius:5px;color:var(--cyan);word-break:break-all}
+    ::-webkit-scrollbar{width:6px;height:6px}
     ::-webkit-scrollbar-track{background:transparent}
     ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.08);border-radius:10px}
     ::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,0.16)}
 
+    /* ── Background ── */
     .bg-wrap{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
     .bg-orb{position:absolute;border-radius:50%;filter:blur(140px);opacity:.12;animation:orbFloat 25s ease-in-out infinite alternate}
-    .bg-orb:nth-child(1){width:700px;height:700px;background:var(--cyan);top:-15%;left:-10%;animation-delay:0s}
-    .bg-orb:nth-child(2){width:600px;height:600px;background:var(--purple);bottom:-10%;right:-8%;animation-delay:-8s}
-    .bg-orb:nth-child(3){width:500px;height:500px;background:var(--pink);top:50%;left:40%;animation-delay:-14s}
-    .bg-orb:nth-child(4){width:350px;height:350px;background:var(--blue);top:20%;right:15%;animation-delay:-20s}
+    .bg-orb:nth-child(1){width:min(700px,90vw);height:min(700px,90vw);background:var(--cyan);top:-15%;left:-10%;animation-delay:0s}
+    .bg-orb:nth-child(2){width:min(600px,80vw);height:min(600px,80vw);background:var(--purple);bottom:-10%;right:-8%;animation-delay:-8s}
+    .bg-orb:nth-child(3){width:min(500px,70vw);height:min(500px,70vw);background:var(--pink);top:50%;left:40%;animation-delay:-14s}
+    .bg-orb:nth-child(4){width:min(350px,50vw);height:min(350px,50vw);background:var(--blue);top:20%;right:15%;animation-delay:-20s}
     @keyframes orbFloat{0%{transform:translate(0,0) scale(1)}50%{transform:translate(40px,-30px) scale(1.08)}100%{transform:translate(-30px,20px) scale(.94)}}
 
-    .bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.015) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.015) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 70% 70% at 50% 30%,black 30%,transparent 100%)}
+    .bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.015) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.015) 1px,transparent 1px);background-size:clamp(30px,6vw,60px) clamp(30px,6vw,60px);mask-image:radial-gradient(ellipse 70% 70% at 50% 30%,black 30%,transparent 100%)}
 
-    .nav{position:fixed;top:0;left:0;right:0;z-index:100;height:var(--nav-h);display:flex;align-items:center;justify-content:space-between;padding:0 32px;background:rgba(6,6,14,.75);backdrop-filter:blur(24px) saturate(1.4);border-bottom:1px solid var(--border);transition:background .3s}
-    .nav-logo{display:flex;align-items:center;gap:10px;font-family:'Orbitron',sans-serif;font-weight:700;font-size:1.1rem;background:linear-gradient(135deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-    .nav-logo svg{width:32px;height:32px;flex-shrink:0}
-    .nav-links{display:flex;gap:6px;align-items:center}
-    .nav-link{padding:6px 14px;border-radius:8px;font-size:.82rem;font-weight:500;color:var(--text-2);transition:.2s;cursor:pointer}
+    /* ── Navigation ── */
+    .nav{position:fixed;top:0;left:0;right:0;z-index:100;height:var(--nav-h);display:flex;align-items:center;justify-content:space-between;padding:0 clamp(12px,3vw,32px);background:rgba(6,6,14,.78);backdrop-filter:blur(24px) saturate(1.4);-webkit-backdrop-filter:blur(24px) saturate(1.4);border-bottom:1px solid var(--border);transition:background .3s}
+    .nav-logo{display:flex;align-items:center;gap:clamp(6px,1vw,10px);font-family:'Orbitron',sans-serif;font-weight:700;font-size:clamp(.85rem,1.5vw,1.1rem);background:linear-gradient(135deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;flex-shrink:0}
+    .nav-logo img,.nav-logo svg{width:clamp(24px,4vw,32px);height:clamp(24px,4vw,32px);flex-shrink:0;border-radius:8px}
+    .nav-links{display:flex;gap:clamp(2px,.5vw,6px);align-items:center}
+    .nav-link{padding:clamp(4px,1vw,6px) clamp(8px,1.8vw,14px);border-radius:8px;font-size:clamp(.72rem,1.2vw,.82rem);font-weight:500;color:var(--text-2);transition:.2s;cursor:pointer;white-space:nowrap;border:none;background:none}
     .nav-link:hover{color:var(--text);background:rgba(255,255,255,.05)}
     .nav-link.active{color:var(--cyan);background:rgba(0,229,255,.08)}
-    .nav-cta{padding:8px 20px;border-radius:10px;font-size:.82rem;font-weight:600;background:linear-gradient(135deg,var(--cyan),var(--purple));color:#000;cursor:pointer;border:none;transition:.3s}
+    .nav-cta{padding:clamp(6px,1vw,8px) clamp(14px,2.5vw,20px);border-radius:10px;font-size:clamp(.72rem,1.2vw,.82rem);font-weight:600;background:linear-gradient(135deg,var(--cyan),var(--purple));color:#000;cursor:pointer;border:none;transition:.3s;white-space:nowrap}
     .nav-cta:hover{transform:scale(1.04);box-shadow:0 0 24px rgba(0,229,255,.3)}
-    .nav-mobile-btn{display:none;background:none;border:none;color:var(--text);font-size:1.4rem;cursor:pointer}
-    @media(max-width:768px){
-      .nav-links{display:none}
-      .nav-mobile-btn{display:block}
-      .nav-links.open{display:flex;flex-direction:column;position:absolute;top:var(--nav-h);left:0;right:0;background:rgba(6,6,14,.95);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);padding:16px}
-    }
+    .nav-cta:active{transform:scale(.96)}
+    .nav-hamburger{display:none;background:none;border:none;color:var(--text);cursor:pointer;padding:8px;border-radius:8px;transition:.2s;z-index:101;min-width:44px;min-height:44px;align-items:center;justify-content:center}
+    .nav-hamburger:hover{background:rgba(255,255,255,.05)}
+    .nav-hamburger .ham-line{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:.3s;position:relative}
+    .nav-hamburger .ham-line::before,.nav-hamburger .ham-line::after{content:'';position:absolute;left:0;width:22px;height:2px;background:var(--text);border-radius:2px;transition:.3s}
+    .nav-hamburger .ham-line::before{top:-7px}
+    .nav-hamburger .ham-line::after{top:7px}
+    .nav-hamburger.open .ham-line{background:transparent}
+    .nav-hamburger.open .ham-line::before{top:0;transform:rotate(45deg)}
+    .nav-hamburger.open .ham-line::after{top:0;transform:rotate(-45deg)}
 
+    /* Mobile nav overlay */
+    .nav-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:98;opacity:0;pointer-events:none;transition:opacity .35s}
+    .nav-overlay.open{opacity:1;pointer-events:auto}
+
+    /* ── Page Layout ── */
     .page-wrap{position:relative;z-index:1;display:flex;max-width:1400px;margin:0 auto;padding-top:var(--nav-h)}
 
-    .sidebar{position:sticky;top:var(--nav-h);width:260px;height:calc(100vh - var(--nav-h));flex-shrink:0;padding:32px 16px 32px 24px;overflow-y:auto;border-right:1px solid var(--border)}
-    .sidebar-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--text-3);margin-bottom:16px}
-    .sidebar-link{display:flex;align-items:center;gap:10px;padding:9px 14px;border-radius:10px;font-size:.84rem;color:var(--text-2);transition:.2s;cursor:pointer;margin-bottom:2px}
+    /* Sidebar */
+    .sidebar{position:sticky;top:var(--nav-h);width:clamp(220px,18vw,260px);height:calc(100vh - var(--nav-h));flex-shrink:0;padding:clamp(16px,2vw,32px) clamp(8px,1.5vw,16px) clamp(16px,2vw,32px) clamp(12px,2vw,24px);overflow-y:auto;border-right:1px solid var(--border)}
+    .sidebar-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--text-3);margin-bottom:16px;padding-left:6px}
+    .sidebar-link{display:flex;align-items:center;gap:clamp(6px,1vw,10px);padding:clamp(7px,1vw,9px) clamp(8px,1.5vw,14px);border-radius:10px;font-size:clamp(.74rem,1vw,.84rem);color:var(--text-2);transition:.2s;cursor:pointer;margin-bottom:2px;min-height:40px}
     .sidebar-link:hover{color:var(--text);background:rgba(255,255,255,.04)}
     .sidebar-link.active{color:var(--cyan);background:rgba(0,229,255,.06);font-weight:600}
-    .sidebar-link .s-num{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;background:rgba(255,255,255,.04);color:var(--text-3);flex-shrink:0}
-    .sidebar-link.active .s-num{background:rgba(0,229,255,.12);color:var(--cyan)}
-    @media(max-width:1024px){.sidebar{display:none}}
+    .sidebar-link .s-num{width:clamp(20px,2.5vw,22px);height:clamp(20px,2.5vw,22px);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;background:rgba(255,255,255,.04);color:var(--text-3);flex-shrink:0}
 
-    .main{flex:1;min-width:0;padding:40px 48px 100px;max-width:900px}
-    @media(max-width:768px){.main{padding:24px 18px 80px}}
+    /* Mobile bottom bar */
+    .mobile-quick-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:95;background:rgba(6,6,14,.9);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--border);padding:4px 2px env(safe-area-inset-bottom,0px)}
+    .mobile-quick-nav .mq-links{display:flex;overflow-x:auto;gap:2px;padding:0 4px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+    .mobile-quick-nav .mq-links::-webkit-scrollbar{display:none}
+    .mobile-quick-nav .mq-link{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px;border-radius:10px;font-size:.6rem;font-weight:600;color:var(--text-3);transition:.2s;cursor:pointer;border:none;background:none;min-width:48px;min-height:48px;justify-content:center}
+    .mobile-quick-nav .mq-link:active,.mobile-quick-nav .mq-link.active{color:var(--cyan);background:rgba(0,229,255,.08)}
+    .mobile-quick-nav .mq-link .mq-icon{font-size:1.1rem;line-height:1}
 
-    .hero{text-align:center;padding:60px 0 48px;animation:fadeUp .8s ease-out}
+    /* Main content */
+    .main{flex:1;min-width:0;padding:clamp(16px,3vw,40px) clamp(12px,3vw,48px) clamp(60px,8vw,100px);max-width:900px}
+    @media(min-width:1400px){.main{max-width:1000px}}
+
+    /* ── Hero ── */
+    .hero{text-align:center;padding:clamp(30px,5vw,60px) 0 clamp(24px,4vw,48px);animation:fadeUp .8s ease-out}
     @keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
-    .hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:40px;background:rgba(0,229,255,.06);border:1px solid rgba(0,229,255,.18);font-size:.78rem;font-weight:600;color:var(--cyan);margin-bottom:24px}
-    .hero-badge .pulse{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+    .hero-badge{display:inline-flex;align-items:center;gap:8px;padding:clamp(4px,.6vw,6px) clamp(10px,2vw,16px);border-radius:40px;background:rgba(0,229,255,.06);border:1px solid rgba(0,229,255,.18);font-size:clamp(.68rem,1vw,.78rem);font-weight:600;color:var(--cyan);margin-bottom:clamp(16px,2vw,24px)}
+    .hero-badge .pulse{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;flex-shrink:0}
     @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.4)}}
-    .hero-icon{width:96px;height:96px;margin:0 auto 28px;border-radius:28px;background:linear-gradient(135deg,var(--cyan),var(--purple));display:flex;align-items:center;justify-content:center;font-size:44px;box-shadow:0 0 0 4px rgba(0,229,255,.08),0 0 80px rgba(0,229,255,.25),0 0 160px rgba(168,85,247,.15);animation:iconPulse 4s ease-in-out infinite}
+    .hero-icon{width:clamp(64px,10vw,96px);height:clamp(64px,10vw,96px);margin:0 auto clamp(18px,3vw,28px);border-radius:clamp(18px,3vw,28px);background:linear-gradient(135deg,var(--cyan),var(--purple));display:flex;align-items:center;justify-content:center;font-size:clamp(28px,5vw,44px);box-shadow:0 0 0 4px rgba(0,229,255,.08),0 0 80px rgba(0,229,255,.25),0 0 160px rgba(168,85,247,.15);animation:iconPulse 4s ease-in-out infinite}
     @keyframes iconPulse{0%,100%{box-shadow:0 0 0 4px rgba(0,229,255,.08),0 0 80px rgba(0,229,255,.25),0 0 160px rgba(168,85,247,.15)}50%{box-shadow:0 0 0 8px rgba(0,229,255,.12),0 0 120px rgba(0,229,255,.35),0 0 200px rgba(168,85,247,.25)}}
-    .hero h1{font-size:clamp(2rem,5vw,3.2rem);font-weight:900;background:linear-gradient(135deg,#fff 0%,var(--cyan) 40%,var(--purple) 70%,var(--pink) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.15;margin-bottom:16px}
-    .hero .subtitle{font-size:1.08rem;color:var(--text-2);max-width:560px;margin:0 auto 28px}
-    .hero-tags{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+    .hero-icon img{width:100%;height:100%;object-fit:contain;border-radius:20px}
+    .hero h1{font-size:clamp(1.4rem,5vw,3.2rem);font-weight:900;background:linear-gradient(135deg,#fff 0%,var(--cyan) 40%,var(--purple) 70%,var(--pink) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.15;margin-bottom:clamp(10px,1.5vw,16px)}
+    .hero .subtitle{font-size:clamp(.85rem,1.5vw,1.08rem);color:var(--text-2);max-width:560px;margin:0 auto clamp(18px,2.5vw,28px);padding:0 8px}
+    .hero-tags{display:flex;gap:clamp(4px,.8vw,8px);justify-content:center;flex-wrap:wrap;padding:0 4px}
 
-    .tag{display:inline-flex;align-items:center;gap:5px;padding:5px 13px;border-radius:20px;font-size:.72rem;font-weight:600;letter-spacing:.3px;border:1px solid;transition:.2s}
+    /* Tags */
+    .tag{display:inline-flex;align-items:center;gap:5px;padding:clamp(3px,.5vw,5px) clamp(8px,1.5vw,13px);border-radius:20px;font-size:clamp(.64rem,.85vw,.72rem);font-weight:600;letter-spacing:.3px;border:1px solid;transition:.2s;white-space:nowrap}
     .tag-cyan{background:rgba(0,229,255,.08);border-color:rgba(0,229,255,.2);color:var(--cyan)}
     .tag-purple{background:rgba(168,85,247,.08);border-color:rgba(168,85,247,.2);color:var(--purple)}
     .tag-green{background:rgba(74,222,128,.08);border-color:rgba(74,222,128,.2);color:var(--green)}
@@ -96,50 +120,54 @@
     .tag-yellow{background:rgba(250,204,21,.08);border-color:rgba(250,204,21,.2);color:var(--yellow)}
     .tag-blue{background:rgba(96,165,250,.08);border-color:rgba(96,165,250,.2);color:var(--blue)}
 
-    .section{margin-top:56px}
-    .section-head{display:flex;align-items:center;gap:14px;margin-bottom:24px}
-    .section-icon{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
-    .section-title{font-size:1.55rem;font-weight:800;letter-spacing:-.3px}
+    /* ── Sections ── */
+    .section{margin-top:clamp(30px,5vw,56px)}
+    .section-head{display:flex;align-items:center;gap:clamp(8px,1.5vw,14px);margin-bottom:clamp(14px,2vw,24px)}
+    .section-icon{width:clamp(34px,5vw,44px);height:clamp(34px,5vw,44px);border-radius:clamp(8px,1.5vw,14px);display:flex;align-items:center;justify-content:center;font-size:clamp(16px,2.5vw,22px);flex-shrink:0}
+    .section-title{font-size:clamp(1.05rem,2.5vw,1.55rem);font-weight:800;letter-spacing:-.3px}
 
-    .card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:14px;backdrop-filter:blur(16px);transition:all .3s ease;position:relative;overflow:hidden}
+    /* ── Cards ── */
+    .card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:clamp(14px,2.5vw,24px);margin-bottom:clamp(8px,1.5vw,14px);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);transition:all .3s ease;position:relative;overflow:hidden}
     .card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,229,255,.12),transparent);opacity:0;transition:.3s}
-    .card:hover{background:var(--bg-card-hover);border-color:var(--border-hover);transform:translateY(-3px);box-shadow:var(--shadow)}
+    .card:hover{background:var(--bg-card-hover);border-color:var(--border-hover);transform:translateY(-2px);box-shadow:var(--shadow)}
     .card:hover::before{opacity:1}
-    .card h3{font-size:1.05rem;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
-    .card p,.card li{color:var(--text-2);font-size:.9rem}
+    .card h3{font-size:clamp(.9rem,1.4vw,1.05rem);font-weight:700;margin-bottom:clamp(8px,1.2vw,12px);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    .card p,.card li{color:var(--text-2);font-size:clamp(.8rem,1.1vw,.9rem)}
     .card ul{list-style:none;padding:0}
-    .card li{padding:5px 0 5px 24px;position:relative}
-    .card li::before{content:'';position:absolute;left:6px;top:14px;width:6px;height:6px;border-radius:50%;background:linear-gradient(135deg,var(--cyan),var(--purple))}
-    .card li strong{color:var(--text)}
+    .card li{padding:clamp(3px,.5vw,5px) 0 clamp(3px,.5vw,5px) clamp(18px,3vw,24px);position:relative}
+    .card li::before{content:'';position:absolute;left:clamp(4px,.8vw,6px);top:50%;transform:translateY(-50%);width:clamp(5px,.8vw,6px);height:clamp(5px,.8vw,6px);border-radius:50%;background:linear-gradient(135deg,var(--cyan),var(--purple))}
 
-    .steps{display:flex;flex-direction:column;gap:18px;margin:16px 0}
-    .step{display:flex;gap:16px;padding:20px;border-radius:var(--radius);background:var(--bg-card);border:1px solid var(--border);transition:all .3s}
+    /* ── Steps ── */
+    .steps{display:flex;flex-direction:column;gap:clamp(10px,1.5vw,18px);margin:16px 0}
+    .step{display:flex;gap:clamp(10px,1.8vw,16px);padding:clamp(12px,2vw,20px);border-radius:var(--radius);background:var(--bg-card);border:1px solid var(--border);transition:all .3s;align-items:flex-start}
     .step:hover{background:var(--bg-card-hover);border-color:var(--border-hover);transform:translateX(4px)}
-    .step-num{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--cyan),var(--purple));display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1rem;flex-shrink:0;color:#000;box-shadow:0 0 20px rgba(0,229,255,.2)}
-    .step-body{flex:1}
-    .step-body h4{font-size:.98rem;font-weight:700;margin-bottom:8px;color:var(--text)}
-    .step-body p{color:var(--text-2);font-size:.88rem}
+    .step-num{width:clamp(34px,5vw,44px);height:clamp(34px,5vw,44px);border-radius:50%;background:linear-gradient(135deg,var(--cyan),var(--purple));display:flex;align-items:center;justify-content:center;font-weight:900;font-size:clamp(.85rem,1.2vw,1rem);flex-shrink:0;color:#000;box-shadow:0 0 20px rgba(0,229,255,.2)}
+    .step-body{flex:1;min-width:0}
+    .step-body h4{font-size:clamp(.85rem,1.2vw,.98rem);font-weight:700;margin-bottom:clamp(4px,.8vw,8px);color:var(--text)}
+    .step-body p{color:var(--text-2);font-size:clamp(.78rem,1vw,.88rem)}
 
-    .code-wrap{position:relative;margin:14px 0;border-radius:var(--radius-sm);border:1px solid rgba(0,229,255,.1);overflow:hidden}
-    .code-header{display:flex;align-items:center;justify-content:space-between;padding:8px 16px;background:rgba(0,229,255,.04);border-bottom:1px solid rgba(0,229,255,.06)}
-    .code-dots{display:flex;gap:6px}
-    .code-dots span{width:10px;height:10px;border-radius:50%}
+    /* ── Code Blocks ── */
+    .code-wrap{position:relative;margin:clamp(8px,1.5vw,14px) 0;border-radius:var(--radius-sm);border:1px solid rgba(0,229,255,.1);overflow:hidden}
+    .code-header{display:flex;align-items:center;justify-content:space-between;padding:clamp(6px,1vw,8px) clamp(10px,1.8vw,16px);background:rgba(0,229,255,.04);border-bottom:1px solid rgba(0,229,255,.06);gap:8px}
+    .code-dots{display:flex;gap:clamp(4px,.7vw,6px);flex-shrink:0}
+    .code-dots span{width:clamp(8px,1.2vw,10px);height:clamp(8px,1.2vw,10px);border-radius:50%}
     .code-dots span:nth-child(1){background:#ff5f57}
     .code-dots span:nth-child(2){background:#febc2e}
     .code-dots span:nth-child(3){background:#28c840}
-    .code-label{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text-3);text-transform:uppercase;letter-spacing:1px}
-    .code-copy{background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.15);color:var(--cyan);padding:4px 12px;border-radius:6px;font-size:.7rem;font-weight:600;cursor:pointer;transition:.2s;font-family:'Inter',sans-serif}
+    .code-label{font-family:'JetBrains Mono',monospace;font-size:clamp(.6rem,.8vw,.7rem);color:var(--text-3);text-transform:uppercase;letter-spacing:1px;white-space:nowrap}
+    .code-copy{background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.15);color:var(--cyan);padding:clamp(3px,.5vw,4px) clamp(8px,1.5vw,12px);border-radius:6px;font-size:clamp(.64rem,.8vw,.7rem);font-weight:600;cursor:pointer;transition:.2s;font-family:'Inter',sans-serif;white-space:nowrap;min-height:32px;min-width:44px}
     .code-copy:hover{background:rgba(0,229,255,.16)}
     .code-copy.copied{background:rgba(74,222,128,.12);color:var(--green);border-color:rgba(74,222,128,.2)}
-    .code-block{background:rgba(0,0,0,.45);padding:18px 20px;font-family:'JetBrains Mono',monospace;font-size:.82rem;line-height:1.8;color:var(--text-2);overflow-x:auto;white-space:pre}
+    .code-block{background:rgba(0,0,0,.45);padding:clamp(12px,2vw,18px) clamp(12px,2vw,20px);font-family:'JetBrains Mono',monospace;font-size:clamp(.68rem,.95vw,.82rem);line-height:1.8;color:var(--text-2);overflow-x:auto;overflow-y:hidden;white-space:pre;word-break:normal;overflow-wrap:normal;-webkit-overflow-scrolling:touch;max-width:100%}
     .code-block .cm{color:#5b6488}
     .code-block .cmd{color:var(--green)}
     .code-block .url{color:var(--orange)}
     .code-block .str{color:var(--yellow)}
     .code-block .hl{color:var(--cyan)}
 
-    .alert{border-radius:var(--radius);padding:16px 20px;margin:16px 0;display:flex;gap:12px;align-items:flex-start;font-size:.88rem}
-    .alert-icon{font-size:1.25rem;flex-shrink:0;margin-top:1px}
+    /* ── Alerts ── */
+    .alert{border-radius:var(--radius);padding:clamp(12px,1.8vw,16px) clamp(14px,2vw,20px);margin:clamp(10px,1.5vw,16px) 0;display:flex;gap:clamp(8px,1.2vw,12px);align-items:flex-start;font-size:clamp(.78rem,1vw,.88rem)}
+    .alert-icon{font-size:clamp(1rem,1.5vw,1.25rem);flex-shrink:0;margin-top:1px;line-height:1.4}
     .alert-text{color:var(--text-2)}
     .alert-text strong{color:var(--text)}
     .alert-info{background:rgba(0,229,255,.05);border:1px solid rgba(0,229,255,.15)}
@@ -147,42 +175,177 @@
     .alert-success{background:rgba(74,222,128,.05);border:1px solid rgba(74,222,128,.15)}
     .alert-danger{background:rgba(248,113,113,.05);border:1px solid rgba(248,113,113,.15)}
 
-    .table-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);margin:16px 0}
-    table{width:100%;border-collapse:collapse}
+    /* ── Tables ── */
+    .table-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);margin:16px 0;-webkit-overflow-scrolling:touch;max-width:100%}
+    table{width:100%;border-collapse:collapse;min-width:500px}
     thead{background:rgba(0,229,255,.04)}
-    th{padding:13px 18px;text-align:left;font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--cyan);border-bottom:1px solid var(--border)}
-    td{padding:12px 18px;font-size:.86rem;color:var(--text-2);border-bottom:1px solid var(--border)}
+    th{padding:clamp(8px,1.5vw,13px) clamp(10px,2vw,18px);text-align:left;font-size:clamp(.64rem,.85vw,.74rem);font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--cyan);border-bottom:1px solid var(--border);white-space:nowrap}
+    td{padding:clamp(8px,1.5vw,12px) clamp(10px,2vw,18px);font-size:clamp(.74rem,.95vw,.86rem);color:var(--text-2);border-bottom:1px solid var(--border)}
     tr:last-child td{border-bottom:none}
     tr:hover td{background:rgba(255,255,255,.015)}
     td strong{color:var(--text)}
 
-    .feat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin:16px 0}
-    .feat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;transition:all .3s;position:relative;overflow:hidden}
+    /* ── Feature Grid ── */
+    .feat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(clamp(140px,40vw,260px),1fr));gap:clamp(8px,1.5vw,14px);margin:16px 0}
+    .feat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:clamp(12px,2vw,20px);transition:all .3s;position:relative;overflow:hidden}
     .feat-card::after{content:'';position:absolute;top:0;left:0;width:3px;height:0;background:linear-gradient(180deg,var(--cyan),var(--purple));transition:.4s;border-radius:0 0 4px 0}
     .feat-card:hover{background:var(--bg-card-hover);border-color:var(--border-hover);transform:translateY(-4px);box-shadow:var(--shadow)}
     .feat-card:hover::after{height:100%}
-    .feat-card h4{font-size:.95rem;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:8px}
-    .feat-card p{color:var(--text-2);font-size:.82rem;line-height:1.6}
+    .feat-card h4{font-size:clamp(.82rem,1.1vw,.95rem);font-weight:700;margin-bottom:clamp(4px,.8vw,8px);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    .feat-card p{color:var(--text-2);font-size:clamp(.72rem,.9vw,.82rem);line-height:1.6}
 
-    .divider{height:1px;margin:48px 0;background:linear-gradient(90deg,transparent,var(--border),transparent)}
+    /* ── Architecture Diagram ── */
+    .arch-diagram{display:flex;align-items:center;justify-content:center;gap:clamp(6px,1.2vw,12px);flex-wrap:wrap;padding:clamp(16px,2.5vw,28px) clamp(12px,2vw,20px);background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);margin:16px 0}
+    .arch-box{padding:clamp(10px,1.5vw,14px) clamp(14px,2.5vw,22px);border-radius:var(--radius-sm);font-size:clamp(.7rem,1vw,.82rem);font-weight:600;text-align:center;border:1px solid;min-width:clamp(90px,20vw,130px);flex-shrink:0}
+    .arch-arrow{font-size:clamp(1rem,1.8vw,1.4rem);color:var(--text-3);flex-shrink:0}
 
-    .arch-diagram{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;padding:28px 20px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);margin:16px 0}
-    .arch-box{padding:14px 22px;border-radius:var(--radius-sm);font-size:.82rem;font-weight:600;text-align:center;border:1px solid;min-width:130px}
-    .arch-arrow{font-size:1.4rem;color:var(--text-3)}
+    /* ── Misc ── */
+    .divider{height:1px;margin:clamp(28px,4vw,48px) 0;background:linear-gradient(90deg,transparent,var(--border),transparent)}
 
     .scroll-progress{position:fixed;top:var(--nav-h);left:0;height:2px;z-index:99;background:linear-gradient(90deg,var(--cyan),var(--purple),var(--pink));width:0;transition:width .1s}
 
-    .footer{text-align:center;padding:40px 24px 48px;border-top:1px solid var(--border);margin-top:60px}
-    .footer p{color:var(--text-3);font-size:.84rem}
-    .footer .brand{font-size:1.2rem;font-weight:800;margin-bottom:8px;background:linear-gradient(135deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-    .footer-tags{display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+    .footer{text-align:center;padding:clamp(24px,4vw,40px) clamp(12px,3vw,24px) clamp(32px,5vw,48px);border-top:1px solid var(--border);margin-top:clamp(30px,5vw,60px)}
+    .footer p{color:var(--text-3);font-size:clamp(.74rem,1vw,.84rem)}
+    .footer .brand{font-size:clamp(1rem,1.8vw,1.2rem);font-weight:800;margin-bottom:8px;background:linear-gradient(135deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .footer-tags{display:flex;gap:8px;justify-content:center;margin-top:clamp(10px,1.5vw,16px);flex-wrap:wrap}
 
-    .back-top{position:fixed;bottom:28px;right:28px;z-index:90;width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--cyan),var(--purple));display:flex;align-items:center;justify-content:center;color:#000;font-size:1.1rem;font-weight:900;cursor:pointer;border:none;opacity:0;transform:translateY(16px);transition:all .3s;box-shadow:0 0 24px rgba(0,229,255,.25)}
+    .back-top{position:fixed;bottom:clamp(60px,10vw,28px);right:clamp(12px,2.5vw,28px);z-index:90;width:clamp(36px,5vw,44px);height:clamp(36px,5vw,44px);border-radius:50%;background:linear-gradient(135deg,var(--cyan),var(--purple));display:flex;align-items:center;justify-content:center;color:#000;font-size:clamp(.9rem,1.4vw,1.1rem);font-weight:900;cursor:pointer;border:none;opacity:0;transform:translateY(16px);transition:all .3s;box-shadow:0 0 24px rgba(0,229,255,.25);-webkit-tap-highlight-color:transparent}
     .back-top.show{opacity:1;transform:translateY(0)}
-    .back-top:hover{transform:scale(1.1);box-shadow:0 0 40px rgba(0,229,255,.4)}
+    .back-top:active{transform:scale(.9)}
 
     .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
     .reveal.visible{opacity:1;transform:translateY(0)}
+
+    /* ═══════════════════════════════════════
+       RESPONSIVE BREAKPOINTS
+       ═══════════════════════════════════════ */
+
+    /* ── Tablet (≤1024px) ── */
+    @media(max-width:1024px){
+      .sidebar{display:none}
+      .main{max-width:100%;padding:clamp(16px,3vw,32px) clamp(12px,3vw,28px) clamp(70px,10vw,90px)}
+      .arch-diagram{gap:8px}
+      .arch-arrow{font-size:1rem}
+    }
+
+    /* ── Mobile (≤768px) ── */
+    @media(max-width:768px){
+      :root{--nav-h:52px}
+
+      /* Navigation */
+      .nav-links{position:fixed;top:var(--nav-h);right:0;bottom:0;width:min(280px,80vw);background:rgba(10,10,24,.97);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);flex-direction:column;padding:clamp(16px,3vw,24px) clamp(12px,2vw,20px);gap:4px;transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);border-left:1px solid var(--border);box-shadow:-8px 0 32px rgba(0,0,0,.5);z-index:99;overflow-y:auto}
+      .nav-links.open{transform:translateX(0)}
+      .nav-link,.nav-cta{width:100%;text-align:left;padding:clamp(10px,2vw,12px) clamp(12px,2vw,16px);border-radius:10px;font-size:.85rem;min-height:44px;display:flex;align-items:center}
+      .nav-cta{justify-content:center;margin-top:8px}
+      .nav-hamburger{display:flex}
+      .nav-overlay.open{opacity:1;pointer-events:auto}
+
+      /* Mobile bottom nav */
+      .mobile-quick-nav{display:block}
+
+      /* Hero */
+      .hero{padding:clamp(20px,4vw,36px) 0 clamp(16px,3vw,28px)}
+      .hero h1{font-size:clamp(1.2rem,6vw,1.8rem)}
+      .hero .subtitle{font-size:.82rem;padding:0 4px}
+
+      /* Cards & spacing */
+      .card{padding:14px;margin-bottom:10px}
+      .step{flex-direction:column;gap:10px;align-items:flex-start}
+      .step-num{align-self:flex-start}
+      .feat-grid{grid-template-columns:1fr;gap:8px}
+
+      /* Architecture diagram - vertical stack */
+      .arch-diagram{flex-direction:column;align-items:stretch;gap:6px;padding:16px 12px}
+      .arch-box{min-width:auto;width:100%}
+      .arch-arrow{text-align:center;transform:rotate(90deg);font-size:1.1rem;align-self:center}
+
+      /* Tables */
+      .table-wrap table{min-width:420px;font-size:.72rem}
+      th,td{padding:8px 10px}
+
+      /* Section */
+      .section{margin-top:clamp(20px,4vw,36px)}
+      .section-title{font-size:clamp(.95rem,3.5vw,1.2rem)}
+      .section-head{gap:8px}
+
+      /* Back to top - avoid bottom nav overlap */
+      .back-top{bottom:clamp(64px,12vw,70px);right:12px;width:38px;height:38px;font-size:.85rem}
+
+      /* Footer */
+      .footer{padding:20px 12px 36px}
+      .footer p{font-size:.74rem}
+    }
+
+    /* ── Small Mobile (≤480px) ── */
+    @media(max-width:480px){
+      :root{--nav-h:48px}
+      .nav-logo{font-size:.78rem;gap:6px}
+      .nav-logo img,.nav-logo svg{width:22px;height:22px}
+      .nav-hamburger{padding:6px;min-width:40px;min-height:40px}
+      .nav-hamburger .ham-line,.nav-hamburger .ham-line::before,.nav-hamburger .ham-line::after{width:20px;height:1.5px}
+      .nav-hamburger .ham-line::before{top:-6px}
+      .nav-hamburger .ham-line::after{top:6px}
+
+      .hero h1{font-size:1.15rem}
+      .hero .subtitle{font-size:.76rem}
+      .hero-icon{width:52px;height:52px;border-radius:14px}
+      .hero-badge{font-size:.66rem;padding:3px 10px}
+
+      .main{padding:12px 10px 80px}
+      .card{padding:12px;border-radius:12px}
+      .card h3{font-size:.84rem}
+      .card p,.card li{font-size:.76rem}
+      .card li{padding-left:18px}
+      .card li::before{width:5px;height:5px;left:5px}
+
+      .step{padding:12px}
+      .step-body h4{font-size:.82rem}
+      .step-body p{font-size:.74rem}
+      .step-num{width:30px;height:30px;font-size:.75rem}
+
+      .code-block{font-size:.65rem;padding:10px 12px;line-height:1.6}
+      .code-copy{padding:3px 10px;font-size:.62rem;min-height:28px}
+
+      .tag{padding:2px 8px;font-size:.6rem}
+      .hero-tags{gap:4px}
+
+      .feat-card{padding:12px}
+      .feat-card h4{font-size:.78rem}
+      .feat-card p{font-size:.7rem}
+
+      .alert{padding:10px 14px;font-size:.74rem}
+      .section-title{font-size:.9rem}
+      .section{margin-top:24px}
+      .divider{margin:24px 0}
+
+      .mobile-quick-nav .mq-link{font-size:.55rem;min-width:40px;min-height:42px;padding:4px 6px}
+      .mobile-quick-nav .mq-link .mq-icon{font-size:.95rem}
+
+      .back-top{width:34px;height:34px;font-size:.75rem;bottom:62px;right:8px}
+      .arch-box{font-size:.68rem;padding:8px 12px}
+    }
+
+    /* ── Desktop Large (≥1400px) ── */
+    @media(min-width:1400px){
+      .feat-grid{grid-template-columns:repeat(3,1fr)}
+      .main{max-width:1000px}
+      .page-wrap{gap:0}
+    }
+
+    /* ── Print styles ── */
+    @media print{
+      .nav,.sidebar,.mobile-quick-nav,.back-top,.scroll-progress,.bg-wrap,.bg-grid{display:none!important}
+      .page-wrap{padding-top:0}
+      .main{max-width:100%;padding:0}
+      body{color:#000;background:#fff}
+      .card{border:1px solid #ccc;background:#fff;break-inside:avoid}
+    }
+
+    /* ── Reduced motion ── */
+    @media(prefers-reduced-motion:reduce){
+      *{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+      html{scroll-behavior:auto}
+    }
   </style>
 </head>
 <body>
@@ -194,9 +357,13 @@
 <div class="bg-grid"></div>
 <div class="scroll-progress" id="scrollProgress"></div>
 
+<!-- Navigation Overlay -->
+<div class="nav-overlay" id="navOverlay"></div>
+
+<!-- Top Navigation -->
 <nav class="nav" id="navbar">
   <div class="nav-logo">
-    <img src="public/logo.svg" alt="Pika Logo" style="width:32px; height:32px; border-radius: 8px;" />
+    <span style="font-size:clamp(18px,3vw,24px);line-height:1">⚡</span>
     PIKA AI
   </div>
   <div class="nav-links" id="navLinks">
@@ -205,14 +372,17 @@
     <a class="nav-link" href="#features">Features</a>
     <a class="nav-link" href="#providers">AI Providers</a>
     <a class="nav-link" href="#troubleshoot">Help</a>
-    <a class="nav-cta" href="https://github.com/SudhirDevOps1/Ai-assistant-pika" target="_blank">GitHub</a>
+    <a class="nav-cta" href="https://github.com/SudhirDevOps1/Ai-assistant-pika" target="_blank" rel="noopener">GitHub &#8599;</a>
   </div>
-  <button class="nav-mobile-btn" onclick="document.getElementById('navLinks').classList.toggle('open')">&#9776;</button>
+  <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu">
+    <span class="ham-line"></span>
+  </button>
 </nav>
 
 <div class="page-wrap">
 
-  <aside class="sidebar">
+  <!-- Sidebar (Desktop) -->
+  <aside class="sidebar" id="sidebar">
     <div class="sidebar-title">Guide Contents</div>
     <a class="sidebar-link active" href="#hero"><span class="s-num">&#10022;</span> Overview</a>
     <a class="sidebar-link" href="#requirements"><span class="s-num">1</span> Requirements</a>
@@ -221,6 +391,7 @@
     <a class="sidebar-link" href="#settings"><span class="s-num">4</span> Settings</a>
     <a class="sidebar-link" href="#chat"><span class="s-num">5</span> Chat</a>
     <a class="sidebar-link" href="#features"><span class="s-num">6</span> PC Control</a>
+    <a class="sidebar-link" href="#architecture"><span class="s-num">&#9881;</span> Architecture</a>
     <a class="sidebar-link" href="#reminders"><span class="s-num">7</span> Reminders</a>
     <a class="sidebar-link" href="#clipboard"><span class="s-num">8</span> Clipboard</a>
     <a class="sidebar-link" href="#monitor"><span class="s-num">9</span> Monitor</a>
@@ -234,10 +405,10 @@
     <section class="hero" id="hero">
       <div class="hero-badge"><span class="pulse"></span> v0.2.0 — Stable Release</div>
       <div class="hero-icon">
-        <img src="public/logo.svg" alt="Pika Logo" style="width:100%; height:100%; object-fit: contain; border-radius: 20px;" />
+        <span style="font-size:clamp(24px,5vw,40px)">⚡</span>
       </div>
       <h1>Pika AI Desktop Assistant</h1>
-      <p class="subtitle">Complete Setup & Usage Guide — Hindi/English Voice Assistant jo aapke PC ko AI se control karega. Chat, Voice Commands, PC Control sab ek jagah.</p>
+      <p class="subtitle">Complete Setup &amp; Usage Guide — Hindi/English Voice Assistant jo aapke PC ko AI se control karega. Chat, Voice Commands, PC Control sab ek jagah.</p>
       <div class="hero-tags">
         <span class="tag tag-cyan">Next.js 15</span>
         <span class="tag tag-purple">React 19</span>
@@ -250,19 +421,19 @@
     <!-- ARCHITECTURE -->
     <div class="arch-diagram reveal">
       <div class="arch-box" style="background:rgba(0,229,255,.06);border-color:rgba(0,229,255,.2);color:var(--cyan)">
-        Web UI<br><small style="color:var(--text-3)">Next.js + React</small>
+        Web UI<br><small style="color:var(--text-3);font-size:.7em">Next.js + React</small>
       </div>
       <span class="arch-arrow">&#10230;</span>
       <div class="arch-box" style="background:rgba(168,85,247,.06);border-color:rgba(168,85,247,.2);color:var(--purple)">
-        AI Engine<br><small style="color:var(--text-3)">Groq / Gemini / Mistral</small>
+        AI Engine<br><small style="color:var(--text-3);font-size:.7em">Groq / Gemini / Mistral</small>
       </div>
       <span class="arch-arrow">&#10230;</span>
       <div class="arch-box" style="background:rgba(74,222,128,.06);border-color:rgba(74,222,128,.2);color:var(--green)">
-        PC Bridge<br><small style="color:var(--text-3)">Python WebSocket</small>
+        PC Bridge<br><small style="color:var(--text-3);font-size:.7em">Python WebSocket</small>
       </div>
       <span class="arch-arrow">&#10230;</span>
       <div class="arch-box" style="background:rgba(251,146,60,.06);border-color:rgba(251,146,60,.2);color:var(--orange)">
-        PC Actions<br><small style="color:var(--text-3)">Volume, Apps, Files...</small>
+        PC Actions<br><small style="color:var(--text-3);font-size:.7em">Volume, Apps, Files...</small>
       </div>
     </div>
 
@@ -287,10 +458,10 @@
       <div class="card">
         <h3>API Keys — Koi EK chahiye</h3>
         <ul>
-          <li><strong>Groq</strong> — Free, sabse fast &#9889; &#8594; <a href="https://console.groq.com" target="_blank">console.groq.com</a></li>
-          <li><strong>Google Gemini</strong> — Free tier available &#8594; <a href="https://aistudio.google.com" target="_blank">aistudio.google.com</a></li>
-          <li><strong>Mistral</strong> — Free tier &#8594; <a href="https://console.mistral.ai" target="_blank">console.mistral.ai</a></li>
-          <li><strong>Cerebras</strong> — Free, ultra fast &#8594; <a href="https://cloud.cerebras.ai" target="_blank">cloud.cerebras.ai</a></li>
+          <li><strong>Groq</strong> — Free, sabse fast &#9889; &#8594; <a href="https://console.groq.com" target="_blank" rel="noopener">console.groq.com</a></li>
+          <li><strong>Google Gemini</strong> — Free tier available &#8594; <a href="https://aistudio.google.com" target="_blank" rel="noopener">aistudio.google.com</a></li>
+          <li><strong>Mistral</strong> — Free tier &#8594; <a href="https://console.mistral.ai" target="_blank" rel="noopener">console.mistral.ai</a></li>
+          <li><strong>Cerebras</strong> — Free, ultra fast &#8594; <a href="https://cloud.cerebras.ai" target="_blank" rel="noopener">cloud.cerebras.ai</a></li>
         </ul>
       </div>
       <div class="alert alert-info">
@@ -310,7 +481,7 @@
 
       <div class="alert alert-success">
         <span class="alert-icon">&#128640;</span>
-        <span class="alert-text"><strong>One-Click Launcher & Auto-Install:</strong> Sirf <code>start.bat</code> file double-click karo — yeh command pehli baar chalne par sabhi dependencies (Python libraries jaise psutil, edge-tts, pyautogui, pyttsx3 aur frontend Node modules) ko <strong>apne aap download aur install</strong> kar legi! Iske baad web UI aur backend dono server ek saath start ho jayenge.</span>
+        <span class="alert-text"><strong>One-Click Launcher &amp; Auto-Install:</strong> Sirf <code>start.bat</code> file double-click karo — yeh command pehli baar chalne par sabhi dependencies (Python libraries jaise psutil, edge-tts, pyautogui, pyttsx3 aur frontend Node modules) ko <strong>apne aap download aur install</strong> kar legi! Iske baad web UI aur backend dono server ek saath start ho jayenge.</span>
       </div>
 
       <div class="steps">
@@ -408,7 +579,7 @@
         <div class="arch-box" style="background:rgba(0,229,255,.06);border-color:rgba(0,229,255,.2);color:var(--cyan);font-size:.78rem">
           Web UI<br><code style="font-size:.7rem;color:var(--text-3)">localhost:3000</code>
         </div>
-        <span class="arch-arrow" style="font-size:1.1rem">—WebSocket—</span>
+        <span class="arch-arrow" style="font-size:1.1rem">—WS—</span>
         <div class="arch-box" style="background:rgba(74,222,128,.06);border-color:rgba(74,222,128,.2);color:var(--green);font-size:.78rem">
           Python Bridge<br><code style="font-size:.7rem;color:var(--text-3)">localhost:8765</code>
         </div>
@@ -515,7 +686,7 @@
       </div>
 
       <div class="card">
-        <h3>Provider & Model</h3>
+        <h3>Provider &amp; Model</h3>
         <p>Settings mein sabse pehle AI provider choose karo:</p>
         <ul>
           <li><strong>Groq</strong> (Default) — Sabse fast, free, beginners ke liye best</li>
@@ -532,7 +703,7 @@
           <div class="step" style="padding:14px 18px">
             <div class="step-num" style="width:32px;height:32px;font-size:.82rem">1</div>
             <div class="step-body">
-              <p><a href="https://console.groq.com" target="_blank">console.groq.com</a> pe jaao &#8594; Google se sign up &#8594; API Keys &#8594; <strong>"Create API Key"</strong> &#8594; Copy</p>
+              <p><a href="https://console.groq.com" target="_blank" rel="noopener">console.groq.com</a> pe jaao &#8594; Google se sign up &#8594; API Keys &#8594; <strong>"Create API Key"</strong> &#8594; Copy</p>
             </div>
           </div>
           <div class="step" style="padding:14px 18px">
@@ -545,7 +716,7 @@
       </div>
 
       <div class="card">
-        <h3>Voice & Other Settings</h3>
+        <h3>Voice &amp; Other Settings</h3>
         <ul>
           <li><strong>TTS Voice</strong> — Text-to-Speech voice select karo (default: en-US-Neural2-A)</li>
           <li><strong>Wake Word</strong> — Voice activate word (default: "Hey Assistant")</li>
@@ -624,83 +795,83 @@
         <span class="alert-text"><strong>Pre-requisite:</strong> PC Bridge Python server chalana zaroori hai (Section 3). Bina uske yeh panel kaam nahi karega.</span>
       </div>
 
-      <p style="color:var(--text-2);margin-bottom:20px">PC Control panel mein <strong>16 features</strong> hain. Har section expand karke buttons se control karo:</p>
+      <p style="color:var(--text-2);margin-bottom:20px">PC Control panel mein <strong>16+ features</strong> hain. Har section expand karke buttons se control karo:</p>
 
       <div class="feat-grid">
         <div class="feat-card">
-          <h4>System Commands</h4>
+          <h4>&#9889; System Commands</h4>
           <p><strong>Shutdown</strong> — PC band (5s delay)<br><strong>Restart</strong> — PC restart<br><strong>Sleep</strong> — Neend mode<br><strong>Lock</strong> — Screen lock<br><strong>Log Off</strong> — Sign out</p>
         </div>
         <div class="feat-card">
-          <h4>Volume Control</h4>
+          <h4>&#128266; Volume Control</h4>
           <p><strong>Up/Down</strong> — 10% change<br><strong>Mute/Unmute</strong> — Toggle<br><strong>Set Level</strong> — Specific % pe set karo</p>
         </div>
         <div class="feat-card">
-          <h4>Media Controls</h4>
+          <h4>&#127925; Media Controls</h4>
           <p><strong>Play/Pause</strong> — Toggle<br><strong>Next/Previous</strong> — Track change<br>Spotify, YouTube, VLC — sab supported</p>
         </div>
         <div class="feat-card">
-          <h4>App Launcher</h4>
+          <h4>&#128640; App Launcher</h4>
           <p><strong>25+ Apps:</strong> Chrome, Notepad, Calculator, VS Code, Spotify, Word, Excel...<br><strong>Close</strong> koi bhi running app</p>
         </div>
         <div class="feat-card">
-          <h4>URL & Web</h4>
+          <h4>&#127760; URL &amp; Web</h4>
           <p>Koi bhi URL browser mein kholo directly — YouTube, GitHub, Google. Bina browser switch kiye!</p>
         </div>
         <div class="feat-card">
-          <h4>Window Management</h4>
+          <h4>&#128451; Window Management</h4>
           <p><strong>Minimize/Maximize</strong><br><strong>Close</strong> (Alt+F4)<br><strong>Switch</strong> (Alt+Tab)<br><strong>Show Desktop</strong> (Win+D)</p>
         </div>
         <div class="feat-card">
-          <h4>System Info</h4>
+          <h4>&#128202; System Info</h4>
           <p>Real-time: <strong>Battery</strong>, <strong>CPU</strong>, <strong>RAM</strong>, <strong>Disk</strong>, IP, Uptime, Running Processes</p>
         </div>
         <div class="feat-card">
-          <h4>Clipboard</h4>
+          <h4>&#128203; Clipboard</h4>
           <p><strong>Get</strong> — Current content dekho<br><strong>Set</strong> — Text copy karo<br><strong>Paste</strong> — Auto paste (Ctrl+V)</p>
         </div>
         <div class="feat-card">
-          <h4>File Manager</h4>
+          <h4>&#128193; File Manager</h4>
           <p><strong>Create</strong> — Nayi file<br><strong>Delete</strong> — File/folder<br><strong>List</strong> — Directory contents</p>
         </div>
         <div class="feat-card">
-          <h4>Screenshot</h4>
+          <h4>&#128247; Screenshot</h4>
           <p>Ek click mein screenshot! Desktop pe save hota hai aur thumbnail preview bhi dikhata hai.</p>
         </div>
         <div class="feat-card">
-          <h4>Reminders</h4>
+          <h4>&#9200; Reminders</h4>
           <p>Timer set karo — "5 min baad yaad dilao". Desktop notification aayega automatically!</p>
         </div>
         <div class="feat-card">
-          <h4>Notifications</h4>
+          <h4>&#128276; Notifications</h4>
           <p>Custom Windows desktop notifications bhejo — title aur message ke saath.</p>
         </div>
         <div class="feat-card">
-          <h4>Keyboard Shortcuts</h4>
+          <h4>&#9000; Keyboard Shortcuts</h4>
           <p>Koi bhi hotkey remotely: <strong>Ctrl+C</strong>, <strong>Ctrl+V</strong>, <strong>Win+E</strong>, <strong>Alt+Tab</strong>, etc.</p>
         </div>
         <div class="feat-card">
-          <h4>Brightness</h4>
+          <h4>&#9728; Brightness</h4>
           <p>Screen brightness control — set level ya current dekho (laptops pe best kaam karta hai)</p>
         </div>
         <div class="feat-card">
-          <h4>WiFi Control</h4>
+          <h4>&#128246; WiFi Control</h4>
           <p><strong>List</strong> — Available networks<br><strong>Connect/Disconnect</strong> — WiFi switch karo<br><strong>Turn On/Off</strong> — Adapter control</p>
         </div>
         <div class="feat-card">
-          <h4>Web Search</h4>
+          <h4>&#128269; Web Search</h4>
           <p>Google, Bing, YouTube, GitHub, StackOverflow, Wikipedia — sab pe search karo</p>
         </div>
         <div class="feat-card">
-          <h4>Camera Control</h4>
+          <h4>&#128249; Camera Control</h4>
           <p><strong>Camera Open</strong> — default camera app open karo voice or button se directly instantly</p>
         </div>
         <div class="feat-card">
-          <h4>PiP Floating Window</h4>
+          <h4>&#128250; PiP Floating Window</h4>
           <p>Draggable Picture-in-Picture window supporting simulated speech waveforms, microphone quick toggles, and live command logging status feeds.</p>
         </div>
         <div class="feat-card">
-          <h4>Manual Speech Engine Select</h4>
+          <h4>&#128483; Manual Speech Engine</h4>
           <p>Independently pick Online/Offline speech providers (Edge-TTS, Pyttsx3, Vosk, Web Speech API) and save presets permanently in database settings.</p>
         </div>
       </div>
@@ -708,94 +879,49 @@
 
     <div class="divider"></div>
 
-    <!-- 6b. PIKA AI DASHBOARD & SYSTEM ARCHITECTURE -->
+    <!-- 6b. ARCHITECTURE & DASHBOARD -->
     <section class="section reveal" id="architecture">
       <div class="section-head">
         <div class="section-icon" style="background:linear-gradient(135deg,var(--cyan),var(--purple))">&#128736;</div>
-        <h2 class="section-title">6b. Pika AI Dashboard & Project Architecture Guide</h2>
+        <h2 class="section-title">6b. Pika AI Dashboard &amp; Project Architecture Guide</h2>
       </div>
 
-      <!-- Part 1: Dashboard Columns -->
       <div class="card">
         <h3>Pika AI 3-Column Grid Interface Layout</h3>
         <p style="margin-bottom:12px">Naya futuristic matte-black dashboard 3 columns mein structured hai:</p>
         <ul>
-          <li><strong>Left Column (Diagnostics & Stack)</strong>:
-            <br>• <strong>Network Telemetry:</strong> Connection speed and avg latency (10ms).
-            <br>• <strong>Core Metrics:</strong> CPU, RAM, Temp, aur OS ke real-time status details.
-            <br>• <strong>Webcam Feed:</strong> Purple toggle switch "ON" karne par browser camera stream start ho jata hai.
-            <br>• <strong>Built With the Best:</strong> Technology specs details (Gemini Flash, Python, pyautogui, Whisper, Next.js, PyInstaller, SQLite 3).
-          </li>
-          <li><strong>Center Column (Neural Visualizer & Call Controls)</strong>:
-            <br>• <strong>SVG Orbiting Rings:</strong> Rotating gyroscopes jo system status (Listening, Speaking, Thinking, Idle) ke sath react karte hain.
-            <br>• <strong>Voice Control Buttons:</strong> Recording active mic indicator (Mic toggle), central voice call trigger, aur manual chat toggler.
-          </li>
-          <li><strong>Right Column (Transcript Logs & Manual Typing Chat)</strong>:
-            <br>• <strong>📜 Transcript logs:</strong> Chat history displays in transparent bordered bubble styling.
-            <br>• <strong>Manual typing input:</strong> Agar aapko bolna nahi hai, toh keyboard button dabake chat logs pane open karein aur seedhe type karke PC commands chalwayein!
-          </li>
+          <li><strong>Left Column (Diagnostics &amp; Stack)</strong>: Network Telemetry, Core Metrics (CPU, RAM, Temp, OS), Webcam Feed (purple toggle), Built With the Best tech specs.</li>
+          <li><strong>Center Column (Neural Visualizer &amp; Call Controls)</strong>: SVG Orbiting Rings reacting to system status (Listening, Speaking, Thinking, Idle), Voice Control Buttons with mic toggle.</li>
+          <li><strong>Right Column (Transcript Logs &amp; Chat)</strong>: Chat history in transparent bordered bubbles, manual typing input with keyboard toggle for typing PC commands.</li>
         </ul>
       </div>
 
-      <!-- Part 2: Zero-Delay TTS & PiP Window -->
       <div class="card">
-        <h3>Smart Offline/Online Voice Engine & PiP Floating Window</h3>
+        <h3>Smart Offline/Online Voice Engine &amp; PiP Window</h3>
         <ul>
-          <li><strong>Zero-Delay TTS Fallback</strong>: Edge-TTS online check karne ke liye background mein ek fast DNS query (0.6s timeout) chalti hai. Agar aap completely offline hain, toh server 4-second Bing timeout delays ke bina instantly offline woyce engine (Pyttsx3) pe switch kar leta hai.</li>
-          <li><strong>PiP Floating Window:</strong> Isko dekhne ke liye settings panel (⚙️) pe jayein aur "Picture-in-Picture" Toggle Switch ON karein. Yeh widget screen pe humesha top pe rahega aur live action logs (jaise 📄 Creating file...) display karega.</li>
+          <li><strong>Zero-Delay TTS Fallback:</strong> Edge-TTS online check via fast DNS query (0.6s timeout). If offline, instantly switches to Pyttsx3 without 4-second Bing delays.</li>
+          <li><strong>PiP Floating Window:</strong> Enable via Settings (⚙️) toggle switch. Always-on-top widget with live action logs.</li>
         </ul>
       </div>
 
-      <!-- Part 3: Architecture Audit -->
       <div class="card">
-        <h3>Project Files Audit (Kaam Ka vs Bekar Ka Details)</h3>
-        <p style="margin-bottom:12px">Pro professional audit ke mutabik kaun si file kis kaam aati hai:</p>
-        <table style="width:100%; border-collapse: collapse;">
-          <thead>
-            <tr>
-              <th style="width:30%">File / Folder Path</th>
-              <th style="width:20%">Status</th>
-              <th style="width:50%">Details / Action Needed</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><strong>pc-bridge/pc_bridge.py</strong></td>
-              <td><span style="color:var(--green)">⚡ Kam Ka (Core)</span></td>
-              <td>WebSocket server jo system commands aur voice processing chalata hai. Isko open rakhna zaroori hai.</td>
-            </tr>
-            <tr>
-              <td><strong>src/app/page.tsx</strong></td>
-              <td><span style="color:var(--green)">⚡ Kam Ka (Core)</span></td>
-              <td>Futuristic layout, grids, responsive layouts mapping logic.</td>
-            </tr>
-            <tr>
-              <td><strong>src/components/assistant/</strong></td>
-              <td><span style="color:var(--green)">⚡ Kam Ka (Core)</span></td>
-              <td>WebcamFeed, NeuralNetVisualizer, settings panels and widgets.</td>
-            </tr>
-            <tr>
-              <td><strong>data/config.json</strong></td>
-              <td><span style="color:var(--green)">⚡ Kam Ka (Core)</span></td>
-              <td>Aapke manual speech selections aur API keys ki configurations values save rakhta hai.</td>
-            </tr>
-            <tr>
-              <td><strong>tsconfig.tsbuildinfo</strong></td>
-              <td><span style="color:var(--orange)">⚠️ Bekar Ka (Cache)</span></td>
-              <td>TypeScript build compiler runtime metadata cache file. Isko copy/push nahi karna chahiye, delete kar sakte hain (gitted by cache).</td>
-            </tr>
-            <tr>
-              <td><strong>pc-bridge/qrcode.png</strong></td>
-              <td><span style="color:var(--orange)">⚠️ Bekar Ka (Temp)</span></td>
-              <td>Tester commands dwara automatically genrated sample output. Safe to delete.</td>
-            </tr>
-            <tr>
-              <td><strong>idea/ folders (.txt / .html)</strong></td>
-              <td><span style="color:var(--blue)">📄 Documentation</span></td>
-              <td>Guide specifications files reference ke liye hain. Inhe main engine run code se koi talukaat nahi hain.</td>
-            </tr>
-          </tbody>
-        </table>
+        <h3>Project Files Audit</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>File / Folder Path</th><th>Status</th><th>Details</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>pc-bridge/pc_bridge.py</strong></td><td><span style="color:var(--green)">⚡ Core</span></td><td>WebSocket server for system commands &amp; voice processing.</td></tr>
+              <tr><td><strong>src/app/page.tsx</strong></td><td><span style="color:var(--green)">⚡ Core</span></td><td>Futuristic layout, grids, responsive mapping logic.</td></tr>
+              <tr><td><strong>src/components/assistant/</strong></td><td><span style="color:var(--green)">⚡ Core</span></td><td>WebcamFeed, NeuralNetVisualizer, settings panels.</td></tr>
+              <tr><td><strong>data/config.json</strong></td><td><span style="color:var(--green)">⚡ Core</span></td><td>Manual speech selections, API keys configuration.</td></tr>
+              <tr><td><strong>tsconfig.tsbuildinfo</strong></td><td><span style="color:var(--orange)">⚠️ Cache</span></td><td>TypeScript compiler cache. Safe to delete/ignore.</td></tr>
+              <tr><td><strong>pc-bridge/qrcode.png</strong></td><td><span style="color:var(--orange)">⚠️ Temp</span></td><td>Auto-generated sample output. Safe to delete.</td></tr>
+              <tr><td><strong>idea/ folders</strong></td><td><span style="color:var(--blue)">📄 Docs</span></td><td>Guide reference files only. Not runtime-critical.</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
 
@@ -852,34 +978,34 @@
         <div class="section-icon" style="background:linear-gradient(135deg,var(--green),var(--cyan))">&#128202;</div>
         <h2 class="section-title">9. System Monitor — PC Health</h2>
       </div>
-      <div class="feat-grid" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr))">
+      <div class="feat-grid" style="grid-template-columns:repeat(auto-fill,minmax(clamp(130px,38vw,200px),1fr))">
         <div class="feat-card" style="text-align:center">
-          <div style="font-size:2rem;margin-bottom:8px">&#128421;</div>
+          <div style="font-size:clamp(1.4rem,3vw,2rem);margin-bottom:8px">&#128421;</div>
           <h4 style="justify-content:center">CPU Usage</h4>
           <p>Processor kitna busy hai (%)</p>
         </div>
         <div class="feat-card" style="text-align:center">
-          <div style="font-size:2rem;margin-bottom:8px">&#129504;</div>
+          <div style="font-size:clamp(1.4rem,3vw,2rem);margin-bottom:8px">&#129504;</div>
           <h4 style="justify-content:center">RAM Usage</h4>
-          <p>Memory — GB & percentage</p>
+          <p>Memory — GB &amp; percentage</p>
         </div>
         <div class="feat-card" style="text-align:center">
-          <div style="font-size:2rem;margin-bottom:8px">&#128190;</div>
+          <div style="font-size:clamp(1.4rem,3vw,2rem);margin-bottom:8px">&#128190;</div>
           <h4 style="justify-content:center">Disk Space</h4>
           <p>Hard disk kitni bhari hai</p>
         </div>
         <div class="feat-card" style="text-align:center">
-          <div style="font-size:2rem;margin-bottom:8px">&#128267;</div>
+          <div style="font-size:clamp(1.4rem,3vw,2rem);margin-bottom:8px">&#128267;</div>
           <h4 style="justify-content:center">Battery</h4>
           <p>% aur charging status</p>
         </div>
         <div class="feat-card" style="text-align:center">
-          <div style="font-size:2rem;margin-bottom:8px">&#127760;</div>
+          <div style="font-size:clamp(1.4rem,3vw,2rem);margin-bottom:8px">&#127760;</div>
           <h4 style="justify-content:center">Network</h4>
-          <p>IP address & hostname</p>
+          <p>IP address &amp; hostname</p>
         </div>
         <div class="feat-card" style="text-align:center">
-          <div style="font-size:2rem;margin-bottom:8px">&#128203;</div>
+          <div style="font-size:clamp(1.4rem,3vw,2rem);margin-bottom:8px">&#128203;</div>
           <h4 style="justify-content:center">OS Info</h4>
           <p>Windows version, uptime</p>
         </div>
@@ -952,7 +1078,7 @@
 
       <div class="card">
         <h3>"No API key configured"</h3>
-        <p><strong>Fix:</strong> Settings &#8594; API key daalo &#8594; Save Settings. Key <a href="https://console.groq.com" target="_blank">console.groq.com</a> se milegi.</p>
+        <p><strong>Fix:</strong> Settings &#8594; API key daalo &#8594; Save Settings. Key <a href="https://console.groq.com" target="_blank" rel="noopener">console.groq.com</a> se milegi.</p>
       </div>
 
       <div class="card">
@@ -1075,78 +1201,186 @@
         <span class="tag tag-purple">Open Source</span>
       </div>
       <p style="margin-top:20px;font-size:.78rem;color:var(--text-3)">
-        Made by <a href="https://github.com/SudhirDevOps1" target="_blank" style="color:var(--cyan)">SudhirDevOps1</a>
+        Made by <a href="https://github.com/SudhirDevOps1" target="_blank" rel="noopener" style="color:var(--cyan)">SudhirDevOps1</a>
       </p>
     </footer>
 
   </main>
 </div>
 
-<button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#8593;</button>
+<!-- Mobile Bottom Quick Nav -->
+<nav class="mobile-quick-nav" id="mobileQuickNav">
+  <div class="mq-links">
+    <button class="mq-link active" data-target="hero"><span class="mq-icon">&#9733;</span>Home</button>
+    <button class="mq-link" data-target="setup"><span class="mq-icon">&#128640;</span>Setup</button>
+    <button class="mq-link" data-target="features"><span class="mq-icon">&#128187;</span>Control</button>
+    <button class="mq-link" data-target="providers"><span class="mq-icon">&#129302;</span>AI</button>
+    <button class="mq-link" data-target="troubleshoot"><span class="mq-icon">&#128295;</span>Help</button>
+  </div>
+</nav>
+
+<button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">&#8593;</button>
 
 <script>
-const progressBar = document.getElementById('scrollProgress');
-window.addEventListener('scroll', () => {
-  const h = document.documentElement;
-  const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
-  progressBar.style.width = pct + '%';
-});
+(function(){
+  'use strict';
 
-const backBtn = document.getElementById('backTop');
-window.addEventListener('scroll', () => {
-  backBtn.classList.toggle('show', window.scrollY > 400);
-});
+  // ── DOM refs ──
+  const progressBar = document.getElementById('scrollProgress');
+  const backBtn = document.getElementById('backTop');
+  const navLinksContainer = document.getElementById('navLinks');
+  const navHamburger = document.getElementById('navHamburger');
+  const navOverlay = document.getElementById('navOverlay');
+  const sidebarLinks = document.querySelectorAll('.sidebar-link');
+  const navLinkEls = document.querySelectorAll('.nav-link');
+  const mobileQuickLinks = document.querySelectorAll('.mobile-quick-nav .mq-link');
+  const sections = document.querySelectorAll('.section, .hero');
+  const revealEls = document.querySelectorAll('.reveal');
 
-const sidebarLinks = document.querySelectorAll('.sidebar-link');
-const navLinkEls = document.querySelectorAll('.nav-link');
-const sections = document.querySelectorAll('.section, .hero');
+  // ── Scroll Progress ──
+  function updateScrollProgress(){
+    const h = document.documentElement;
+    const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    progressBar.style.width = Math.min(pct, 100) + '%';
+    backBtn.classList.toggle('show', window.scrollY > 400);
+  }
+  window.addEventListener('scroll', updateScrollProgress, {passive:true});
 
-function updateActiveLink() {
-  let current = '';
-  sections.forEach(sec => {
-    const top = sec.offsetTop - 120;
-    if (window.scrollY >= top) current = sec.id;
-  });
-  sidebarLinks.forEach(link => {
-    link.classList.toggle('active', link.getAttribute('href') === '#' + current);
-  });
-  navLinkEls.forEach(link => {
-    link.classList.toggle('active', link.getAttribute('href') === '#' + current);
-  });
-}
-window.addEventListener('scroll', updateActiveLink);
+  // ── Active link tracking ──
+  function updateActiveLinks(){
+    let current = '';
+    sections.forEach(function(sec){
+      if(sec.getBoundingClientRect().top <= 150) current = sec.id;
+    });
 
-const revealEls = document.querySelectorAll('.reveal');
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) entry.target.classList.add('visible');
-  });
-}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
-revealEls.forEach(el => observer.observe(el));
+    // Desktop sidebar
+    sidebarLinks.forEach(function(link){
+      link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+    });
+    // Nav links
+    navLinkEls.forEach(function(link){
+      link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+    });
+    // Mobile quick nav
+    mobileQuickLinks.forEach(function(link){
+      link.classList.toggle('active', link.getAttribute('data-target') === current);
+    });
+  }
+  window.addEventListener('scroll', updateActiveLinks, {passive:true});
 
-function copyCode(btn) {
-  const codeBlock = btn.closest('.code-wrap').querySelector('.code-block');
-  const text = codeBlock.innerText.replace(/^Copy\s*/gm, '').trim();
-  navigator.clipboard.writeText(text).then(() => {
+  // ── Reveal animation ──
+  if('IntersectionObserver' in window){
+    const observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, {threshold:0.08, rootMargin:'0px 0px -60px 0px'});
+    revealEls.forEach(function(el){observer.observe(el);});
+  } else {
+    // Fallback for older browsers
+    revealEls.forEach(function(el){el.classList.add('visible');});
+  }
+
+  // ── Clipboard copy ──
+  function copyCode(btn){
+    const codeBlock = btn.closest('.code-wrap').querySelector('.code-block');
+    if(!codeBlock) return;
+    const text = codeBlock.innerText.replace(/^Copy\s*/gm, '').trim();
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){
+        showCopied(btn);
+      }).catch(function(){
+        fallbackCopy(btn, text);
+      });
+    } else {
+      fallbackCopy(btn, text);
+    }
+  }
+  function showCopied(btn){
     btn.textContent = 'Copied!';
     btn.classList.add('copied');
-    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
-  });
-}
+    setTimeout(function(){btn.textContent='Copy';btn.classList.remove('copied');},2000);
+  }
+  function fallbackCopy(btn, text){
+    // Legacy fallback
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.cssText = 'position:fixed;left:-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    try{document.execCommand('copy');showCopied(btn);}catch(e){btn.textContent='Error';setTimeout(function(){btn.textContent='Copy';},2000);}
+    document.body.removeChild(ta);
+  }
+  // Expose globally
+  window.copyCode = copyCode;
 
-sidebarLinks.forEach(link => {
-  link.addEventListener('click', (e) => {
-    e.preventDefault();
-    const id = link.getAttribute('href').slice(1);
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+  // ── Mobile Navigation ──
+  function closeMobileNav(){
+    navLinksContainer.classList.remove('open');
+    navHamburger.classList.remove('open');
+    navOverlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function openMobileNav(){
+    navLinksContainer.classList.add('open');
+    navHamburger.classList.add('open');
+    navOverlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  navHamburger.addEventListener('click', function(){
+    if(navLinksContainer.classList.contains('open')){closeMobileNav();}
+    else{openMobileNav();}
   });
-});
+  navOverlay.addEventListener('click', closeMobileNav);
 
-navLinkEls.forEach(link => {
-  link.addEventListener('click', () => {
-    document.getElementById('navLinks').classList.remove('open');
+  // Close nav when any link clicked
+  navLinksContainer.querySelectorAll('a').forEach(function(link){
+    link.addEventListener('click', closeMobileNav);
   });
-});
+
+  // Close on Escape
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && navLinksContainer.classList.contains('open')){
+      closeMobileNav();
+    }
+  });
+
+  // ── Sidebar & Mobile Quick Nav Smooth Scroll ──
+  sidebarLinks.forEach(function(link){
+    link.addEventListener('click', function(e){
+      e.preventDefault();
+      var id = link.getAttribute('href').slice(1);
+      var target = document.getElementById(id);
+      if(target){target.scrollIntoView({behavior:'smooth'});}
+    });
+  });
+  mobileQuickLinks.forEach(function(link){
+    link.addEventListener('click', function(e){
+      e.preventDefault();
+      var id = link.getAttribute('data-target');
+      var target = document.getElementById(id);
+      if(target){
+        var offset = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 80;
+        var top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+        window.scrollTo({top:top, behavior:'smooth'});
+      }
+    });
+  });
+
+  // ── Swipe to close mobile nav ──
+  var touchStartX = 0;
+  navLinksContainer.addEventListener('touchstart', function(e){
+    touchStartX = e.touches[0].clientX;
+  }, {passive:true});
+  navLinksContainer.addEventListener('touchmove', function(e){
+    var diff = e.touches[0].clientX - touchStartX;
+    if(diff > 50){closeMobileNav();}
+  }, {passive:true});
+
+  // ── Initial state ──
+  updateScrollProgress();
+  updateActiveLinks();
+})();
 </script>
 
 </body>
