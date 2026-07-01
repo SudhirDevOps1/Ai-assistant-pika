@@ -73,10 +73,10 @@
     .nav-hamburger.open .ham-line{background:transparent}
     .nav-hamburger.open .ham-line::before{top:0;transform:rotate(45deg)}
     .nav-hamburger.open .ham-line::after{top:0;transform:rotate(-45deg)}
-    /* Always show hamburger on touch devices regardless of width */
-    @media (pointer:coarse),(hover:none){
-      .nav-hamburger{display:flex!important}
-    }
+    /* NOTE: Hamburger button appears ONLY at ≤900px viewport (see media query below).
+       On desktop, users see the inline nav-links instead. Do NOT force display on
+       touch devices — desktop touchscreens (Windows laptops) should still see the
+       normal desktop nav, not both simultaneously. */
 
     /* Mobile nav overlay */
     .nav-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:98;opacity:0;pointer-events:none;transition:opacity .35s}
@@ -300,13 +300,13 @@
        RESPONSIVE BREAKPOINTS
        ═══════════════════════════════════════ */
 
-    /* ── Tablet (≤1024px) ── */
+    /* ── Tablet (≤1024px) — only hides the secondary left sidebar, nav stays desktop ── */
     @media(max-width:1024px){
       .sidebar{display:none}
       .main{max-width:100%;padding:clamp(16px,3vw,32px) clamp(12px,3vw,28px) clamp(70px,10vw,90px)}
       .arch-diagram{gap:8px}
       .arch-arrow{font-size:1rem}
-      .nav-hamburger{display:flex!important}
+      /* Hamburger stays hidden here — only appears at ≤900px (see next media query) */
     }
 
     /* ── Mobile / Tablet (≤900px) ── */
