@@ -537,6 +537,8 @@
     <a class="md-link" href="#troubleshoot"><span class="md-num">11</span> Troubleshoot</a>
     <a class="md-link" href="#screenshots"><span class="md-num">&#128247;</span> Screenshots</a>
     <a class="md-link" href="#roadmap"><span class="md-num">&#128506;</span> Roadmap</a>
+    <a class="md-link" href="#advanced-tools"><span class="md-num">&#129514;</span> Advanced Tools (v2)</a>
+    <a class="md-link" href="#smart-nlu"><span class="md-num">&#129504;</span> Smart NLU (v2)</a>
     <a class="md-link" href="#contributing"><span class="md-num">&#129309;</span> Contributing</a>
   </div>
 </div>
@@ -565,6 +567,8 @@
     <a class="sidebar-link" href="#troubleshoot"><span class="s-num">11</span> Troubleshoot</a>
     <a class="sidebar-link" href="#screenshots"><span class="s-num">&#128247;</span> Screenshots</a>
     <a class="sidebar-link" href="#roadmap"><span class="s-num">&#128506;</span> Roadmap</a>
+    <a class="sidebar-link" href="#advanced-tools"><span class="s-num">&#129514;</span> Advanced Tools (v2)</a>
+    <a class="sidebar-link" href="#smart-nlu"><span class="s-num">&#129504;</span> Smart NLU (v2)</a>
     <a class="sidebar-link" href="#contributing"><span class="s-num">&#129309;</span> Contributing</a>
   </aside>
 
@@ -1561,6 +1565,39 @@
         <span class="alert-icon">&#127942;</span>
         <span class="alert-text"><strong>Recommendation:</strong> Beginners ke liye <strong>Groq + Llama 3.3 70B</strong> best hai — free, fast, aur smart! API key banane mein 1 minute lagega.</span>
       </div>
+
+      <h3 style="margin:28px 0 12px;font-size:1rem;color:var(--text-2);font-weight:700">&#129514; 3 More Free Providers (v2 Concept — Not Yet Integrated)</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Provider</th><th>Best Models</th><th>Free Limit</th><th>Best For</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong style="color:var(--cyan)">OpenRouter</strong></td>
+              <td>Llama 3.3 70B Instruct (free tier)</td>
+              <td>20+ free models available</td>
+              <td>Access to many free models via one key</td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--pink)">Z.ai (GLM)</strong></td>
+              <td>GLM-4-Flash</td>
+              <td>100 queries/day</td>
+              <td>Fast Chinese-origin LLM, general chat</td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--yellow)">DeepSeek</strong></td>
+              <td>DeepSeek Chat</td>
+              <td>500 queries/day</td>
+              <td>Coding-expert responses</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="alert alert-info" style="margin-top:12px">
+        <span class="alert-icon">&#128161;</span>
+        <span class="alert-text">These 3 providers are part of the community v2 spec's 7-provider auto-fallback chain (<code>groq → cerebras → gemini → deepseek → mistral → openrouter → zai</code>) and are <strong>not yet wired into the current v0.2.0 codebase</strong> — tracked under <a href="#roadmap">Roadmap</a>.</span>
+      </div>
     </section>
 
     <div class="divider"></div>
@@ -1669,6 +1706,134 @@
           <h4>Long-Term Vision</h4>
           <p>Mobile app (React Native) • Cloud sync for settings • Team collaboration features • AI agent with tool use • Automation workflows (if-this-then-that) • GitHub Actions CI/CD</p>
         </div>
+        <div class="bento-card bento-span-2" style="border-color:rgba(236,72,153,.3)">
+          <span class="bento-tag" style="background:rgba(236,72,153,.15);color:var(--pink)">&#129514; v2.0 — Mega Update (Concept)</span>
+          <h4>30+ Command Categories &amp; Advanced Automation Suite</h4>
+          <p>A community-drafted "Pika v2" specification exists that massively expands scope: <strong>7 AI providers</strong> (adds OpenRouter, Z.ai, DeepSeek to the current 4), a full <strong>Macro Engine</strong> (record/replay mouse+keyboard), <strong>OCR</strong> screen reading, <strong>PDF tools</strong> (merge/split/extract), <strong>Image tools</strong> (resize/convert/compress), <strong>QR code generator</strong>, safe <strong>Calculator</strong>, <strong>Translator</strong> (8+ languages), <strong>Password Generator</strong>, <strong>Weather &amp; News widgets</strong>, local <strong>Music Player</strong>, <strong>Disk cleanup tools</strong>, <strong>Text Expander</strong> snippets, a cron-like <strong>Task Scheduler</strong>, and a global <strong>Hotkey Manager</strong> — plus a formal WebSocket confirmation-flow for destructive commands. See <a href="#advanced-tools">Advanced Tools Suite</a> and <a href="#smart-nlu">Smart NLU</a> below for the full breakdown.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ADVANCED TOOLS SUITE (v2 concept spec) -->
+    <section class="section reveal" id="advanced-tools">
+      <div class="section-head">
+        <div class="section-icon" style="background:linear-gradient(135deg,var(--pink),var(--purple))">&#129514;</div>
+        <h2 class="section-title">&#129514; Advanced Tools Suite <span style="font-size:.6em;color:var(--text-3);font-weight:600">(v2 Concept — Not Yet in v0.2.0)</span></h2>
+      </div>
+
+      <div class="alert alert-warn">
+        <span class="alert-icon">&#9888;&#65039;</span>
+        <span class="alert-text"><strong>Status:</strong> Yeh section ek community-drafted "mega spec" document se liya gaya hai jo Pika AI ke agle major version (v2.0) ke liye future direction define karta hai. Current stable <code>v0.2.0</code> release mein yeh tools <strong>abhi included nahi hain</strong> — inhe <a href="#roadmap">Roadmap</a> mein track kiya ja raha hai.</span>
+      </div>
+
+      <div class="bento-grid">
+        <div class="bento-card">
+          <span class="bento-tag">🔴 Automation</span>
+          <h4>Macro Engine</h4>
+          <p>Record mouse clicks, movements &amp; keystrokes with timestamps, save as reusable macros, replay with realistic timing.</p>
+        </div>
+        <div class="bento-card">
+          <span class="bento-tag">👁️ Vision</span>
+          <h4>OCR Screen Reader</h4>
+          <p>Capture any screen region and extract text instantly using Tesseract OCR — copy results with one click.</p>
+        </div>
+        <div class="bento-card">
+          <span class="bento-tag">📕 Documents</span>
+          <h4>PDF Toolkit</h4>
+          <p>Merge multiple PDFs, split by page range, and extract raw text — all processed locally, no upload needed.</p>
+        </div>
+        <div class="bento-card">
+          <span class="bento-tag">🖼️ Media</span>
+          <h4>Image Toolkit</h4>
+          <p>Resize to exact dimensions, convert between formats (PNG/JPG/WebP), and compress for smaller file sizes.</p>
+        </div>
+        <div class="bento-card">
+          <span class="bento-tag">📱 Sharing</span>
+          <h4>QR Code Generator</h4>
+          <p>Turn any text or URL into a downloadable QR code PNG instantly — great for sharing WiFi passwords or links.</p>
+        </div>
+        <div class="bento-card">
+          <span class="bento-tag">🧮 Utility</span>
+          <h4>Safe Calculator</h4>
+          <p>Voice or text-based math evaluation using a whitelisted expression parser (never raw <code>eval()</code>) — supports trig, log, and constants.</p>
+        </div>
+        <div class="bento-card">
+          <span class="bento-tag">🌍 Language</span>
+          <h4>Translator</h4>
+          <p>Free translation across Hindi, English, French, German, Spanish, Japanese, Chinese &amp; Arabic via the MyMemory API — no key required.</p>
+        </div>
+        <div class="bento-card">
+          <span class="bento-tag">🔐 Security</span>
+          <h4>Password Generator</h4>
+          <p>Cryptographically secure passwords using Python's <code>secrets</code> module, with strength meter and auto-copy to clipboard.</p>
+        </div>
+        <div class="bento-card">
+          <span class="bento-tag">☀️ Live Data</span>
+          <h4>Weather Widget</h4>
+          <p>Real-time weather via <code>wttr.in</code> — no API key needed. Temperature, condition, humidity &amp; wind in Hindi.</p>
+        </div>
+        <div class="bento-card">
+          <span class="bento-tag">📰 Live Data</span>
+          <h4>News Reader</h4>
+          <p>Top headlines from BBC RSS feeds (General, Tech, Sports, India, Hindi) with direct links.</p>
+        </div>
+        <div class="bento-card">
+          <span class="bento-tag">🎵 Local Media</span>
+          <h4>Music Player</h4>
+          <p>Scan your Music folder and play local <code>.mp3</code>/<code>.wav</code>/<code>.flac</code> files with play/pause/stop controls.</p>
+        </div>
+        <div class="bento-card">
+          <span class="bento-tag">🧹 Maintenance</span>
+          <h4>Disk Tools</h4>
+          <p>Clean temp files older than 1 day, find duplicate files by hash, and analyze folder sizes — with confirmation before deletion.</p>
+        </div>
+        <div class="bento-card">
+          <span class="bento-tag">⌨️ Productivity</span>
+          <h4>Text Expander</h4>
+          <p>Define trigger → expansion snippets (e.g. type "sig" to auto-type your full email signature).</p>
+        </div>
+        <div class="bento-card">
+          <span class="bento-tag">📅 Automation</span>
+          <h4>Task Scheduler</h4>
+          <p>Cron-like scheduling: "every X minutes", "at HH:MM", "daily at HH:MM" — runs any Pika command automatically.</p>
+        </div>
+        <div class="bento-card">
+          <span class="bento-tag">🎹 Global Input</span>
+          <h4>Hotkey Manager</h4>
+          <p>Bind custom global keyboard shortcuts (e.g. <code>Ctrl+Shift+P</code>) to any Pika command, system-wide.</p>
+        </div>
+        <div class="bento-card bento-span-2">
+          <span class="bento-tag">🛡️ Safety</span>
+          <h4>Confirmation Flow for Destructive Commands</h4>
+          <p>Shutdown, restart, sleep, file/folder deletion, process kill, and temp cleanup all require an explicit <strong>confirm/reject</strong> round-trip over WebSocket before execution — plus blocked system paths, rate limiting (sliding window), and a safe calculator sandbox.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- SMART NLU CONCEPTS (v2 concept spec) -->
+    <section class="section reveal" id="smart-nlu">
+      <div class="section-head">
+        <div class="section-icon" style="background:linear-gradient(135deg,var(--cyan),var(--green))">&#129504;</div>
+        <h2 class="section-title">&#129504; Smart NLU Concepts <span style="font-size:.6em;color:var(--text-3);font-weight:600">(v2 Concept)</span></h2>
+      </div>
+
+      <div class="card">
+        <h3>Natural, Hinglish-Aware Command Understanding</h3>
+        <p style="margin-bottom:12px">Ideas from the v2 spec for making voice commands feel more natural, beyond simple keyword matching:</p>
+        <ul>
+          <li><strong>Vague quantities:</strong> <em>"volume thoda karo"</em> → +5% • <em>"bahut loud hai"</em> → −20% • <em>"ek dam"</em> → 100%</li>
+          <li><strong>Multi-step commands:</strong> <em>"open chrome and search for pika ai"</em> → opens Chrome, then searches — splitting on "and" / "aur" / "फिर"</li>
+          <li><strong>Natural file paths:</strong> <em>"desktop par file banao test.txt"</em> → resolves to <code>~/Desktop/test.txt</code> automatically</li>
+          <li><strong>Context awareness:</strong> <em>"close this"</em> closes the currently focused window; <em>"save"</em> in an editor sends Ctrl+S</li>
+          <li><strong>Emotional keyword responses:</strong> <em>"thak gaya"</em> → suggests a break; <em>"bored"</em> → suggests music/YouTube/a joke</li>
+          <li><strong>Command aliases:</strong> users define shortcuts like <code>"bs"</code> → <code>"open brave"</code> in settings</li>
+          <li><strong>Undo last command:</strong> <em>"undo" / "वापस"</em> reverses the last reversible action (volume, rename, etc.)</li>
+          <li><strong>Auto-complete suggestions:</strong> typing "vol" in chat suggests "volume up", "volume 50%", "volume mute"</li>
+        </ul>
       </div>
     </section>
 
