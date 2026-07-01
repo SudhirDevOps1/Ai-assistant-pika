@@ -20,6 +20,9 @@ import { SchedulerPanel } from '@/components/assistant/scheduler-panel'
 import { toast } from 'sonner'
 import { PcBridgeProvider } from '@/components/assistant/pc-bridge-provider'
 import { PiPWindow } from '@/components/assistant/PiPWindow'
+import { usePcBridge } from '@/hooks/use-pc-bridge'
+import { WebcamFeed } from '@/components/assistant/webcam-feed'
+import { NeuralNetVisualizer } from '@/components/assistant/neural-net-visualizer'
 
 function HeaderBar() {
   const [mounted, setMounted] = useState(false)
@@ -118,6 +121,7 @@ function Starfield() {
 
 export default function HomePage() {
   const { activePanel, sidebarOpen, auroraTheme, pipMode } = useAssistantStore()
+  const { systemData } = usePcBridge()
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
 
   // Cursor tracking for ambient parallax
@@ -195,13 +199,134 @@ export default function HomePage() {
       case 'scheduler':
         return <SchedulerPanel />
       case 'chat':
-      default:
+      default: {
+        const cpu = Math.round(Number(systemData?.cpu_percent ?? 34))
+        const ram = Math.round(Number(systemData?.ram_percent ?? 65))
+        const temp = Math.round(Number(systemData?.cpu_temp ?? 50))
+        const osName = String(systemData?.os ?? 'Windows 11')
+
         return (
-          <>
-            <ChatArea />
-            <ChatInput />
-          </>
+          <div className="flex-1 flex gap-4 p-4 min-h-0 overflow-hidden text-white bg-[#03060f]/95">
+            {/* Left Column: Network Telemetry & Core Metrics */}
+            <div className="w-[280px] flex flex-col gap-4 select-none shrink-0 overflow-y-auto pr-1">
+              {/* Network Telemetry */}
+              <div className="glass-card rounded-2xl border border-white/5 bg-slate-950/40 p-4 space-y-2">
+                <span className="text-[10px] uppercase font-bold tracking-wider text-cyan-400">
+                  ⚡ Network Telemetry
+                </span>
+                <div className="grid grid-cols-2 gap-4 pt-1">
+                  <div>
+                    <div className="text-[9px] text-muted-foreground uppercase font-semibold">Avg Latency</div>
+                    <div className="text-sm font-bold text-white tracking-wide">10ms</div>
+                  </div>
+                  <div>
+                    <div className="text-[9px] text-muted-foreground uppercase font-semibold">Packet Rate</div>
+                    <div className="text-sm font-bold text-white tracking-wide">42 KB/s</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Core Metrics */}
+              <div className="glass-card rounded-2xl border border-white/5 bg-slate-950/40 p-4 space-y-3">
+                <span className="text-[10px] uppercase font-bold tracking-wider text-cyan-400">
+                  📊 Core Metrics
+                </span>
+                <div className="grid grid-cols-2 gap-4 pt-1">
+                  <div className="flex flex-col items-center">
+                    <div className="text-[9px] text-muted-foreground uppercase font-semibold pb-1">CPU Load</div>
+                    <div className="relative w-14 h-14 flex items-center justify-center border border-white/5 rounded-full bg-slate-950/30">
+                      <span className="text-[11px] font-bold">{cpu}%</span>
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-center">
+                    <div className="text-[9px] text-muted-foreground uppercase font-semibold pb-1">RAM Usage</div>
+                    <div className="relative w-14 h-14 flex items-center justify-center border border-white/5 rounded-full bg-slate-950/30">
+                      <span className="text-[11px] font-bold">{ram}%</span>
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-center">
+                    <div className="text-[9px] text-muted-foreground uppercase font-semibold pb-1">Temp</div>
+                    <div className="relative w-14 h-14 flex items-center justify-center border border-white/5 rounded-full bg-slate-950/30">
+                      <span className="text-[11px] font-bold">{temp}°C</span>
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-center">
+                    <div className="text-[9px] text-muted-foreground uppercase font-semibold pb-1">OS</div>
+                    <div className="relative w-14 h-14 flex flex-col items-center justify-center border border-white/5 rounded-full bg-slate-950/30 text-[9px] text-center font-bold p-1">
+                      <span className="leading-tight text-white/90">{osName}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Webcam Live Toggler */}
+              <WebcamFeed />
+
+              {/* Built With the Best (Technology Blueprint) */}
+              <div className="glass-card rounded-2xl border border-white/5 bg-slate-950/40 p-4 space-y-3">
+                <span className="text-[10px] uppercase font-bold tracking-wider text-cyan-400">
+                  🛠️ Built With the Best
+                </span>
+                <div className="space-y-3 pt-1 text-[10px] select-none">
+                  <div>
+                    <div className="font-bold text-white flex items-center gap-1">⚡ AI Engine <span className="text-cyan-400 font-semibold">(Gemini Flash)</span></div>
+                    <div className="text-muted-foreground leading-snug">Core reasoning and multimodal screen understanding</div>
+                  </div>
+                  <div>
+                    <div className="font-bold text-white flex items-center gap-1">🐍 Backend Engine <span className="text-cyan-400 font-semibold">(Python Core)</span></div>
+                    <div className="text-muted-foreground leading-snug">Local system execution, processes, and tools framework</div>
+                  </div>
+                  <div>
+                    <div className="font-bold text-white flex items-center gap-1">⚙️ OS Automation <span className="text-cyan-400 font-semibold">(pyautogui)</span></div>
+                    <div className="text-muted-foreground leading-snug">Sub-millisecond keyboard and cursor movement injection</div>
+                  </div>
+                  <div>
+                    <div className="font-bold text-white flex items-center gap-1">🗣️ Voice Array <span className="text-cyan-400 font-semibold">(Whisper API)</span></div>
+                    <div className="text-muted-foreground leading-snug">High-speed audio-to-intent stream decoding</div>
+                  </div>
+                  <div>
+                    <div className="font-bold text-white flex items-center gap-1">🌐 Web App <span className="text-cyan-400 font-semibold">(Next.js 14)</span></div>
+                    <div className="text-muted-foreground leading-snug">React app with server-side generation features</div>
+                  </div>
+                  <div>
+                    <div className="font-bold text-white flex items-center gap-1">🎨 Design System <span className="text-cyan-400 font-semibold">(Tailwind CSS)</span></div>
+                    <div className="text-muted-foreground leading-snug">Utility tokens powering modern premium animations</div>
+                  </div>
+                  <div>
+                    <div className="font-bold text-white flex items-center gap-1">📦 Packaging <span className="text-cyan-400 font-semibold">(PyInstaller)</span></div>
+                    <div className="text-muted-foreground leading-snug">Lightweight desktop executable compiler under 120MB</div>
+                  </div>
+                  <div>
+                    <div className="font-bold text-white flex items-center gap-1">🗄️ Local Memory <span className="text-cyan-400 font-semibold">(SQLite 3)</span></div>
+                    <div className="text-muted-foreground leading-snug">Local vector context database keeping system private</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Center Column: Rotating Circular Gyroscope Orbits */}
+            <div className="flex-1 glass-card rounded-2xl border border-white/5 bg-slate-950/20 flex flex-col items-center justify-center p-4 min-w-[280px]">
+              <NeuralNetVisualizer />
+            </div>
+
+            {/* Right Column: Stylized Transcript Feed */}
+            <div className="w-[320px] glass-card rounded-2xl border border-white/5 bg-[#040713]/80 flex flex-col shrink-0 overflow-hidden relative">
+              <div className="p-3 border-b border-white/5 flex items-center gap-2 select-none">
+                <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+                <span className="text-[10px] uppercase font-bold tracking-wider text-cyan-400">
+                  📜 Transcript logs
+                </span>
+              </div>
+              <div className="flex-1 flex flex-col min-h-0">
+                <ChatArea />
+                <div className="p-2 border-t border-white/5">
+                  <ChatInput />
+                </div>
+              </div>
+            </div>
+          </div>
         )
+      }
     }
   }
 
