@@ -714,6 +714,99 @@
 
     <div class="divider"></div>
 
+    <!-- 6b. VYRON DASHBOARD & SYSTEM ARCHITECTURE -->
+    <section class="section reveal" id="architecture">
+      <div class="section-head">
+        <div class="section-icon" style="background:linear-gradient(135deg,var(--cyan),var(--purple))">&#128736;</div>
+        <h2 class="section-title">6b. Vyron Dashboard & Project Architecture Guide</h2>
+      </div>
+
+      <!-- Part 1: Dashboard Columns -->
+      <div class="card">
+        <h3>Vyron A.I. 3-Column Grid Interface Layout</h3>
+        <p style="margin-bottom:12px">Naya futuristic matte-black dashboard 3 columns mein structured hai:</p>
+        <ul>
+          <li><strong>Left Column (Diagnostics & Stack)</strong>:
+            <br>• <strong>Network Telemetry:</strong> Connection speed and avg latency (10ms).
+            <br>• <strong>Core Metrics:</strong> CPU, RAM, Temp, aur OS ke real-time status details.
+            <br>• <strong>Webcam Feed:</strong> Purple toggle switch "ON" karne par browser camera stream start ho jata hai.
+            <br>• <strong>Built With the Best:</strong> Technology specs details (Gemini Flash, Python, pyautogui, Whisper, Next.js, PyInstaller, SQLite 3).
+          </li>
+          <li><strong>Center Column (Neural Visualizer & Call Controls)</strong>:
+            <br>• <strong>SVG Orbiting Rings:</strong> Rotating gyroscopes jo system status (Listening, Speaking, Thinking, Idle) ke sath react karte hain.
+            <br>• <strong>Voice Control Buttons:</strong> Recording active mic indicator (Mic toggle), central voice call trigger, aur manual chat toggler.
+          </li>
+          <li><strong>Right Column (Transcript Logs & Manual Typing Chat)</strong>:
+            <br>• <strong>📜 Transcript logs:</strong> Chat history displays in transparent bordered bubble styling.
+            <br>• <strong>Manual typing input:</strong> Agar aapko bolna nahi hai, toh keyboard button dabake chat logs pane open karein aur seedhe type karke PC commands chalwayein!
+          </li>
+        </ul>
+      </div>
+
+      <!-- Part 2: Zero-Delay TTS & PiP Window -->
+      <div class="card">
+        <h3>Smart Offline/Online Voice Engine & PiP Floating Window</h3>
+        <ul>
+          <li><strong>Zero-Delay TTS Fallback</strong>: Edge-TTS online check karne ke liye background mein ek fast DNS query (0.6s timeout) chalti hai. Agar aap completely offline hain, toh server 4-second Bing timeout delays ke bina instantly offline woyce engine (Pyttsx3) pe switch kar leta hai.</li>
+          <li><strong>PiP Floating Window:</strong> Isko dekhne ke liye settings panel (⚙️) pe jayein aur "Picture-in-Picture" Toggle Switch ON karein. Yeh widget screen pe humesha top pe rahega aur live action logs (jaise 📄 Creating file...) display karega.</li>
+        </ul>
+      </div>
+
+      <!-- Part 3: Architecture Audit -->
+      <div class="card">
+        <h3>Project Files Audit (Kaam Ka vs Bekar Ka Details)</h3>
+        <p style="margin-bottom:12px">Pro professional audit ke mutabik kaun si file kis kaam aati hai:</p>
+        <table style="width:100%; border-collapse: collapse;">
+          <thead>
+            <tr>
+              <th style="width:30%">File / Folder Path</th>
+              <th style="width:20%">Status</th>
+              <th style="width:50%">Details / Action Needed</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>pc-bridge/pc_bridge.py</strong></td>
+              <td><span style="color:var(--green)">⚡ Kam Ka (Core)</span></td>
+              <td>WebSocket server jo system commands aur voice processing chalata hai. Isko open rakhna zaroori hai.</td>
+            </tr>
+            <tr>
+              <td><strong>src/app/page.tsx</strong></td>
+              <td><span style="color:var(--green)">⚡ Kam Ka (Core)</span></td>
+              <td>Futuristic layout, grids, responsive layouts mapping logic.</td>
+            </tr>
+            <tr>
+              <td><strong>src/components/assistant/</strong></td>
+              <td><span style="color:var(--green)">⚡ Kam Ka (Core)</span></td>
+              <td>WebcamFeed, NeuralNetVisualizer, settings panels and widgets.</td>
+            </tr>
+            <tr>
+              <td><strong>data/config.json</strong></td>
+              <td><span style="color:var(--green)">⚡ Kam Ka (Core)</span></td>
+              <td>Aapke manual speech selections aur API keys ki configurations values save rakhta hai.</td>
+            </tr>
+            <tr>
+              <td><strong>tsconfig.tsbuildinfo</strong></td>
+              <td><span style="color:var(--orange)">⚠️ Bekar Ka (Cache)</span></td>
+              <td>TypeScript build compiler runtime metadata cache file. Isko copy/push nahi karna chahiye, delete kar sakte hain (gitted by cache).</td>
+            </tr>
+            <tr>
+              <td><strong>pc-bridge/qrcode.png</strong></td>
+              <td><span style="color:var(--orange)">⚠️ Bekar Ka (Temp)</span></td>
+              <td>Tester commands dwara automatically genrated sample output. Safe to delete.</td>
+            </tr>
+            <tr>
+              <td><strong>idea/ folders (.txt / .html)</strong></td>
+              <td><span style="color:var(--blue)">📄 Documentation</span></td>
+              <td>Guide specifications files reference ke liye hain. Inhe main engine run code se koi talukaat nahi hain.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
     <!-- 7. REMINDERS -->
     <section class="section reveal" id="reminders">
       <div class="section-head">
