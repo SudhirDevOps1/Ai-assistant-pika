@@ -11,14 +11,20 @@ import {
   ChevronRight,
   Mic,
   Terminal,
+  Wrench,
+  Repeat,
+  Calendar,
 } from 'lucide-react'
 import { useAssistantStore, type ActivePanel } from '@/store/assistant-store'
 import { providerNames } from '@/lib/model-catalog'
 import { cn } from '@/lib/utils'
 
-const navItems: { id: ActivePanel; icon: typeof MessageSquare; label: string }[] = [
+const navItems: { id: ActivePanel; icon: any; label: string }[] = [
   { id: 'chat', icon: MessageSquare, label: 'Chat' },
   { id: 'pc-control', icon: Terminal, label: 'PC Control' },
+  { id: 'tools', icon: Wrench, label: 'Advanced Tools' },
+  { id: 'macros', icon: Repeat, label: 'Macros' },
+  { id: 'scheduler', icon: Calendar, label: 'Scheduler' },
   { id: 'reminders', icon: Bell, label: 'Reminders' },
   { id: 'clipboard', icon: ClipboardList, label: 'Clipboard' },
   { id: 'system', icon: Monitor, label: 'System' },

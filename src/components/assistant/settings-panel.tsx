@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Eye, EyeOff, Save, Volume2, Zap, Terminal } from 'lucide-react'
+import { Eye, EyeOff, Save, Volume2, Zap, Terminal, Loader2 } from 'lucide-react'
 import { useAssistantStore } from '@/store/assistant-store'
 import { providerModels, providerNames } from '@/lib/model-catalog'
 import { Input } from '@/components/ui/input'
@@ -23,6 +23,8 @@ export function SettingsPanel() {
     setAutoFallback,
     conversationLimit,
     setConversationLimit,
+    pipMode,
+    setPipMode,
     wakeWord,
     setWakeWord,
     ttsVoice,
@@ -31,12 +33,31 @@ export function SettingsPanel() {
     setPcBridgeUrl,
     auroraTheme,
     setAuroraTheme,
+    speechMode,
+    setSpeechMode,
+    sttEngine,
+    setSttEngine,
+    ttsEngine,
+    setTtsEngine,
   } = useAssistantStore()
   const [showKeys, setShowKeys] = useState<Record<string, boolean>>({})
   const [localTtsVoice, setLocalTtsVoice] = useState(ttsVoice)
   const [localWakeWord, setLocalWakeWord] = useState(wakeWord)
   const [localAuroraTheme, setLocalAuroraTheme] = useState(auroraTheme)
+  const [localSpeechMode, setLocalSpeechMode] = useState<'online' | 'offline'>('online')
+  const [localSttEngine, setLocalSttEngine] = useState<'web_speech' | 'vosk'>('web_speech')
+  const [localTtsEngine, setLocalTtsEngine] = useState<'edge_tts' | 'pyttsx3'>('edge_tts')
   const [loaded, setLoaded] = useState(false)
+  const [isCustomModel, setIsCustomModel] = useState(false)
+
+  // Auto-detect if current model is custom or preset
+  useEffect(() => {
+    if (loaded && provider) {
+      const presets = providerModels[provider] || []
+      const isPreset = presets.some((m) => m.id === model)
+      setIsCustomModel(!isPreset && model !== '')
+    }
+  }, [loaded, provider, model])
 
   useEffect(() => {
     if (!loaded) {
@@ -62,11 +83,23 @@ export function SettingsPanel() {
           if (data.pcBridgeUrl) {
             setPcBridgeUrl(data.pcBridgeUrl)
           }
+          if (data.speechMode) {
+            setSpeechMode(data.speechMode)
+            setLocalSpeechMode(data.speechMode)
+          }
+          if (data.sttEngine) {
+            setSttEngine(data.sttEngine)
+            setLocalSttEngine(data.sttEngine)
+          }
+          if (data.ttsEngine) {
+            setTtsEngine(data.ttsEngine)
+            setLocalTtsEngine(data.ttsEngine)
+          }
           setLoaded(true)
         })
         .catch(() => setLoaded(true))
     }
-  }, [loaded, setProvider, setModel, setApiKey, setAutoFallback, setConversationLimit, setWakeWord, setTtsVoice, setAuroraTheme])
+  }, [loaded, setProvider, setModel, setApiKey, setAutoFallback, setConversationLimit, setWakeWord, setTtsVoice, setAuroraTheme, setSpeechMode, setSttEngine, setTtsEngine])
 
   const handleSave = async () => {
     try {
@@ -81,11 +114,17 @@ export function SettingsPanel() {
           wakeWord: localWakeWord,
           auroraTheme: localAuroraTheme,
           pcBridgeUrl,
+          speechMode: localSpeechMode,
+          sttEngine: localSttEngine,
+          ttsEngine: localTtsEngine,
         }),
       })
       setTtsVoice(localTtsVoice)
       setWakeWord(localWakeWord)
       setAuroraTheme(localAuroraTheme)
+      setSpeechMode(localSpeechMode)
+      setSttEngine(localSttEngine)
+      setTtsEngine(localTtsEngine)
       toast.success('Settings saved successfully!')
     } catch {
       toast.error('Failed to save settings')
@@ -94,6 +133,40 @@ export function SettingsPanel() {
 
   const toggleKeyVisibility = (p: string) => {
     setShowKeys((prev) => ({ ...prev, [p]: !prev[p] }))
+  }
+
+  const [testingKey, setTestingKey] = useState<Record<string, boolean>>({})
+
+  const handleTestKey = async (p: string) => {
+    const key = apiKeys[p]
+    if (!key || key.trim() === '') {
+      toast.error(`Please enter a key for ${providerNames[p]} first`)
+      return
+    }
+
+    setTestingKey((prev) => ({ ...prev, [p]: true }))
+    try {
+      const response = await fetch('/api/config/test-key', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          provider: p,
+          apiKey: key,
+          model: p === provider ? model : undefined,
+        }),
+      })
+
+      const data = await response.json()
+      if (data.success) {
+        toast.success(`🎉 ${providerNames[p]} API Key is valid and working!`)
+      } else {
+        toast.error(`❌ ${data.error}`)
+      }
+    } catch (e: any) {
+      toast.error(`Failed to test key: ${e.message || e}`)
+    } finally {
+      setTestingKey((prev) => ({ ...prev, [p]: false }))
+    }
   }
 
   const currentModels = providerModels[provider] || []
@@ -148,23 +221,47 @@ export function SettingsPanel() {
               </div>
             </div>
             <div className="space-y-2">
-              <Label className="text-xs text-muted-foreground">Model</Label>
-              <div className="grid gap-1.5 max-h-48 overflow-y-auto custom-scrollbar">
-                {currentModels.map((m) => (
-                  <motion.button
-                    key={m.id}
-                    whileHover={{ x: 2 }}
-                    onClick={() => setModel(m.id)}
-                    className={`w-full px-3 py-2 rounded-lg text-xs text-left transition-all duration-200 ${
-                      model === m.id
-                        ? 'bg-cyan-500/15 border border-cyan-500/30 text-white'
-                        : 'hover:bg-white/5 text-muted-foreground hover:text-white'
-                    }`}
-                  >
-                    {m.name}
-                  </motion.button>
-                ))}
+              <div className="flex justify-between items-center">
+                <Label className="text-xs text-muted-foreground">Model</Label>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] text-muted-foreground">Custom Model ID</span>
+                  <Switch
+                    checked={isCustomModel}
+                    onCheckedChange={(checked) => {
+                      setIsCustomModel(checked)
+                      if (!checked && currentModels.length > 0) {
+                        setModel(currentModels[0].id)
+                      }
+                    }}
+                  />
+                </div>
               </div>
+
+              {isCustomModel ? (
+                <Input
+                  value={model}
+                  onChange={(e) => setModel(e.target.value)}
+                  placeholder="Enter custom model ID (e.g. google/gemini-2.5-pro or glm-4)"
+                  className="bg-white/5 border-white/10 text-sm h-9"
+                />
+              ) : (
+                <div className="grid gap-1.5 max-h-48 overflow-y-auto custom-scrollbar">
+                  {currentModels.map((m) => (
+                    <motion.button
+                      key={m.id}
+                      whileHover={{ x: 2 }}
+                      onClick={() => setModel(m.id)}
+                      className={`w-full px-3 py-2 rounded-lg text-xs text-left transition-all duration-200 ${
+                        model === m.id
+                          ? 'bg-cyan-500/15 border border-cyan-500/30 text-white'
+                          : 'hover:bg-white/5 text-muted-foreground hover:text-white'
+                      }`}
+                    >
+                      {m.name}
+                    </motion.button>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </motion.div>
@@ -192,11 +289,23 @@ export function SettingsPanel() {
                     placeholder={`Enter ${providerNames[p]} API key...`}
                     className="bg-white/5 border-white/10 text-sm h-9"
                   />
-                  <button
+                   <button
                     onClick={() => toggleKeyVisibility(p)}
                     className="px-3 glass-card rounded-lg text-muted-foreground hover:text-white transition-colors"
                   >
                     {showKeys[p] ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                  <button
+                    onClick={() => handleTestKey(p)}
+                    disabled={testingKey[p]}
+                    className="px-4 py-2 text-xs font-semibold rounded-lg bg-gradient-to-r from-cyan-500/20 to-purple-500/20 border border-cyan-500/30 text-white hover:opacity-90 disabled:opacity-50 transition-all shrink-0 flex items-center gap-1.5"
+                  >
+                    {testingKey[p] ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        Testing
+                      </>
+                    ) : 'Test'}
                   </button>
                 </div>
               </div>
@@ -217,13 +326,34 @@ export function SettingsPanel() {
           </div>
           <div className="space-y-4">
             <div className="space-y-1.5">
-              <Label className="text-xs text-muted-foreground">TTS Voice</Label>
-              <Input
-                value={localTtsVoice}
-                onChange={(e) => setLocalTtsVoice(e.target.value)}
-                placeholder="en-US-Neural2-A"
-                className="bg-white/5 border-white/10 text-sm h-9"
-              />
+              <Label className="text-xs text-muted-foreground">TTS Voice (Microsoft Edge)</Label>
+              <select
+                value={['hi-IN-SwaraNeural', 'hi-IN-MadhurNeural', 'en-US-EmmaNeural', 'en-US-GuyNeural', 'en-GB-SoniaNeural'].includes(localTtsVoice) ? localTtsVoice : 'custom'}
+                onChange={(e) => {
+                  const val = e.target.value
+                  if (val === 'custom') {
+                    setLocalTtsVoice('en-US-AvaNeural')
+                  } else {
+                    setLocalTtsVoice(val)
+                  }
+                }}
+                className="w-full bg-white/5 border border-white/10 text-xs h-9 rounded-xl px-2.5 text-white focus:outline-none focus:ring-1 focus:ring-cyan-500"
+              >
+                <option value="hi-IN-SwaraNeural" className="bg-[#0f0f20] text-white">Hindi - Swara (Female)</option>
+                <option value="hi-IN-MadhurNeural" className="bg-[#0f0f20] text-white">Hindi - Madhur (Male)</option>
+                <option value="en-US-EmmaNeural" className="bg-[#0f0f20] text-white">English (US) - Emma (Female)</option>
+                <option value="en-US-GuyNeural" className="bg-[#0f0f20] text-white">English (US) - Guy (Male)</option>
+                <option value="en-GB-SoniaNeural" className="bg-[#0f0f20] text-white">English (UK) - Sonia (Female)</option>
+                <option value="custom" className="bg-[#0f0f20] text-white">Custom Voice Name...</option>
+              </select>
+              {!['hi-IN-SwaraNeural', 'hi-IN-MadhurNeural', 'en-US-EmmaNeural', 'en-US-GuyNeural', 'en-GB-SoniaNeural'].includes(localTtsVoice) && (
+                <Input
+                  value={localTtsVoice}
+                  onChange={(e) => setLocalTtsVoice(e.target.value)}
+                  placeholder="Enter custom Edge TTS voice name (e.g. en-US-BrianNeural)"
+                  className="bg-white/5 border-white/10 text-xs h-9 mt-1.5"
+                />
+              )}
             </div>
             <div className="space-y-1.5">
               <Label className="text-xs text-muted-foreground">Wake Word</Label>
@@ -245,6 +375,67 @@ export function SettingsPanel() {
                 max={200}
               />
             </div>
+            <div className="space-y-2">
+              <Label className="text-xs text-muted-foreground">Speech Profile Preset</Label>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setLocalSpeechMode('online')
+                    setLocalSttEngine('web_speech')
+                    setLocalTtsEngine('edge_tts')
+                  }}
+                  className={cn(
+                    'py-2 px-3 rounded-xl text-xs font-semibold border transition-all',
+                    localSpeechMode === 'online'
+                      ? 'bg-cyan-500/10 border-cyan-500 text-white'
+                      : 'border-white/5 bg-white/5 hover:bg-white/10 text-muted-foreground'
+                  )}
+                >
+                  🌐 Online Profile (Fast & Clear)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setLocalSpeechMode('offline')
+                    setLocalSttEngine('vosk')
+                    setLocalTtsEngine('pyttsx3')
+                  }}
+                  className={cn(
+                    'py-2 px-3 rounded-xl text-xs font-semibold border transition-all',
+                    localSpeechMode === 'offline'
+                      ? 'bg-purple-500/10 border-purple-500 text-white'
+                      : 'border-white/5 bg-white/5 hover:bg-white/10 text-muted-foreground'
+                  )}
+                >
+                  🔌 Offline Profile (Local SAPI/Vosk)
+                </button>
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <Label className="text-xs text-muted-foreground">Speech-to-Text (STT) Engine</Label>
+              <select
+                value={localSttEngine}
+                onChange={(e) => setLocalSttEngine(e.target.value as 'web_speech' | 'vosk')}
+                className="w-full bg-[#0a0e1a] border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:ring-1 focus:ring-cyan-500"
+              >
+                <option value="web_speech">Web Speech API (Browser-based, Online)</option>
+                <option value="vosk">Vosk STT (Offline local PC model, Hindi/English)</option>
+              </select>
+            </div>
+
+            <div className="space-y-1.5">
+              <Label className="text-xs text-muted-foreground">Text-to-Speech (TTS) Engine</Label>
+              <select
+                value={localTtsEngine}
+                onChange={(e) => setLocalTtsEngine(e.target.value as 'edge_tts' | 'pyttsx3')}
+                className="w-full bg-[#0a0e1a] border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:ring-1 focus:ring-cyan-500"
+              >
+                <option value="edge_tts">Edge TTS (Microsoft, Natural neural voices)</option>
+                <option value="pyttsx3">Pyttsx3 (Offline local SAPI5 voices)</option>
+              </select>
+            </div>
             <div className="flex items-center justify-between">
               <div>
                 <Label className="text-xs text-muted-foreground">Auto-fallback</Label>
@@ -253,6 +444,16 @@ export function SettingsPanel() {
               <Switch
                 checked={autoFallback}
                 onCheckedChange={(checked) => setAutoFallback(checked)}
+              />
+            </div>
+            <div className="flex items-center justify-between">
+              <div>
+                <Label className="text-xs text-muted-foreground">Picture-in-Picture (PiP) Window</Label>
+                <p className="text-[10px] text-muted-foreground/60">Show a floating status widget on screen</p>
+              </div>
+              <Switch
+                checked={pipMode}
+                onCheckedChange={(checked) => setPipMode(checked)}
               />
             </div>
           </div>
@@ -284,7 +485,10 @@ export function SettingsPanel() {
                     key={themePreset.id}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    onClick={() => setLocalAuroraTheme(themePreset.id)}
+                    onClick={() => {
+                      setLocalAuroraTheme(themePreset.id)
+                      setAuroraTheme(themePreset.id)
+                    }}
                     className={cn(
                       'p-3.5 rounded-xl text-left border flex flex-col justify-between transition-all duration-300 relative overflow-hidden group',
                       isSelected

@@ -15,12 +15,13 @@ export const providerModels: Record<string, ModelInfo[]> = {
     { id: 'qwen-qwq-32b', name: 'Qwen QWQ 32B', provider: 'groq' },
   ],
   gemini: [
+    { id: 'gemini-2.5-flash', name: 'Gemini 2.5 Flash', provider: 'gemini' },
+    { id: 'gemini-2.5-pro', name: 'Gemini 2.5 Pro', provider: 'gemini' },
     { id: 'gemini-2.0-flash', name: 'Gemini 2.0 Flash', provider: 'gemini' },
     { id: 'gemini-2.0-flash-lite', name: 'Gemini 2.0 Flash Lite', provider: 'gemini' },
     { id: 'gemini-1.5-flash', name: 'Gemini 1.5 Flash', provider: 'gemini' },
     { id: 'gemini-1.5-flash-8b', name: 'Gemini 1.5 Flash 8B', provider: 'gemini' },
     { id: 'gemini-1.5-pro', name: 'Gemini 1.5 Pro', provider: 'gemini' },
-    { id: 'gemini-2.5-flash-preview-05-20', name: 'Gemini 2.5 Flash Preview', provider: 'gemini' },
   ],
   mistral: [
     { id: 'mistral-small-latest', name: 'Mistral Small Latest', provider: 'mistral' },
@@ -38,6 +39,15 @@ export const providerModels: Record<string, ModelInfo[]> = {
     { id: 'deepseek-r1-distill-llama-70b', name: 'DeepSeek R1 70B', provider: 'cerebras' },
     { id: 'qwen-3-32b', name: 'Qwen 3 32B', provider: 'cerebras' },
   ],
+  openrouter: [
+    { id: 'google/gemini-2.5-flash', name: 'Gemini 2.5 Flash (OpenRouter)', provider: 'openrouter' },
+    { id: 'google/gemini-2.5-pro', name: 'Gemini 2.5 Pro (OpenRouter)', provider: 'openrouter' },
+    { id: 'google/gemini-2.0-flash-exp:free', name: 'Gemini 2.0 Flash Free (OpenRouter)', provider: 'openrouter' },
+    { id: 'deepseek/deepseek-chat', name: 'DeepSeek V3 (OpenRouter)', provider: 'openrouter' },
+    { id: 'deepseek/deepseek-r1', name: 'DeepSeek R1 (OpenRouter)', provider: 'openrouter' },
+    { id: 'zhipu/glm-4-9b-chat', name: 'GLM-4 9B Chat (OpenRouter)', provider: 'openrouter' },
+    { id: 'meta-llama/llama-3.3-70b-instruct', name: 'Llama 3.3 70B (OpenRouter)', provider: 'openrouter' },
+  ],
 }
 
 export const providerNames: Record<string, string> = {
@@ -45,6 +55,7 @@ export const providerNames: Record<string, string> = {
   gemini: 'Gemini',
   mistral: 'Mistral',
   cerebras: 'Cerebras',
+  openrouter: 'OpenRouter',
 }
 
 export const providerColors: Record<string, string> = {
@@ -52,4 +63,5 @@ export const providerColors: Record<string, string> = {
   gemini: 'from-blue-400 to-blue-600',
   mistral: 'from-emerald-400 to-emerald-600',
   cerebras: 'from-purple-400 to-purple-600',
+  openrouter: 'from-pink-400 to-pink-600',
 }

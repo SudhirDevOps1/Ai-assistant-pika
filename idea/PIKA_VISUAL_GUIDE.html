@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pika AI Assistant — Visual User Guide | पिका एआई असिस्टेंट — गाइड</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+  :root {
+    --purple: #7c3aed;
+    --purple-light: #a78bfa;
+    --cyan: #06b6d4;
+    --pink: #ec4899;
+    --bg: #0a0e1a;
+    --bg2: #111827;
+    --bg3: #1a2035;
+    --text: #e2e8f0;
+    --text-dim: rgba(255,255,255,0.5);
+    --glass: rgba(255,255,255,0.08);
+    --glass-border: rgba(255,255,255,0.1);
+    --radius: 16px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ===== Aurora BG ===== */
+  .aurora {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background: linear-gradient(135deg, #0a0e1a 0%, #1a0533 25%, #0a1628 50%, #0d1f2d 75%, #0a0e1a 100%);
+    background-size: 400% 400%;
+    animation: aurora 15s ease-in-out infinite;
+  }
+  @keyframes aurora {
+    0%,100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  /* ===== Layout ===== */
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+  .section { padding: 80px 0; }
+  
+  /* ===== Glass Card ===== */
+  .glass {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding: 28px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  .glass:hover { border-color: rgba(255,255,255,0.2); }
+
+  /* ===== Heading ===== */
+  h1 { font-size: 3.2rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1.15; }
+  h2 { font-size: 2rem; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 12px; }
+  h2 .icon { font-size: 1.6rem; }
+  h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: 8px; color: var(--purple-light); }
+  p, li { color: rgba(255,255,255,0.7); font-size: 0.95rem; }
+  strong { color: white; }
+
+  /* ===== Hero ===== */
+  .hero { text-align: center; padding: 100px 0 60px; }
+  .hero .logo { font-size: 80px; display: block; margin-bottom: 16px; animation: float 6s ease-in-out infinite; }
+  @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+  .hero .tagline { font-size: 1.3rem; color: var(--text-dim); margin-top: 12px; font-weight: 300; }
+  .hero .badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 18px; border-radius: 999px; font-size: 0.8rem; font-weight: 500;
+    background: rgba(124,58,237,0.15); border: 1px solid rgba(124,58,237,0.3);
+    color: var(--purple-light); margin-bottom: 20px;
+  }
+
+  /* ===== Grid ===== */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  @media(max-width: 768px) {
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    h1 { font-size: 2.2rem; }
+    .hero { padding: 60px 0 40px; }
+    .section { padding: 50px 0; }
+  }
+
+  /* ===== Step ===== */
+  .step-number {
+    width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, var(--purple), var(--cyan));
+    color: white; font-weight: 700; font-size: 0.9rem;
+  }
+  .step { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 24px; }
+  .step:last-child { margin-bottom: 0; }
+  .step-content { flex: 1; }
+
+  /* ===== UI Mock ===== */
+  .ui-mock {
+    background: #0f1729;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    overflow: hidden;
+    font-size: 13px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  .ui-titlebar {
+    background: rgba(255,255,255,0.05);
+    padding: 8px 14px;
+    display: flex; align-items: center; gap: 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .ui-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .ui-body { padding: 16px; min-height: 120px; }
+
+  /* ===== Chat Bubble ===== */
+  .chat-area { display: flex; flex-direction: column; gap: 12px; }
+  .bubble-user {
+    align-self: flex-end; max-width: 75%;
+    background: linear-gradient(135deg, #7c3aed, #6d28d9);
+    padding: 10px 16px; border-radius: 16px 16px 4px 16px;
+    color: white; font-size: 13px;
+  }
+  .bubble-bot {
+    align-self: flex-start; max-width: 75%;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 10px 16px; border-radius: 16px 16px 16px 4px;
+    color: rgba(255,255,255,0.85); font-size: 13px;
+  }
+  .bubble-bot .avatar { font-size: 10px; margin-bottom: 4px; color: var(--purple-light); }
+
+  /* ===== Command Tag ===== */
+  .cmd {
+    display: inline-block; padding: 3px 10px; border-radius: 8px;
+    background: rgba(124,58,237,0.15); border: 1px solid rgba(124,58,237,0.25);
+    color: var(--purple-light); font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem; margin: 2px;
+  }
+
+  /* ===== Feature Card ===== */
+  .feature-card { text-align: center; padding: 28px 20px; }
+  .feature-card .ficon { font-size: 2.4rem; margin-bottom: 12px; display: block; }
+  .feature-card h3 { color: white; margin-bottom: 8px; font-size: 1rem; }
+  .feature-card p { font-size: 0.85rem; color: var(--text-dim); }
+
+  /* ===== Button ===== */
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 22px; border-radius: 12px; font-size: 0.9rem;
+    font-weight: 500; cursor: pointer; transition: all 0.2s; border: none; color: white;
+    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+  }
+  .btn:hover { background: rgba(255,255,255,0.15); border-color: var(--purple); box-shadow: 0 0 20px rgba(124,58,237,0.2); }
+  .btn-primary { background: var(--purple); border-color: var(--purple); }
+  .btn-primary:hover { background: #6d28d9; box-shadow: 0 0 30px rgba(124,58,237,0.4); }
+
+  /* ===== Code Block ===== */
+  pre {
+    background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px; padding: 16px 20px; overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;
+    color: #a5b4fc; line-height: 1.6;
+  }
+  code { font-family: 'JetBrains Mono', monospace; }
+  .code-comment { color: rgba(255,255,255,0.3); }
+
+  /* ===== Table ===== */
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; padding: 12px 16px; background: rgba(255,255,255,0.04); color: var(--purple-light); font-size: 0.85rem; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  td { padding: 10px 16px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.9rem; color: rgba(255,255,255,0.7); }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* ===== Sidebar Mock ===== */
+  .sidebar-mock {
+    width: 200px; flex-shrink: 0;
+    background: rgba(255,255,255,0.03);
+    border-right: 1px solid rgba(255,255,255,0.08);
+    padding: 16px 8px; display: flex; flex-direction: column; gap: 4px;
+  }
+  .sidebar-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border-radius: 10px; font-size: 13px;
+    color: rgba(255,255,255,0.5); cursor: default; transition: all 0.2s;
+  }
+  .sidebar-item.active {
+    background: rgba(124,58,237,0.2); border: 1px solid rgba(124,58,237,0.4);
+    color: white;
+  }
+  .sidebar-item:not(.active) { border: 1px solid transparent; }
+
+  /* ===== Screenshot Frame ===== */
+  .screenshot-frame {
+    border-radius: 16px; overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 25px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05);
+  }
+  .screenshot-frame.full { margin: 32px 0; }
+
+  /* ===== Nav ===== */
+  .topnav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(10,14,26,0.8); backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    padding: 12px 0;
+  }
+  .topnav .inner {
+    max-width: 1100px; margin: 0 auto; padding: 0 24px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .topnav .logo-text { font-weight: 700; font-size: 1.1rem; }
+  .topnav .links { display: flex; gap: 8px; }
+  .topnav a {
+    color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.85rem;
+    padding: 6px 14px; border-radius: 8px; transition: all 0.2s;
+  }
+  .topnav a:hover { color: white; background: rgba(255,255,255,0.06); }
+
+  /* ===== Scrollbar ===== */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 3px; }
+
+  /* ===== Misc ===== */
+  .divider { border: none; border-top: 1px solid rgba(255,255,255,0.06); margin: 60px 0; }
+  .text-gradient {
+    background: linear-gradient(135deg, var(--purple-light), var(--cyan));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .tag { display: inline-block; padding: 3px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 500; }
+  .tag-green { background: rgba(34,197,94,0.15); color: #4ade80; }
+  .tag-yellow { background: rgba(234,179,8,0.15); color: #facc15; }
+  .tag-red { background: rgba(239,68,68,0.15); color: #f87171; }
+  .tag-blue { background: rgba(6,182,212,0.15); color: #22d3ee; }
+  .hl { color: var(--purple-light); font-weight: 600; }
+  .mt { margin-top: 12px; }
+  .mb { margin-bottom: 12px; }
+  .w-full-mock { width: 100%; height: 100%; min-height: 300px; display: flex; }
+  ul, ol { padding-left: 20px; margin-top: 8px; }
+  li { margin-bottom: 4px; }
+  .arrow { color: var(--purple-light); }
+  .connector-line { width: 2px; height: 40px; background: linear-gradient(to bottom, var(--purple), var(--cyan)); margin: 0 auto; opacity: 0.4; }
+
+  /* ===== Animations ===== */
+  .fade-section { opacity: 0; transform: translateY(30px); transition: opacity 0.6s, transform 0.6s; }
+  .fade-section.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="aurora"></div>
+
+<!-- ===== TOP NAV ===== -->
+<nav class="topnav">
+  <div class="inner">
+    <div class="logo-text">⚡ Pika Guide</div>
+    <div class="links">
+      <a href="#setup">Setup</a>
+      <a href="#ui">UI Tour</a>
+      <a href="#voice">Voice</a>
+      <a href="#commands">Commands</a>
+      <a href="#ai">AI Chat</a>
+      <a href="#tools">Tools</a>
+      <a href="#troubleshoot">Troubleshoot</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="container">
+    <div class="badge">v1.0.0 — Open Source — पूरी तरह लोकल, पूरी तरह निजी</div>
+    <span class="logo">⚡</span>
+    <h1><span class="text-gradient">Pika AI Assistant</span></h1>
+    <p class="tagline">आपका व्यक्तिगत AI डेस्कटॉप असिस्टेंट — आवाज़ से कंट्रोल करो</p>
+    <p class="tagline" style="font-size:1rem; margin-top:8px;">Your Personal AI Desktop Assistant — Control with Voice</p>
+  </div>
+</section>
+
+<!-- ===== SECTION: WHAT IS PIKA ===== -->
+<section class="section fade-section" id="what">
+  <div class="container">
+    <h2><span class="icon">🤖</span> Pika Kya Hai? <small style="font-size:0.5em;color:var(--text-dim)">What is Pika?</small></h2>
+    <div class="glass" style="margin-top:20px;">
+      <p>Pika ek <strong>local PC voice-controlled AI assistant</strong> hai jo aapke computer ko Hindi aur English dono mein control karne deta hai. Ye completely offline-first hai — aapka data kisi server ko nahi jaata.</p>
+      <div class="grid-3 mt">
+        <div class="feature-card glass">
+          <span class="ficon">🎤</span>
+          <h3>Voice Control</h3>
+          <p>Offline STT via Vosk, Hindi + English support. "Chrome kholo", "volume up karo" — bas bolo!</p>
+        </div>
+        <div class="feature-card glass">
+          <span class="ficon">🖥️</span>
+          <h3>PC Automation</h3>
+          <p>30+ commands: apps open/close, volume, media, files, clipboard, screen, processes, network.</p>
+        </div>
+        <div class="feature-card glass">
+          <span class="ficon">🧠</span>
+          <h3>AI Chat (7 Providers)</h3>
+          <p>Groq, Gemini, Mistral, Cerebras, OpenRouter, Z.ai, DeepSeek — free API keys se chalta hai.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ===== SECTION: SETUP ===== -->
+<section class="section fade-section" id="setup">
+  <div class="container">
+    <h2><span class="icon">🚀</span> Setup Guide — Pika Kaise Chalayein</h2>
+    
+    <div class="step">
+      <div class="step-number">1</div>
+      <div class="step-content">
+        <h3>Prerequisites Install Karo</h3>
+        <p>Ye cheezein chahiye:</p>
+        <ul>
+          <li><strong>Python 3.10+</strong> — <a href="https://python.org" style="color:var(--cyan)">python.org</a> se download karo. Install karte time <strong>"Add to PATH"</strong> check karna mat bhoolna!</li>
+          <li><strong>Node.js 18+</strong> — <a href="https://nodejs.org" style="color:var(--cyan)">nodejs.org</a> se LTS version install karo.</li>
+          <li><strong>Git</strong> (optional) — <a href="https://git-scm.com" style="color:var(--cyan)">git-scm.com</a></li>
+        </ul>
+        <pre><code><span class="code-comment"># Verify installations:</span>
+python --version    <span class="code-comment"># Python 3.10.x+</span>
+node --version      <span class="code-comment"># v18.x.x+</span>
+npm --version       <span class="code-comment"># 9.x.x+</span></code></pre>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number">2</div>
+      <div class="step-content">
+        <h3>Project Download / Clone Karo</h3>
+        <pre><code><span class="code-comment"># Folder extract karo ya clone karo</span>
+cd pika-ai-assistant</code></pre>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number">3</div>
+      <div class="step-content">
+        <h3>One-Click Start (Recommended)</h3>
+        <p><strong>Windows:</strong> <span class="cmd">start.bat</span> file double-click karo. Ye sab automatically karega:</p>
+        <ol>
+          <li>Python dependencies install karega</li>
+          <li>Node.js dependencies install karega</li>
+          <li>Required folders banayega (models, data, screenshots, etc.)</li>
+          <li>Python backend start karega (ws://localhost:8765)</li>
+          <li>Frontend start karega (http://localhost:3000)</li>
+          <li>Browser automatically open hoga</li>
+        </ol>
+        <p class="mt"><strong>Linux/Mac:</strong> <span class="cmd">chmod +x start.sh && ./start.sh</span></p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number">4</div>
+      <div class="step-content">
+        <h3>Manual Start (agar auto-start fail ho)</h3>
+        <div class="grid-2">
+          <div class="glass">
+            <h3>Terminal 1 — Backend</h3>
+            <pre><code>cd pika-ai-assistant
+pip install -r requirements.txt
+python pc_bridge.py
+
+<span class="code-comment"># Output: 🔗 Pika AI Bridge running on ws://localhost:8765</span></code></pre>
+          </div>
+          <div class="glass">
+            <h3>Terminal 2 — Frontend</h3>
+            <pre><code>cd pika-ai-assistant/frontend
+npm install
+npm run dev
+
+<span class="code-comment"># Output: ➜ Local: http://localhost:3000</span></code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number">5</div>
+      <div class="step-content">
+        <h3>API Keys Setup (Optional but Recommended)</h3>
+        <p>AI chat ke liye free API keys chahiye. Bina keys ke bhi Pika chalega (PC commands kaam karenge, sirf AI chat nahi hoga).</p>
+        <div class="glass mt">
+          <p><strong>.env.example</strong> ko copy karke <strong>.env</strong> banao aur keys daalo:</p>
+          <pre><code><span class="code-comment"># Copy the template</span>
+cp .env.example .env
+
+<span class="code-comment"># Edit .env and add your keys (sab optional hain!)</span>
+GROQ_API_KEY=gsk_your_key_here      <span class="code-comment"># https://console.groq.com (FREE, recommended)</span>
+GEMINI_API_KEY=your_key_here         <span class="code-comment"># https://aistudio.google.com (FREE)</span>
+DEEPSEEK_API_KEY=your_key_here       <span class="code-comment"># https://platform.deepseek.com (FREE)</span></code></pre>
+          <p class="mt">Pika auto-fallback use karta hai — agar ek provider fail ho toh doosra try karta hai. Ek bhi key daalna kaafi hai!</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number">6</div>
+      <div class="step-content">
+        <h3>Browser Mein Khulo</h3>
+        <p>Open karo: <span class="cmd" style="font-size:0.95rem;">http://localhost:3000</span></p>
+        <p class="mt">Pika ka UI load hoga — connection status top-right mein dikhega. <span class="tag tag-green">🟢 Connected</span> dikhna chahiye.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ===== SECTION: UI TOUR ===== -->
+<section class="section fade-section" id="ui">
+  <div class="container">
+    <h2><span class="icon">🗺️</span> UI Tour — Interface Kaise Dikhta Hai</h2>
+    
+    <!-- Full UI Mockup -->
+    <div class="screenshot-frame full">
+      <div class="ui-titlebar">
+        <div class="ui-dot" style="background:#ff5f57;"></div>
+        <div class="ui-dot" style="background:#febc2e;"></div>
+        <div class="ui-dot" style="background:#28c840;"></div>
+        <span style="flex:1; text-align:center; font-size:12px; color:rgba(255,255,255,0.4);">Pika AI Assistant — http://localhost:3000</span>
+      </div>
+      <div style="display:flex; min-height:400px; background:#0f1729;">
+        <!-- Sidebar -->
+        <div class="sidebar-mock">
+          <div style="padding:8px 12px 16px; display:flex; align-items:center; gap:8px; border-bottom:1px solid rgba(255,255,255,0.06); margin-bottom:8px;">
+            <span style="font-size:18px;">⚡</span>
+            <span style="font-weight:700; font-size:14px; color:white;">PIKA</span>
+          </div>
+          <div class="sidebar-item active">💬 Chat</div>
+          <div class="sidebar-item">🎮 Controls</div>
+          <div class="sidebar-item">⚙️ Settings</div>
+          <div class="sidebar-item">🔁 Macros</div>
+          <div class="sidebar-item">🔔 Reminders</div>
+          <div class="sidebar-item">📊 Processes</div>
+          <div class="sidebar-item">📅 Scheduler</div>
+          <div class="sidebar-item">🔧 Tools</div>
+        </div>
+        <!-- Main -->
+        <div style="flex:1; display:flex; flex-direction:column;">
+          <!-- Top bar -->
+          <div style="padding:12px 20px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.06);">
+            <div>
+              <div style="font-size:28px; font-weight:200; color:rgba(255,255,255,0.8); font-variant-numeric:tabular-nums;">14:32:08</div>
+              <div style="font-size:11px; color:rgba(255,255,255,0.3);">आज 14:32 — Monday</div>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px;">
+              <span class="tag tag-green" style="font-size:11px;">🟢 Connected</span>
+              <span class="tag tag-blue" style="font-size:11px;">⚡ Groq</span>
+              <span class="tag tag-yellow" style="font-size:11px;">🔋 78%</span>
+            </div>
+          </div>
+          <!-- Chat area -->
+          <div style="flex:1; padding:20px; display:flex; flex-direction:column; justify-content:flex-end; gap:12px;">
+            <div class="bubble-user">Chrome kholo</div>
+            <div class="bubble-bot">
+              <div class="avatar">⚡ Pika</div>
+              ✅ Google Chrome khol diya gaya!
+            </div>
+            <div class="bubble-user">volume 50 par set karo</div>
+            <div class="bubble-bot">
+              <div class="avatar">⚡ Pika</div>
+              🔊 Volume 50% par set ho gaya.
+            </div>
+          </div>
+          <!-- Input bar -->
+          <div style="padding:12px 20px; border-top:1px solid rgba(255,255,255,0.06);">
+            <div style="display:flex; align-items:center; gap:10px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:16px; padding:10px 16px;">
+              <span style="font-size:18px;">🎤</span>
+              <span style="flex:1; color:rgba(255,255,255,0.3); font-size:13px;">टाइप करो या माइक दबाओ...</span>
+              <span style="width:32px; height:32px; border-radius:10px; background:var(--purple); display:flex; align-items:center; justify-content:center; font-size:14px;">➤</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-3 mt">
+      <div class="glass" style="padding:20px;">
+        <h3 style="font-size:0.95rem;">📌 Left Sidebar</h3>
+        <p>Navigation ke liye — Chat, Controls, Settings, Macros, Reminders, Processes, Scheduler, Tools. Click karke tab switch karo. Expand/collapse bhi kar sakte ho.</p>
+      </div>
+      <div class="glass" style="padding:20px;">
+        <h3 style="font-size:0.95rem;">📌 Top Bar</h3>
+        <p>Left mein <strong>clock + date</strong> (Hindi mein), Right mein <strong>connection status</strong>, AI provider badge, aur battery indicator.</p>
+      </div>
+      <div class="glass" style="padding:20px;">
+        <h3 style="font-size:0.95rem;">📌 Chat Input</h3>
+        <p>Type karo ya <strong>🎤 mic button</strong> daba ke bolo. Hindi, English ya Hinglish — sab support hai.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ===== SECTION: VOICE ===== -->
+<section class="section fade-section" id="voice">
+  <div class="container">
+    <h2><span class="icon">🎤</span> Voice Control — Awaaz Se Control</h2>
+    <p class="mb">Pika offline speech recognition use karta hai (Vosk engine). Matlab internet bina bhi voice commands kaam karenge!</p>
+
+    <div class="grid-2">
+      <div class="glass">
+        <h3>Kaise Use Karein?</h3>
+        <div class="step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <p>Chat screen par jaao → <strong>🎤 mic button</strong> dabaao (ya keyboard shortcut <span class="cmd">Ctrl+Shift+V</span>)</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <p>Button <span style="color:#ef4444;">red</span> ho jayega + waveform animation dikhegi = Pika sun raha hai</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <p>Bolo jo karna hai: <span class="cmd">"Chrome kholo"</span> ya <span class="cmd">"volume up karo"</span></p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-number">4</div>
+          <div class="step-content">
+            <p>Pika automatically command execute karega aur response dega. TTS se bhi suna sakta hai!</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass">
+        <h3>Voice Command Examples</h3>
+        <table>
+          <thead><tr><th>Aap Bologe (Hindi)</th><th>English</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr><td>"Chrome kholo"</td><td>"open Chrome"</td><td>Chrome launch</td></tr>
+            <tr><td>"आवाज़ बढ़ाओ"</td><td>"volume up"</td><td>Volume +10%</td></tr>
+            <tr><td>"गाना बजाओ"</td><td>"play music"</td><td>Media play/pause</td></tr>
+            <tr><td>"स्क्रीनशॉट लो"</td><td>"take screenshot"</td><td>Capture screen</td></tr>
+            <tr><td>"बैटरी कितनी hai"</td><td>"battery status"</td><td>Show battery %</td></tr>
+            <tr><td>"YouTube kholo"</td><td>"open YouTube"</td><td>Open website</td></tr>
+            <tr><td>"computer band karo"</td><td>"shutdown PC"</td><td>Shutdown (confirm)</td></tr>
+            <tr><td>"5 minute ka timer lagao"</td><td>"set 5 min timer"</td><td>Countdown timer</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="glass mt" style="padding:20px;">
+      <h3>🎯 TTS (Text-to-Speech) Settings</h3>
+      <p>Pika responses aawaaz mein bhi suna sakta hai! Settings → Voice mein jaake:</p>
+      <ul class="mt">
+        <li><strong>Voice:</strong> Swara (Hindi), Jenny (English US), Aria, etc. — 16 voices available</li>
+        <li><strong>Speed:</strong> 0.5x se 2.0x tak — slow ya fast bana sakte ho</li>
+        <li><strong>Pitch:</strong> -10 se +10 — awaaz high ya low</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ===== SECTION: COMMANDS ===== -->
+<section class="section fade-section" id="commands">
+  <div class="container">
+    <h2><span class="icon">⌨️</span> All Commands — Pika Kya Kar Sakta Hai</h2>
+    
+    <!-- System -->
+    <div class="glass mb">
+      <h3>💻 System Controls</h3>
+      <div class="grid-4">
+        <div style="text-align:center; padding:12px;">
+          <div style="font-size:1.8rem; margin-bottom:4px;">🔒</div>
+          <div style="font-size:0.8rem; color:rgba(255,255,255,0.6);">Lock</div>
+        </div>
+        <div style="text-align:center; padding:12px;">
+          <div style="font-size:1.8rem; margin-bottom:4px;">💤</div>
+          <div style="font-size:0.8rem; color:rgba(255,255,255,0.6);">Sleep</div>
+        </div>
+        <div style="text-align:center; padding:12px;">
+          <div style="font-size:1.8rem; margin-bottom:4px;">🔄</div>
+          <div style="font-size:0.8rem; color:rgba(255,255,255,0.6);">Restart</div>
+        </div>
+        <div style="text-align:center; padding:12px;">
+          <div style="font-size:1.8rem; margin-bottom:4px;">⛔</div>
+          <div style="font-size:0.8rem; color:rgba(255,255,255,0.6);">Shutdown</div>
+        </div>
+      </div>
+      <p class="mt" style="font-size:0.85rem;">⚠️ Shutdown, Restart, Sleep — inn sab pe <strong>confirmation dialog</strong> aayega pehle. Galti se ho nahi sakta!</p>
+    </div>
+
+    <!-- Apps -->
+    <div class="glass mb">
+      <h3>📱 App Launcher (40+ Apps)</h3>
+      <p>Controls → Apps tab mein jaao. Grid mein sab apps dikhte hain. Click karo aur app khul jayegi. Voice se bhi: <span class="cmd">"VS Code kholo"</span></p>
+      <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:12px;">
+        <span class="cmd">🌐 Chrome</span><span class="cmd">🦊 Firefox</span><span class="cmd">💻 VS Code</span>
+        <span class="cmd">📝 Notepad</span><span class="cmd">⬛ Terminal</span><span class="cmd">📁 Explorer</span>
+        <span class="cmd">🎵 Spotify</span><span class="cmd">✈️ Telegram</span><span class="cmd">🎮 Discord</span>
+        <span class="cmd">📘 Word</span><span class="cmd">📗 Excel</span><span class="cmd">🔢 Calculator</span>
+        <span class="cmd">🎨 Paint</span><span class="cmd">⚙️ Settings</span><span class="cmd">📊 Task Manager</span>
+        <span class="cmd">and 40+ more...</span>
+      </div>
+    </div>
+
+    <!-- Volume & Media -->
+    <div class="grid-2 mb">
+      <div class="glass">
+        <h3>🔊 Volume Controls</h3>
+        <ul>
+          <li><span class="cmd">volume up</span> / <span class="cmd">आवाज़ बढ़ाओ</span> — +10%</li>
+          <li><span class="cmd">volume down</span> / <span class="cmd">आवाज़ कम</span> — -10%</li>
+          <li><span class="cmd">volume 50</span> — exact percentage set</li>
+          <li><span class="cmd">mute</span> / <span class="cmd">unmute</span></li>
+        </ul>
+      </div>
+      <div class="glass">
+        <h3>🎵 Media Controls</h3>
+        <ul>
+          <li><span class="cmd">play/pause</span> — music roko ya chalao</li>
+          <li><span class="cmd">next track</span> / <span class="cmd">previous track</span></li>
+          <li>Global hotkeys bhi kaam karte hain (jo bhi app chal raha ho)</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Files -->
+    <div class="glass mb">
+      <h3>📁 File Manager</h3>
+      <div class="grid-4">
+        <div style="padding:8px; text-align:center; background:rgba(255,255,255,0.04); border-radius:10px;">
+          <div style="font-size:1.4rem;">📄</div><div style="font-size:0.75rem; margin-top:4px;">Create File</div>
+        </div>
+        <div style="padding:8px; text-align:center; background:rgba(255,255,255,0.04); border-radius:10px;">
+          <div style="font-size:1.4rem;">📁</div><div style="font-size:0.75rem; margin-top:4px;">Create Folder</div>
+        </div>
+        <div style="padding:8px; text-align:center; background:rgba(255,255,255,0.04); border-radius:10px;">
+          <div style="font-size:1.4rem;">🗑️</div><div style="font-size:0.75rem; margin-top:4px;">Delete</div>
+        </div>
+        <div style="padding:8px; text-align:center; background:rgba(255,255,255,0.04); border-radius:10px;">
+          <div style="font-size:1.4rem;">✏️</div><div style="font-size:0.75rem; margin-top:4px;">Rename</div>
+        </div>
+        <div style="padding:8px; text-align:center; background:rgba(255,255,255,0.04); border-radius:10px;">
+          <div style="font-size:1.4rem;">📋</div><div style="font-size:0.75rem; margin-top:4px;">Move</div>
+        </div>
+        <div style="padding:8px; text-align:center; background:rgba(255,255,255,0.04); border-radius:10px;">
+          <div style="font-size:1.4rem;">📂</div><div style="font-size:0.75rem; margin-top:4px;">Copy</div>
+        </div>
+        <div style="padding:8px; text-align:center; background:rgba(255,255,255,0.04); border-radius:10px;">
+          <div style="font-size:1.4rem;">🔍</div><div style="font-size:0.75rem; margin-top:4px;">List</div>
+        </div>
+        <div style="padding:8px; text-align:center; background:rgba(255,255,255,0.04); border-radius:10px;">
+          <div style="font-size:1.4rem;">📂</div><div style="font-size:0.75rem; margin-top:4px;">Explorer</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen & Network & More -->
+    <div class="grid-3">
+      <div class="glass">
+        <h3>🖥️ Screen Tools</h3>
+        <ul>
+          <li>📸 Screenshot le lo</li>
+          <li>🎬 Screen record karo</li>
+          <li>☀️ Brightness control</li>
+        </ul>
+      </div>
+      <div class="glass">
+        <h3>📶 Network</h3>
+        <ul>
+          <li>🌐 IP Address (local + public)</li>
+          <li>⚡ Speed Test</li>
+          <li>📶 WiFi Networks list</li>
+        </ul>
+      </div>
+      <div class="glass">
+        <h3>⏰ Reminders & Timers</h3>
+        <ul>
+          <li>"5 minute mein yaad dilana"</li>
+          <li>Quick timer: 1, 5, 10, 15, 30 min</li>
+          <li>Active reminders with countdown</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ===== SECTION: AI CHAT ===== -->
+<section class="section fade-section" id="ai">
+  <div class="container">
+    <h2><span class="icon">🧠</span> AI Chat — Pika Se Baat Karo</h2>
+    <p class="mb">Pika sirf PC control nahi — ye ek full AI chatbot bhi hai! 7 free LLM providers support karta hai.</p>
+
+    <div class="grid-2 mb">
+      <div>
+        <div class="ui-mock">
+          <div class="ui-titlebar">
+            <div class="ui-dot" style="background:#ff5f57;"></div>
+            <div class="ui-dot" style="background:#febc2e;"></div>
+            <div class="ui-dot" style="background:#28c840;"></div>
+            <span style="flex:1; text-align:center; font-size:11px; color:rgba(255,255,255,0.3);">Chat — Pika AI</span>
+          </div>
+          <div class="ui-body chat-area">
+            <div class="bubble-user">Mujhe Python mein list comprehension samjhao</div>
+            <div class="bubble-bot">
+              <div class="avatar">⚡ Pika — Groq</div>
+              List comprehension Python ka ek shortcut hai lists banane ke liye:<br><br>
+              <code style="background:rgba(0,0,0,0.3); padding:2px 6px; border-radius:4px; font-size:12px;">squares = [x**2 for x in range(10)]</code><br><br>
+              Ye line 0-9 tak numbers ka square degi. Normal loop se zyada clean hai! 🚀
+            </div>
+            <div class="bubble-user">Thanks! Aur ek example do</div>
+            <div class="bubble-bot">
+              <div class="avatar">⚡ Pika — Groq</div>
+              <span style="display:inline-block; width:6px; height:14px; background:#7c3aed; animation:blink 1s infinite; vertical-align:middle; margin-left:2px; border-radius:2px;"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="glass">
+        <h3>AI Providers</h3>
+        <p>Pika automatically best provider select karta hai. Agar ek fail ho toh doosra try karta hai.</p>
+        <table class="mt">
+          <thead><tr><th>Provider</th><th>Speed</th><th>Free?</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Groq</strong> <span class="tag tag-green">Recommended</span></td><td>⚡⚡⚡ Ultra Fast</td><td>Yes (free tier)</td></tr>
+            <tr><td><strong>Gemini</strong></td><td>⚡⚡ Fast</td><td>Yes (free tier)</td></tr>
+            <tr><td><strong>DeepSeek</strong></td><td>⚡⚡ Fast</td><td>Yes (free credits)</td></tr>
+            <tr><td><strong>Cerebras</strong></td><td>⚡⚡⚡ Ultra Fast</td><td>Yes (free tier)</td></tr>
+            <tr><td><strong>Mistral</strong></td><td>⚡⚡ Fast</td><td>Yes (free tier)</td></tr>
+            <tr><td><strong>OpenRouter</strong></td><td>⚡ Medium</td><td>Yes (free models)</td></tr>
+            <tr><td><strong>Z.ai</strong></td><td>⚡⚡ Fast</td><td>Yes</td></tr>
+          </tbody>
+        </table>
+        <p class="mt" style="font-size:0.85rem;">💡 Settings → AI Provider mein jaake keys daalo aur provider switch karo.</p>
+      </div>
+    </div>
+
+    <div class="glass" style="padding:20px;">
+      <h3>Key Features</h3>
+      <div class="grid-3">
+        <div><strong>🔄 Auto-Fallback</strong><p>Sab providers fail ho jaayein toh local fallback response aata hai.</p></div>
+        <div><strong>📊 Streaming</strong><p>Response real-time mein aata hai — poora wait nahi karna padta.</p></div>
+        <div><strong>📜 Context Memory</strong><p>Pika last 20 messages yaad rakhta hai conversation ka context ke liye.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ===== SECTION: TOOLS ===== -->
+<section class="section fade-section" id="tools">
+  <div class="container">
+    <h2><span class="icon">🔧</span> Tools — Advanced Features</h2>
+    
+    <div class="grid-4">
+      <div class="glass feature-card">
+        <span class="ficon">👁️</span>
+        <h3>OCR</h3>
+        <p>Screen capture karke text read karo. Kisi bhi window se text copy karo!</p>
+      </div>
+      <div class="glass feature-card">
+        <span class="ficon">📄</span>
+        <h3>PDF Tools</h3>
+        <p>PDF merge, split, text extract — sab local, koi upload nahi.</p>
+      </div>
+      <div class="glass feature-card">
+        <span class="ficon">🖼️</span>
+        <h3>Image Tools</h3>
+        <p>Resize, convert (PNG/JPG/WebP), compress — batch processing.</p>
+      </div>
+      <div class="glass feature-card">
+        <span class="ficon">📱</span>
+        <h3>QR Code</h3>
+        <p>Kisi bhi text/URL ka QR code generate karo. Download bhi kar sakte ho.</p>
+      </div>
+      <div class="glass feature-card">
+        <span class="ficon">🔢</span>
+        <h3>Calculator</h3>
+        <p>Voice ya text se calculate karo. Safe eval — sirf math expressions.</p>
+      </div>
+      <div class="glass feature-card">
+        <span class="ficon">🌐</span>
+        <h3>Translator</h3>
+        <p>33 languages! Hindi, English, French, German, Japanese, Chinese aur bahut kuch.</p>
+      </div>
+      <div class="glass feature-card">
+        <span class="ficon">🔑</span>
+        <h3>Password Gen</h3>
+        <p>Secure passwords generate karo. Length, symbols, numbers — sab customizable.</p>
+      </div>
+      <div class="glass feature-card">
+        <span class="ficon">📝</span>
+        <h3>Text Expander</h3>
+        <p>Short triggers define karo — type karo aur full text auto-type ho jayega.</p>
+      </div>
+    </div>
+
+    <div class="glass mt" style="padding:20px;">
+      <h3>🔁 Macros — Repeat Actions</h3>
+      <p>Kisi bhi sequence of mouse/keyboard actions record karo, save karo, aur ek click se dobara play karo! Example: daily reporting workflow, form filling, etc.</p>
+    </div>
+
+    <div class="glass mt" style="padding:20px;">
+      <h3>⌨️ Hotkeys — Global Keyboard Shortcuts</h3>
+      <table>
+        <thead><tr><th>Shortcut</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td><span class="cmd">Ctrl+Shift+V</span></td><td>Voice toggle (mic on/off)</td></tr>
+          <tr><td><span class="cmd">Ctrl+/</span></td><td>Focus chat input</td></tr>
+          <tr><td><span class="cmd">Ctrl+Shift+S</span></td><td>Toggle sidebar</td></tr>
+          <tr><td><span class="cmd">Escape</span></td><td>Close dialogs</td></tr>
+        </tbody>
+      </table>
+      <p class="mt">Custom hotkeys bhi bana sakte ho! Settings ya Hotkeys tab mein jaake.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ===== SECTION: TROUBLESHOOT ===== -->
+<section class="section fade-section" id="troubleshoot">
+  <div class="container">
+    <h2><span class="icon">🔧</span> Troubleshooting — Common Problems</h2>
+
+    <div class="glass mb" style="border-left:3px solid #ef4444;">
+      <h3 style="color:#f87171;">🔴 "WebSocket not connected" error</h3>
+      <p><strong>Cause:</strong> Python backend (pc_bridge.py) nahi chal raha.</p>
+      <p><strong>Fix:</strong> Dusre terminal mein <span class="cmd">python pc_bridge.py</span> run karo. <span class="tag tag-green">🔗 Pika AI Bridge running on ws://localhost:8765</span> message dikhna chahiye.</p>
+    </div>
+
+    <div class="glass mb" style="border-left:3px solid #f59e0b;">
+      <h3 style="color:#fbbf24;">🟡 "Some Python packages failed to install"</h3>
+      <p><strong>Cause:</strong> Koi optional library install nahi hui (e.g., pytesseract needs tesseract-ocr system package).</p>
+      <p><strong>Fix:</strong> Pika bina iske bhi chalega — sirf us feature kaam nahi karega. Error mein bataya hoga kaun si package missing hai.</p>
+    </div>
+
+    <div class="glass mb" style="border-left:3px solid #f59e0b;">
+      <h3 style="color:#fbbf24;">🟡 "AI not responding" / "No API key"</h3>
+      <p><strong>Cause:</strong> Koi bhi LLM provider ka API key configure nahi hai.</p>
+      <p><strong>Fix:</strong> .env file mein kam se kam ek key daalo (Groq recommended — free hai). Settings → AI Provider mein bhi daal sakte ho.</p>
+    </div>
+
+    <div class="glass mb" style="border-left:3px solid #3b82f6;">
+      <h3 style="color:#60a5fa;">🔵 Voice not working</h3>
+      <p><strong>Cause:</strong> Vosk models download nahi huye, ya microphone permission nahi di.</p>
+      <p><strong>Fix:</strong> Pehli baar start hone pe models auto-download honge (~50MB each). Browser mein mic permission allow karo.</p>
+    </div>
+
+    <div class="glass" style="border-left:3px solid #3b82f6;">
+      <h3 style="color:#60a5fa;">🔵 Port 3000 or 8765 already in use</h3>
+      <p><strong>Fix:</strong> <span class="cmd">netstat -ano | findstr :3000</span> (Windows) ya <span class="cmd">lsof -i :3000</span> (Mac/Linux) — us process ko kill karo. Ya different ports use karo settings mein.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ===== SECTION: ARCHITECTURE ===== -->
+<section class="section fade-section" id="arch">
+  <div class="container">
+    <h2><span class="icon">🏗️</span> Architecture — Pika Kaise Kaam Karta Hai</h2>
+    
+    <div class="screenshot-frame full">
+      <div style="padding:32px; background: linear-gradient(135deg, #0f1729, #1a0533);">
+        <!-- Layer 1 -->
+        <div class="glass" style="margin-bottom:16px; border-left:3px solid var(--cyan);">
+          <h3 style="color:var(--cyan);">Layer 1: React Frontend (Port 3000)</h3>
+          <p>Vite + TypeScript + Tailwind CSS + Framer Motion. Glassmorphism UI. WebSocket client. Browser mic for voice input.</p>
+        </div>
+        <div style="text-align:center; margin:8px 0;">
+          <div style="color:var(--text-dim); font-size:0.85rem;">⬇ WebSocket JSON Messages ⬇</div>
+        </div>
+        <!-- Layer 2 -->
+        <div class="glass" style="margin-bottom:16px; border-left:3px solid var(--purple);">
+          <h3 style="color:var(--purple-light);">Layer 2: Python Bridge (Port 8765)</h3>
+          <p>asyncio + websockets server. PC control (pyautogui, psutil). Voice engine (Vosk STT + Edge TTS). LLM router (7 providers). SQLite database. NLU command parser.</p>
+        </div>
+        <div style="text-align:center; margin:8px 0;">
+          <div style="color:var(--text-dim); font-size:0.85rem;">⬇ API Calls / System Commands ⬇</div>
+        </div>
+        <!-- Layer 3 -->
+        <div class="glass" style="border-left:3px solid var(--pink);">
+          <h3 style="color:var(--pink);">Layer 3: External Services</h3>
+          <div class="grid-3 mt" style="gap:12px;">
+            <div style="background:rgba(255,255,255,0.04); padding:12px; border-radius:10px; text-align:center;">
+              <div style="font-size:1.4rem;">🧠</div><div style="font-size:0.8rem; margin-top:4px;">LLM APIs (7 providers)</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.04); padding:12px; border-radius:10px; text-align:center;">
+              <div style="font-size:1.4rem;">🗣️</div><div style="font-size:0.8rem; margin-top:4px;">Edge TTS (Microsoft)</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.04); padding:12px; border-radius:10px; text-align:center;">
+              <div style="font-size:1.4rem;">🌐</div><div style="font-size:0.8rem; margin-top:4px;">wttr.in / MyMemory API</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer style="padding:40px 0; text-align:center; position:relative; z-index:1;">
+  <div class="container">
+    <div style="font-size:40px; margin-bottom:12px;">⚡</div>
+    <p style="font-size:1.1rem; font-weight:600; color:white;">Pika AI Assistant v1.0.0</p>
+    <p style="color:var(--text-dim); font-size:0.85rem; margin-top:6px;">पूरी तरह लोकल, पूरी तरह निजी — Completely Local, Completely Private</p>
+    <p style="color:rgba(255,255,255,0.25); font-size:0.8rem; margin-top:16px;">MIT License — Open Source</p>
+  </div>
+</footer>
+
+<!-- ===== SCROLL ANIMATION ===== -->
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-section').forEach(el => observer.observe(el));
+
+  // Blink animation for streaming cursor
+  const style = document.createElement('style');
+  style.textContent = '@keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0; } }';
+  document.head.appendChild(style);
+</script>
+
+</body>
+</html>

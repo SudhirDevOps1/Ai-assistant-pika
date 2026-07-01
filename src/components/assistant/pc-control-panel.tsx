@@ -89,7 +89,7 @@ function ActionButton({
 }
 
 export function PcControlPanel() {
-  const { status, bridgeUrl, setBridgeUrl, connect, disconnect, sendCommand, isConnected, systemData } = usePcBridge()
+  const { status, bridgeUrl, setBridgeUrl, connect, disconnect, sendCommand, speakText, isConnected, systemData } = usePcBridge()
   const [urlInput, setUrlInput] = useState('ws://localhost:8765')
   const [loadingAction, setLoadingAction] = useState<string | null>(null)
 
@@ -113,8 +113,10 @@ export function PcControlPanel() {
     const result = await sendCommand(category, action, params)
     if (result.success) {
       toast.success(result.message || 'Done!')
+      if (result.message) speakText(result.message)
     } else {
       toast.error(result.message || 'Command failed')
+      if (result.message) speakText("कमांड फ़ेल हो गई: " + result.message)
     }
     setLoadingAction(null)
   }

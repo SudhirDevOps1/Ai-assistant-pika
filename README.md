@@ -54,9 +54,12 @@
 | 🌐 **Web Search** | Google, YouTube, GitHub, StackOverflow search from UI |
 | 🪟 **Window Control** | Minimize, Maximize, Close, Switch windows remotely |
 | 🔆 **Brightness Control** | Adjust screen brightness from the UI |
-| 📶 **WiFi Manager** | List, connect, disconnect WiFi networks |
+| 📶 **WiFi Manager** | Turn WiFi On/Off, List, connect, disconnect WiFi networks |
 | ⌨️ **Keyboard Shortcuts** | Send any hotkey remotely (Ctrl+C, Alt+Tab, etc.) |
-| 📁 **File Manager** | Create, delete, list files and folders |
+| 📁 **File Manager** | Create, edit (write/append), delete, list, search, copy, move files/folders |
+| 📺 **PiP Floating Window** | Draggable Picture-in-Picture status widget with live command logging |
+| 🎛️ **Manual Engine Select** | Independently toggle between online/offline STT and TTS configurations |
+| 📷 **Camera Control** | Launch default system Camera app via voice/button |
 
 ---
 

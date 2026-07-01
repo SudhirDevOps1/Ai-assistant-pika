@@ -8,11 +8,12 @@ import { cn } from '@/lib/utils'
 import { QuickActions } from './quick-actions'
 
 export function VoiceButton() {
-  const { status, setStatus, sendAudioChunk, micVolume, setMicVolume } = useAssistantStore()
+  const { status, setStatus, sendAudioChunk, micVolume, setMicVolume, sttEngine, sendMessage } = useAssistantStore()
   const [isRecording, setIsRecording] = useState(false)
   const audioContextRef = useRef<AudioContext | null>(null)
   const streamRef = useRef<MediaStream | null>(null)
   const processorRef = useRef<ScriptProcessorNode | null>(null)
+  const recognitionRef = useRef<any>(null)
 
   const stopRecording = useCallback(() => {
     if (processorRef.current) {
@@ -34,51 +35,116 @@ export function VoiceButton() {
 
   const toggleRecording = useCallback(async () => {
     if (isRecording) {
-      stopRecording()
+      if (sttEngine === 'web_speech') {
+        if (recognitionRef.current) {
+          recognitionRef.current.stop()
+        }
+      } else {
+        stopRecording()
+      }
     } else {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-        const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 })
-        const source = audioContext.createMediaStreamSource(stream)
-        const processor = audioContext.createScriptProcessor(4096, 1, 1)
-
-        source.connect(processor)
-        processor.connect(audioContext.destination)
-
-        processor.onaudioprocess = (e) => {
-          const inputData = e.inputBuffer.getChannelData(0)
-
-          // Calculate RMS volume level
-          let sum = 0
-          for (let i = 0; i < inputData.length; i++) {
-            sum += inputData[i] * inputData[i]
-          }
-          const rms = Math.sqrt(sum / inputData.length)
-          const volume = Math.min(100, Math.round(rms * 400))
-          setMicVolume(volume)
-
-          if (!sendAudioChunk) return
-          // Convert float32 to int16 PCM
-          const pcm16 = new Int16Array(inputData.length)
-          for (let i = 0; i < inputData.length; i++) {
-            let s = Math.max(-1, Math.min(1, inputData[i]))
-            pcm16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF
-          }
-          sendAudioChunk(pcm16.buffer)
+      if (sttEngine === 'web_speech') {
+        const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+        if (!SpeechRecognition) {
+          alert("Speech Recognition not supported in this browser. Please use Chrome/Edge or switch to Offline mode.")
+          return
         }
 
-        audioContextRef.current = audioContext
-        streamRef.current = stream
-        processorRef.current = processor
+        try {
+          const rec = new SpeechRecognition()
+          rec.continuous = true
+          rec.interimResults = true
+          // Google Web Speech API automatically handles mixed Hindi and English when set to hi-IN or en-US/hi-IN
+          rec.lang = 'hi-IN' 
 
-        setIsRecording(true)
-        setStatus('listening')
-      } catch (err) {
-        console.error("Failed to access microphone", err)
-        alert("Microphone access denied or not available.")
+          rec.onstart = () => {
+            setIsRecording(true)
+            setStatus('listening')
+            setMicVolume(40) // Static mic wave indicator
+          }
+
+          rec.onresult = (event: any) => {
+            let interimTranscript = ''
+            let finalTranscript = ''
+            for (let i = event.resultIndex; i < event.results.length; ++i) {
+              if (event.results[i].isFinal) {
+                finalTranscript += event.results[i][0].transcript
+              } else {
+                interimTranscript += event.results[i][0].transcript
+              }
+            }
+
+            const text = finalTranscript || interimTranscript
+            if (finalTranscript.trim()) {
+              sendMessage(finalTranscript.trim())
+              rec.stop()
+            } else {
+              useAssistantStore.getState().setSpeechResult({ text, isFinal: false })
+            }
+          }
+
+          rec.onerror = (e: any) => {
+            console.error("Online Speech recognition error:", e)
+            setIsRecording(false)
+            setStatus('idle')
+            setMicVolume(0)
+          }
+
+          rec.onend = () => {
+            setIsRecording(false)
+            setStatus('idle')
+            setMicVolume(0)
+          }
+
+          recognitionRef.current = rec
+          rec.start()
+        } catch (err) {
+          console.error("Failed to start online speech recognition", err)
+        }
+      } else {
+        // Offline Vosk PCM streaming
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+          const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 })
+          const source = audioContext.createMediaStreamSource(stream)
+          const processor = audioContext.createScriptProcessor(4096, 1, 1)
+
+          source.connect(processor)
+          processor.connect(audioContext.destination)
+
+          processor.onaudioprocess = (e) => {
+            const inputData = e.inputBuffer.getChannelData(0)
+
+            let sum = 0
+            for (let i = 0; i < inputData.length; i++) {
+              sum += inputData[i] * inputData[i]
+            }
+            const rms = Math.sqrt(sum / inputData.length)
+            const volume = Math.min(100, Math.round(rms * 400))
+            setMicVolume(volume)
+
+            if (!sendAudioChunk) return
+            const pcm16 = new Int16Array(inputData.length)
+            for (let i = 0; i < inputData.length; i++) {
+              let s = Math.max(-1, Math.min(1, inputData[i]))
+              pcm16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF
+            }
+            sendAudioChunk(pcm16.buffer)
+          }
+
+          audioContextRef.current = audioContext
+          streamRef.current = stream
+          processorRef.current = processor
+
+          setIsRecording(true)
+          setStatus('listening')
+        } catch (err) {
+          console.error("Failed to access microphone", err)
+          alert("Microphone access denied or not available.")
+        }
       }
     }
-  }, [isRecording, setStatus, sendAudioChunk, stopRecording, setMicVolume])
+  }, [isRecording, sttEngine, setStatus, sendAudioChunk, stopRecording, setMicVolume, sendMessage])
 
   return (
     <div className="relative">

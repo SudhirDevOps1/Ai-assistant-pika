@@ -14,8 +14,12 @@ import { RemindersPanel } from '@/components/assistant/reminders-panel'
 import { ClipboardPanel } from '@/components/assistant/clipboard-panel'
 import { SystemMonitorPanel } from '@/components/assistant/system-monitor'
 import { PcControlPanel } from '@/components/assistant/pc-control-panel'
+import { ToolsPanel } from '@/components/assistant/tools-panel'
+import { MacrosPanel } from '@/components/assistant/macros-panel'
+import { SchedulerPanel } from '@/components/assistant/scheduler-panel'
 import { toast } from 'sonner'
 import { PcBridgeProvider } from '@/components/assistant/pc-bridge-provider'
+import { PiPWindow } from '@/components/assistant/PiPWindow'
 
 function HeaderBar() {
   const [mounted, setMounted] = useState(false)
@@ -113,7 +117,7 @@ function Starfield() {
 }
 
 export default function HomePage() {
-  const { activePanel, sidebarOpen, auroraTheme } = useAssistantStore()
+  const { activePanel, sidebarOpen, auroraTheme, pipMode } = useAssistantStore()
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
 
   // Cursor tracking for ambient parallax
@@ -184,6 +188,12 @@ export default function HomePage() {
         return <SystemMonitorPanel />
       case 'pc-control':
         return <PcControlPanel />
+      case 'tools':
+        return <ToolsPanel />
+      case 'macros':
+        return <MacrosPanel />
+      case 'scheduler':
+        return <SchedulerPanel />
       case 'chat':
       default:
         return (
@@ -248,6 +258,9 @@ export default function HomePage() {
               </motion.div>
             </AnimatePresence>
           </motion.div>
+          
+          {/* PiP Floating Window */}
+          {pipMode && <PiPWindow />}
         </div>
       </PcBridgeProvider>
     </div>

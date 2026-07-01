@@ -1,0 +1,2374 @@
+```txt
+================================================================================
+                    PIKA AI ASSISTANT — COMPLETE CODE GENERATION PROMPT
+              Advanced Desktop Voice Controller with Full PC Automation
+================================================================================
+
+ROLE: You are an expert full-stack developer specializing in Python backends,
+React/TypeScript frontends, WebSocket real-time systems, PC automation, offline
+voice processing, and modern glassmorphism UI design. You MUST output COMPLETE,
+PRODUCTION-READY, WELL-COMMENTED code for EVERY file listed below. Do NOT skip
+any feature. Do NOT use placeholders like "// ... rest of code" or "similar
+pattern as above". Write EVERY line.
+
+PROJECT: Pika AI Assistant — A local PC voice-controlled AI assistant with
+Hindi/English support, full desktop automation, multi-provider free LLM,
+offline-first architecture, and a premium glassmorphism web UI.
+
+LANGUAGE OF CODE COMMENTS: English
+LANGUAGE OF UI TEXT: Hindi (default) + English (toggle)
+LANGUAGE OF VOICE COMMANDS: Hindi + English + Hinglish (mixed)
+
+================================================================================
+PART 1: SYSTEM ARCHITECTURE (MEMORIZE THIS — ALL CODE FOLLOWS THIS)
+================================================================================
+
+Three-layer architecture:
+  Layer 1: React Frontend (Vite + TypeScript + Tailwind + Framer Motion)
+           → Port 3000, serves the web UI
+  Layer 2: Python WebSocket Bridge (asyncio + websockets)
+           → Port 8765, handles all PC control, voice, LLM routing
+  Layer 3: External Services (Free APIs, offline models)
+
+Communication: ALL communication between frontend and backend is via
+WebSocket JSON messages. There are NO REST endpoints for command execution.
+(An optional REST health-check endpoint at /health is allowed.)
+
+WebSocket Message Format (ALL messages follow this envelope):
+─────────────────────────────────────────────────────────────
+Client → Server:
+{
+  "type": "command" | "query" | "config" | "voice_start" | "voice_stop" | "tts_speak" | "cancel",
+  "category": "system" | "apps" | "volume" | "media" | "files" | "clipboard" | "info" | "web" | "screen" | "macros" | "reminders" | "processes" | "network" | "hotkeys" | "plugins" | "scheduler" | "ocr" | "pdf" | "image" | "qrcode" | "calculator" | "translator" | "password" | "weather" | "news" | "music" | "disk" | "text_expand" | "context",
+  "action": "specific_action_name",
+  "params": { ... action-specific key-value pairs ... },
+  "id": "uuid-v4-string",
+  "timestamp": "2025-01-15T10:30:00.000Z"
+}
+
+Server → Client (Response):
+{
+  "type": "response",
+  "status": "success" | "error" | "confirmation_required",
+  "data": { ... result data or null ... },
+  "message": "Human-readable message in Hindi/English",
+  "confirmation_id": "uuid-if-confirmation-required-else-null",
+  "id": "same-uuid-as-request",
+  "timestamp": "2025-01-15T10:30:00.500Z"
+}
+
+Server → Client (Push Event — no request id):
+{
+  "type": "event",
+  "event": "system_status" | "voice_partial" | "voice_final" | "tts_started" | "tts_ended" | "tts_audio_chunk" | "reminder_triggered" | "battery_alert" | "cpu_alert" | "ram_alert" | "macro_recording_tick" | "clipboard_changed" | "window_focus_changed" | "scheduled_task_executed" | "health_ping" | "connection_ready",
+  "data": { ... event-specific data ... },
+  "timestamp": "2025-01-15T10:30:01.000Z"
+}
+
+Server → Client (LLM Streaming):
+{
+  "type": "llm_stream",
+  "chunk": "text fragment",
+  "provider": "groq" | "gemini" | "mistral" | "cerebras" | "openrouter" | "zai" | "deepseek" | "local_fallback",
+  "id": "conversation-message-uuid",
+  "done": false,
+  "timestamp": "2025-01-15T10:30:01.100Z"
+}
+{
+  "type": "llm_stream",
+  "chunk": "",
+  "provider": "groq",
+  "id": "same-uuid",
+  "done": true,
+  "timestamp": "2025-01-15T10:30:02.000Z"
+}
+
+CONFIRMATION FLOW (for destructive/sensitive commands):
+1. Client sends command
+2. Server responds with status "confirmation_required" + confirmation_id + message
+3. Client shows confirmation dialog to user
+4. User confirms → Client sends: {"type": "command", "category": "_confirm", "action": "approve", "params": {"confirmation_id": "uuid"}, "id": "new-uuid", "timestamp": "..."}
+5. User cancels → Client sends: {"type": "command", "category": "_confirm", "action": "reject", "params": {"confirmation_id": "uuid"}, "id": "new-uuid", "timestamp": "..."}
+6. Server executes or cancels accordingly
+
+COMMANDS REQUIRING CONFIRMATION (hardcoded list in backend):
+  - system: shutdown, restart, sleep
+  - files: delete, delete_folder
+  - processes: kill
+  - disk: cleanup_temp, cleanup_cache
+  - macros: execute (if macro contains destructive actions)
+  - scheduler: clear_all
+
+================================================================================
+PART 2: COMPLETE FILE STRUCTURE (GENERATE EVERY FILE)
+================================================================================
+
+pika-ai-assistant/
+│
+├── pc_bridge.py                    ← MAIN Python file (ALL backend in ONE file for simplicity)
+├── requirements.txt                ← Python dependencies
+├── .env.example                    ← Environment variables template
+├── start.bat                       ← Windows one-click launcher
+├── start.sh                        ← Linux/Mac one-click launcher
+├── README.md                       ← Complete setup guide
+├── config.json                     ← Runtime config (auto-generated on first run)
+│
+├── models/                         ← Vosk models (auto-downloaded)
+│   ├── vosk-model-small-hi-0.22/
+│   └── vosk-model-small-en-us-0.15/
+│
+├── tts_cache/                      ← Cached TTS audio files
+│
+├── screenshots/                    ← Saved screenshots
+│
+├── recordings/                     ← Screen recordings
+│
+├── macros/                         ← Saved macro files (.json)
+│
+├── data/                           ← Persistent data (SQLite + JSON)
+│   ├── pika.db                     ← SQLite database
+│   ├── conversation_history.json   ← Chat history
+│   ├── clipboard_history.json      ← Clipboard log
+│   └── command_log.json            ← Audit log
+│
+└── frontend/                       ← React + Vite project
+    ├── package.json
+    ├── vite.config.ts
+    ├── tsconfig.json
+    ├── tailwind.config.ts
+    ├── postcss.config.js
+    ├── index.html
+    ├── public/
+    │   ├── favicon.svg
+    │   └── sounds/
+    │       ├── click.mp3
+    │       ├── notification.mp3
+    │       ├── error.mp3
+    │       └── success.mp3
+    └── src/
+        ├── main.tsx
+        ├── App.tsx
+        ├── index.css                ← Global styles + Tailwind + animations
+        ├── app/
+        │   ├── page.tsx             ← Main page (orchestrates all components)
+        │   └── layout.tsx           ← Root layout with providers
+        ├── components/
+        │   ├── Dashboard.tsx        ← Clock, date, system status, provider badge
+        │   ├── ChatInterface.tsx    ← Message bubbles, input, voice button
+        │   ├── ChatMessage.tsx      ← Single message bubble with markdown
+        │   ├── MarkdownRenderer.tsx ← Code blocks with syntax highlighting + copy
+        │   ├── VoiceButton.tsx      ← Mic button with waveform animation
+        │   ├── VoiceWaveform.tsx    ← Real-time audio visualization
+        │   ├── ControlPanel.tsx     ← Tabbed panel for all PC controls
+        │   ├── SystemControls.tsx   ← Shutdown/restart/lock/sleep buttons
+        │   ├── AppLauncher.tsx      ← Grid of app buttons
+        │   ├── MediaControls.tsx    ← Volume slider, play/pause/next/prev
+        │   ├── FileManager.tsx      ← File operations UI
+        │   ├── ClipboardManager.tsx ← Clipboard history + templates
+        │   ├── SystemInfo.tsx       ← CPU/RAM/Disk/Battery/IP displays
+        │   ├── WebLauncher.tsx      ← Website shortcuts + search
+        │   ├── ScreenTools.tsx      ← Screenshot, record, brightness, color picker
+        │   ├── MacroEngine.tsx      ← Record/play/save/load macros
+        │   ├── ReminderPanel.tsx    ← Set/list/cancel reminders & timers
+        │   ├── ProcessManager.tsx   ← List/kill/set-priority processes
+        │   ├── NetworkTools.tsx     ← IP info, speed test, WiFi
+        │   ├── HotkeyManager.tsx    ← Create/manage global hotkeys
+        │   ├── SchedulerPanel.tsx   ← Cron-like scheduled tasks
+        │   ├── OcrTool.tsx          ← Capture region → OCR → copy text
+        │   ├── PdfTools.tsx         ← Merge/split/extract PDF
+        │   ├── ImageTools.tsx       ← Resize/convert/compress images
+        │   ├── QrGenerator.tsx      ← Generate QR codes
+        │   ├── Calculator.tsx       ← Voice/text calculator
+        │   ├── Translator.tsx       ← Translate text (free API)
+        │   ├── PasswordGenerator.tsx← Generate secure passwords
+        │   ├── WeatherWidget.tsx    ← Weather display (wttr.in)
+        │   ├── NewsReader.tsx       ← RSS news feed reader
+        │   ├── MusicPlayer.tsx      ← Local music file player
+        │   ├── DiskTools.tsx        ← Cleanup temp, find duplicates, analyze
+        │   ├── TextExpander.tsx     ← Text snippets/abbreviation expansion
+        │   ├── SettingsPanel.tsx    ← All settings in one place
+        │   ├── Sidebar.tsx          ← Navigation sidebar
+        │   ├── StatusBar.tsx        ← Bottom status bar
+        │   ├── Toast.tsx            ← Toast notification system
+        │   ├── ConfirmationDialog.tsx← Confirm destructive actions
+        │   ├── PiPWindow.tsx        ← Picture-in-Picture floating window
+        │   ├── ParticleBackground.tsx← Floating particles animation
+        │   ├── AuroraBackground.tsx ← Animated aurora gradient
+        │   ├── LoadingSpinner.tsx   ← AI thinking animation
+        │   ├── GlassCard.tsx        ← Reusable glassmorphism card
+        │   ├── GlowButton.tsx       ← Button with hover glow effect
+        │   └── IconBadge.tsx        ← Icon with status badge
+        ├── hooks/
+        │   ├── useWebSocket.ts      ← WebSocket connection + message handling
+        │   ├── useVoice.ts          ← Browser mic → send audio to backend OR text
+        │   ├── useSpeech.ts         ← Browser SpeechSynthesis for TTS playback
+        │   ├── useSystemInfo.ts     ← Poll system info from backend
+        │   ├── useClipboard.ts      ← Clipboard operations
+        │   ├── useHotkeys.ts        ← Global keyboard shortcuts in browser
+        │   ├── usePiP.ts            ← Picture-in-Picture logic
+        │   └── useTheme.ts          ← Dark/light theme toggle
+        ├── store/
+        │   └── assistantStore.ts    ← Zustand store (ALL state)
+        ├── lib/
+        │   ├── constants.ts         ← App names, websites, command mappings
+        │   ├── utils.ts             ← formatDate, formatBytes, generateId, etc.
+        │   ├── soundEffects.ts      ← Play UI sounds (click, error, success)
+        │   └── markdown.ts          ← Simple markdown parser for chat
+        └── types/
+            └── index.ts             ← TypeScript interfaces for ALL messages
+
+================================================================================
+PART 3: COMPLETE PYTHON BACKEND (pc_bridge.py) — DETAILED SPECIFICATION
+================================================================================
+
+The ENTIRE Python backend MUST be in ONE file: pc_bridge.py
+This file MUST contain all classes, functions, and the WebSocket server.
+Use async/await throughout. Use type hints everywhere.
+
+SECTIONS OF pc_bridge.py (in order):
+
+─── 3.1 IMPORTS ─────────────────────────────────────────────────────────────
+Import everything needed. Handle optional imports gracefully (try/except with
+warnings if a library is missing — e.g., pytesseract, fitz for PDF).
+
+Required: websockets, asyncio, json, os, sys, platform, subprocess, time,
+datetime, uuid, pathlib, shutil, re, math, struct, wave, threading,
+queue, hashlib, base64, sqlite3, logging, functools, ctypes, urllib.request
+
+Optional (with graceful fallback):
+  - vosk, sounddevice, numpy → for offline STT
+  - edge_tts → for TTS
+  - pyautogui, pygetwindow → for PC control
+  - pyperclip → for clipboard
+  - psutil → for system info
+  - Pillow → for screenshots, images, QR codes, color picker
+  - keyboard, mouse → for hotkeys and macros
+  - pytesseract → for OCR
+  - PyPDF2 or fitz (PyMuPDF) → for PDF
+  - qrcode → for QR generation
+  - feedparser → for news RSS
+  - pygame → for local music playback
+  - requests → for HTTP calls
+  - groq → for Groq LLM
+  - google.generativeai → for Gemini
+  - openai → for Mistral/Cerebras/OpenRouter/DeepSeek (OpenAI-compatible)
+
+If an optional import fails, log a WARNING and set a flag like HAS_VOSK = False.
+Features depending on missing libraries return an error response explaining
+which pip package to install.
+
+─── 3.2 CONFIGURATION & CONSTANTS ──────────────────────────────────────────
+- Load .env file using python-dotenv (optional, no error if missing)
+- Define DEFAULT_CONFIG dict with all settings and their defaults
+- Load/merge config.json if exists, otherwise create it from defaults
+- Define APP_MAP: dict mapping app names (lowercase, Hindi + English) to
+  their executable names or paths. Examples:
+    "chrome" → "chrome", "google chrome" → "chrome"
+    "notepad" → "notepad", "notepad kholo" → "notepad"
+    "vs code" → "code", "visual studio code" → "code"
+    "firefox" → "firefox", "brave" → "brave"
+    "calculator" → "calc", "कैलकुलेटर" → "calc"
+    "file explorer" → "explorer", "फाइल एक्सप्लोरर" → "explorer"
+    "telegram" → "telegram", "discord" → "discord"
+    "spotify" → "spotify", "vlc" → "vlc"
+    "word" → "winword", "excel" → "excel", "powerpoint" → "powerpnt"
+    "paint" → "mspaint", "cmd" → "cmd", "terminal" → "wt"
+    "task manager" → "taskmgr", "control panel" → "control"
+    "settings" → "ms-settings:", "bluetooth" → "ms-settings:bluetooth"
+    Add at least 40 app mappings covering Hindi + English names.
+
+- Define WEBSITE_MAP: dict mapping website names to URLs:
+    "youtube" → "https://youtube.com", "यूट्यूब" → "https://youtube.com"
+    "google" → "https://google.com", "गूगल" → "https://google.com"
+    "github" → "https://github.com", "गिटहब" → "https://github.com"
+    "gmail" → "https://mail.google.com", "जीमेल" → "https://mail.google.com"
+    "twitter" → "https://twitter.com", "एक्स" → "https://x.com"
+    "facebook" → "https://facebook.com", "फेसबुक" → "https://facebook.com"
+    "instagram" → "https://instagram.com", "इंस्टाग्राम" → "https://instagram.com"
+    "whatsapp web" → "https://web.whatsapp.com"
+    "stackoverflow" → "https://stackoverflow.com"
+    "wikipedia" → "https://wikipedia.org"
+    "reddit" → "https://reddit.com"
+    "linkedin" → "https://linkedin.com"
+    "amazon" → "https://amazon.in", "अमेज़न" → "https://amazon.in"
+    "flipkart" → "https://flipkart.com", "फ्लिपकार्ट" → "https://flipkart.com"
+    "netflix" → "https://netflix.com"
+    "hotstar" → "https://hotstar.com", "जियो सिनेमा" → "https://jiocinema.com"
+    Add at least 30 website mappings.
+
+- Define COMMAND_PATTERNS: list of dicts, each with:
+    "pattern": regex string (compiled at startup)
+    "category": str
+    "action": str
+    "param_extractor": function that takes regex match → params dict
+  This is the NLU (Natural Language Understanding) layer.
+  Patterns MUST support Hindi, English, and Hinglish.
+
+  Examples of patterns (you must create 100+ patterns covering ALL categories):
+
+  System:
+    r"(?:computer|system|laptop|पीसी|कंप्यूटर)\s+(?:shutdown|बंद|switch\s+off)" → system/shutdown
+    r"(?:restart|reboot|रीस्टार्ट|दोबारा\s+शुरू)" → system/restart
+    r"(?:sleep|स्लीप|सो जा)" → system/sleep
+    r"(?:lock|लॉक|लॉक करो)" → system/lock
+    r"(?:log\s*off|log\s*out|लॉग आउट)" → system/logoff
+    r"(?:hibernate|हाइबरनेट)" → system/hibernate
+
+  Apps:
+    r"(?:open|kholo|खोलो|launch|start|चलाओ)\s+(.+)" → apps/open (extract app name)
+    r"(?:close|band\s*karo|बंद\s*करो|quit|exit)" → apps/close (extract app name)
+
+  Volume:
+    r"volume\s+up|आवाज़\s+बढ़ाओ|sound\s+up" → volume/up
+    r"volume\s+down|आवाज़\s*कम|sound\s+down" → volume/down
+    r"(?:mute|म्यूट)" → volume/mute
+    r"(?:unmute|un\s*mute|म्यूट\s*हटाओ)" → volume/unmute
+    r"volume\s+(\d+)|आवाज़\s*(\d+)\s*परसेंट?" → volume/set (extract number)
+
+  Media:
+    r"(?:play|pause|प्ले|पॉज़)\s*(?:music|song|गाना)?" → media/play_pause
+    r"(?:next|अगला)\s*(?:song|track|गाना)?" → media/next
+    r"(?:previous|पिछला)\s*(?:song|track|गाना)?" → media/previous
+
+  Files:
+    r"(?:create|बनाओ)\s+(?:file|फाइल)\s+(.+)" → files/create_file (extract name)
+    r"(?:create|बनाओ)\s+(?:folder|directory|फोल्डर)\s+(.*)" → files/create_folder
+    r"(?:delete|मिटाओ|हटाओ)\s+(?:file|फाइल)\s+(.+)" → files/delete (CONFIRMATION REQUIRED)
+    r"(?:delete|मिटाओ|हटाओ)\s+(?:folder|फोल्डर)\s+(.+)" → files/delete_folder (CONFIRMATION REQUIRED)
+    r"(?:rename|नाम बदलो)\s+(.+?)\s+(?:to|को)\s+(.+)" → files/rename
+    r"(?:list|दिखाओ)\s+(?:files|फाइलें)\s*(?:in\s+|में)?\s*(.+)?" → files/list
+    r"(?:move|मूव)\s+(.+?)\s+(?:to|को)\s+(.+)" → files/move
+    r"(?:copy|कॉपी)\s+(.+?)\s+(?:to|को)\s+(.+)" → files/copy
+    r"(?:open|खोलो)\s+(?:file\s*explorer|फाइल\s*एक्सप्लोरर)\s*(?:at|में)?\s*(.+)?" → files/open_explorer
+
+  Clipboard:
+    r"(?:save|सेव)\s+(?:clipboard|क्लिपबोर्ड)" → clipboard/save
+    r"(?:paste|पेस्ट)\s+(?:last|पिछला)" → clipboard/paste_last
+    r"(?:show|दिखाओ)\s+(?:clipboard|क्लिपबोर्ड)\s*(?:history|हिस्ट्री)?" → clipboard/history
+    r"(?:clear|क्लियर)\s+(?:clipboard|क्लिपबोर्ड)" → clipboard/clear
+
+  Info:
+    r"(?:battery|बैटरी)\s*(?:status|स्टेटस|dikhao|दिखाओ|kitna|कितना)?" → info/battery
+    r"(?:cpu)\s*(?:usage|उपयोग|status|स्टेटस)?" → info/cpu
+    r"(?:ram|memory|मेमोरी)\s*(?:usage|उपयोग|status)?" → info/ram
+    r"(?:disk|डिस्क)\s*(?:space|जगह|usage)?" → info/disk
+    r"(?:ip\s*address|आईपी)\s*(?:dikhao|दिखाओ|what)? ?" → info/ip
+    r"(?:time|समय|clock|घड़ी)\s*(?:dikhao|दिखाओ|क्या|what)?" → info/time
+    r"(?:date|तारीख|आज)\s*(?:dikhao|दिखाओ|क्या|what)?" → info/date
+    r"(?:system\s*info|सिस्टम\s*जानकारी|full\s*report|पूरी\s*रिपोर्ट)" → info/full_report
+
+  Web:
+    r"(?:open|खोलो)\s+(?:website|वेबसाइट)?\s*(youtube|google|github|gmail|twitter|facebook|instagram|whatsapp|stackoverflow|wikipedia|reddit|linkedin|amazon|flipkart|netflix|hotstar|जियो\s*सिनेमा|यूट्यूब|गूगल|गिटहब|जीमेल|एक्स|फेसबुक|इंस्टाग्राम|अमेज़न|फ्लिपकार्ट)" → web/open_site
+    r"(?:search|सर्च)\s*(?:for|करो)?\s*(.+)" → web/search
+    r"(?:weather|मौसम)\s*(?:of|में)?\s*(.+)?" → weather/get
+
+  Screen:
+    r"(?:screenshot|स्क्रीनशॉट)\s*(?:lelo|लो|take)?" → screen/screenshot
+    r"(?:start|शुरू)\s+(?:recording|रिकॉर्डिंग)" → screen/start_recording
+    r"(?:stop|रुको|बंद)\s+(?:recording|रिकॉर्डिंग)" → screen/stop_recording
+    r"(?:brightness|ब्राइटनेस)\s+up|ब्राइटनेस\s*बढ़ाओ" → screen/brightness_up
+    r"(?:brightness|ब्राइटनेस)\s+down|ब्राइटनेस\s*कम" → screen/brightness_down
+    r"(?:brightness|ब्राइटनेस)\s*(\d+)" → screen/brightness_set
+
+  Macros:
+    r"(?:start|शुरू)\s+(?:macro|मैक्रो)\s+(?:recording|रिकॉर्डिंग)" → macros/start_recording
+    r"(?:stop|रुको)\s+(?:macro|मैक्रो)\s+(?:recording|रिकॉर्डिंग)" → macros/stop_recording
+    r"(?:play|चलाओ|execute)\s+(?:macro|मैक्रो)\s+(.+)" → macros/play (CONFIRMATION REQUIRED)
+    r"(?:save|सेव)\s+(?:macro|मैक्रो)\s+(?:as|को)\s+(.+)" → macros/save
+    r"(?:list|दिखाओ)\s+(?:macros|मैक्रोज़)" → macros/list
+    r"(?:delete|मिटाओ)\s+(?:macro|मैक्रो)\s+(.+)" → macros/delete (CONFIRMATION REQUIRED)
+
+  Reminders:
+    r"(?:remind|याद\s*दिलाओ)\s+(?:me|मुझे)?\s*(.+?)(?:\s+in\s+|\s+में\s+)(\d+)\s*(minute|minutes|min|मिनट|hour|hours|hr|घंटा|घंटे|second|seconds|sec|सेकंड)" → reminders/create
+    r"(?:set|लगाओ)\s+(?:timer|टाइमर)\s+(?:for|के लिए)?\s*(\d+)\s*(minute|minutes|min|मिनट|hour|hours|hr|घंटा|second|seconds|sec|सेकंड)" → reminders/timer
+    r"(?:list|दिखाओ)\s+(?:reminders|रिमाइंडर्स|alerts)" → reminders/list
+    r"(?:cancel|रद्द)\s+(?:reminder|रिमाइंडर)\s*(\d+)?" → reminders/cancel
+
+  Processes:
+    r"(?:list|दिखाओ)\s+(?:processes|प्रोसेसेज़|running\s*programs|चल रहे\s*प्रोग्राम)" → processes/list
+    r"(?:kill|मारो|खत्म\s*करो)\s+(?:process|प्रोसेस)\s+(.+)" → processes/kill (CONFIRMATION REQUIRED)
+    r"(?:set\s*)?priority\s+(?:of\s*)?(.+?)\s+(?:to\s*)?(high|normal|low|high|realtime)" → processes/set_priority
+
+  Network:
+    r"(?:my\s*)?(?:ip\s*address|आईपी)\s*(?:dikhao|दिखाओ|what|क्या)?" → network/ip
+    r"(?:speed\s*test|स्पीड\s*टेस्ट)" → network/speed_test
+    r"(?:download|डाउनलोड)\s+speed" → network/speed_test
+    r"(?:list|दिखाओ)\s+(?:wifi|वाईफाई)\s*(?:networks|नेटवर्क्स)?" → network/list_wifi
+
+  OCR:
+    r"(?:ocr|ओसीआर|read|पढ़ो)\s+(?:text|टेक्स्ट)\s+(?:from|से)?\s*(?:screen|स्क्रीन)" → ocr/capture_and_read
+    r"(?:read|पढ़ो)\s+(?:screen|स्क्रीन)" → ocr/capture_and_read
+
+  PDF:
+    r"(?:merge|मर्ज)\s+(?:pdf|पीडीएफ)\s+(.+?)(?:\s+and\s+|\s+और\s+)(.+)" → pdf/merge
+    r"(?:split|स्प्लिट)\s+(?:pdf|पीडीएफ)\s+(.+)" → pdf/split
+    r"(?:extract|निकालो)\s+(?:text|टेक्स्ट)\s+(?:from|से)\s+(?:pdf|पीडीएफ)\s+(.+)" → pdf/extract_text
+
+  Calculator:
+    r"(?:calculate|कैलकुलेट)\s+(.+)" → calculator/eval
+    r"(?:what\s*is|कितना\s*होगा)\s+(.+)" → calculator/eval
+    r"(\d+)\s*(?:plus|\+|और|जमा)\s*(\d+)" → calculator/eval
+    r"(\d+)\s*(?:minus|\-|माइनस|घटा)\s*(\d+)" → calculator/eval
+    r"(\d+)\s*(?:into|×|\*|गुना)\s*(\d+)" → calculator/eval
+    r"(\d+)\s*(?:divided\s*by|÷|/|भाग)\s*(\d+)" → calculator/eval
+
+  Translator:
+    r"(?:translate|ट्रांसलेट)\s+(.+?)(?:\s+to\s+|\s*में\s*)(?:hindi|हिंदी|english|अंग्रेज़ी|french|फ्रेंच|german|जर्मन|spanish|स्पेनिश|japanese|जापानी|chinese|चीनी)" → translator/translate
+
+  Password:
+    r"(?:generate|जनरेट)\s+(?:password|पासवर्ड)\s*(?:of\s*length|\s*लंबाई\s*)?(\d+)?" → password/generate
+
+  QR Code:
+    r"(?:qr\s*code|क्यूआर\s*कोड)\s+(?:generate|बनाओ|बनाओ)\s+(.+)" → qrcode/generate
+
+  Music:
+    r"(?:play|चलाओ)\s+(?:music|गाना|song)\s*(.+?)" → music/play
+    r"(?:stop|रुको|बंद)\s+(?:music|गाना)" → music/stop
+    r"(?:pause|पॉज़)\s+(?:music|गाना)" → music/pause
+
+  Disk:
+    r"(?:clean\s*up|क्लीन\s*अप)\s+(?:temp|टेम्प)\s*(?:files|फाइलें)?" → disk/cleanup_temp (CONFIRMATION REQUIRED)
+    r"(?:find|ढूंढो)\s+(?:duplicate|डुप्लिकेट)\s*(?:files|फाइलें)\s*(?:in|में)?\s*(.+)?" → disk/find_duplicates
+    r"(?:disk\s*usage|डिस्क\s*उपयोग)\s*(?:of|में)?\s*(.+)?" → disk/usage
+
+  Text Expander:
+    r"(?:add|जोड़ो)\s+(?:snippet|स्निपेट)\s+(.+?)\s+(?:as|के रूप में)\s+(.+)" → text_expand/add
+    r"(?:list|दिखाओ)\s+(?:snippets|स्निपेट्स)" → text_expand/list
+    r"(?:expand|एक्सपैंड)\s+(.+)" → text_expand/expand
+    r"(?:delete|मिटाओ)\s+(?:snippet|स्निपेट)\s+(.+)" → text_expand/delete
+
+  AI Provider Switch:
+    r"(?:switch|बदलो)\s+(?:to|को)\s+(groq|gemini|mistral|cerebras|openrouter|zai|deepseek|ग्रोक|जेमिनी|मिस्ट्रल)" → config/switch_provider
+
+  General Conversation (fallback — if no pattern matches, send to LLM):
+    Anything that doesn't match above → goes to LLM for conversational response
+
+  YOU MUST CREATE AT LEAST 120 TOTAL PATTERNS covering every category above.
+  Each pattern must be a compiled regex. Use re.IGNORECASE flag.
+
+─── 3.3 SAFETY SYSTEM (CommandValidator class) ────────────────────────────
+class CommandValidator:
+    """Validates commands for safety before execution."""
+    CONFIRMATION_REQUIRED_ACTIONS = {
+        "system": ["shutdown", "restart", "sleep", "hibernate"],
+        "files": ["delete", "delete_folder"],
+        "processes": ["kill"],
+        "disk": ["cleanup_temp", "cleanup_cache"],
+        "macros": ["execute"],
+        "scheduler": ["clear_all"],
+    }
+    BLOCKED_PATHS = [
+        "C:\\Windows", "C:\\Program Files", "C:\\Program Files (x86)",
+        "/System", "/usr", "/bin", "/sbin", "/etc", "/boot",
+        "C:\\Windows\\System32",
+    ]
+    MAX_FILE_SIZE_MB = 100  # Max file size for operations
+    DANGEROUS_EXTENSIONS = [".exe", ".bat", ".cmd", ".ps1", ".msi", ".dll", ".sys"]
+    CALC_MAX_NUMBER = 10**15  # Prevent absurd calculations
+    CALC_TIMEOUT_SECONDS = 2
+    MACRO_MAX_DURATION_SECONDS = 300  # 5 min max macro length
+    MACRO_MAX_ACTIONS = 1000
+    RATE_LIMIT = {"per_second": 5, "per_minute": 60, "per_hour": 500}
+
+    Methods:
+    - needs_confirmation(category, action) -> bool
+    - is_path_safe(path) -> bool
+    - is_filename_safe(filename) -> bool
+    - validate_calc_expression(expr) -> tuple[bool, str]
+    - validate_macro(actions) -> tuple[bool, str]
+    - check_rate_limit(client_id) -> tuple[bool, str]  # Use sliding window
+    - sanitize_string(s) -> str  # Remove control chars, limit length
+
+─── 3.4 LLM ROUTER (LLMRouter class) ──────────────────────────────────────
+class LLMRouter:
+    """Routes chat messages to free LLM providers with auto-fallback."""
+    
+    PROVIDERS = {
+        "groq": {
+            "base_url": "https://api.groq.com/openai/v1/chat/completions",
+            "model": "llama-3.3-70b-versatile",
+            "api_key_env": "GROQ_API_KEY",
+            "max_tokens": 2048,
+            "temperature": 0.7,
+        },
+        "gemini": {
+            "base_url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent",
+            "api_key_env": "GEMINI_API_KEY",
+            "model": "gemini-2.0-flash",
+            "max_tokens": 2048,
+            "temperature": 0.7,
+            # Note: Gemini uses different request format — handle separately
+        },
+        "mistral": {
+            "base_url": "https://api.mistral.ai/v1/chat/completions",
+            "model": "mistral-small-latest",
+            "api_key_env": "MISTRAL_API_KEY",
+            "max_tokens": 2048,
+            "temperature": 0.7,
+        },
+        "cerebras": {
+            "base_url": "https://api.cerebras.ai/v1/chat/completions",
+            "model": "llama-3.3-70b",
+            "api_key_env": "CEREBRAS_API_KEY",
+            "max_tokens": 2048,
+            "temperature": 0.7,
+        },
+        "openrouter": {
+            "base_url": "https://openrouter.ai/api/v1/chat/completions",
+            "model": "meta-llama/llama-3.3-70b-instruct:free",
+            "api_key_env": "OPENROUTER_API_KEY",
+            "max_tokens": 2048,
+            "temperature": 0.7,
+        },
+        "zai": {
+            "base_url": "https://open.bigmodel.cn/api/paas/v4/chat/completions",
+            "model": "glm-4-flash",
+            "api_key_env": "ZAI_API_KEY",
+            "max_tokens": 2048,
+            "temperature": 0.7,
+        },
+        "deepseek": {
+            "base_url": "https://api.deepseek.com/chat/completions",
+            "model": "deepseek-chat",
+            "api_key_env": "DEEPSEEK_API_KEY",
+            "max_tokens": 2048,
+            "temperature": 0.7,
+        },
+    }
+
+    PROVIDER_FALLBACK_ORDER = ["groq", "cerebras", "gemini", "deepseek", "mistral", "openrouter", "zai"]
+
+    SYSTEM_PROMPT = """You are Pika, a helpful personal AI assistant that runs on the user's local PC.
+You can control their computer, answer questions, and help with tasks.
+You speak in a friendly, concise manner. Default language is Hindi (written in Devanagari script).
+If the user speaks in English, respond in English. If they use Hinglish, respond in Hinglish.
+Keep responses short and useful — this is a voice assistant, not a chatbot.
+For technical/coding questions, provide concise code snippets when needed.
+Never refuse to help with legitimate PC tasks. Never mention you are an AI unless asked."""
+
+    Methods:
+    - __init__(self, config: dict)
+    - async chat(self, messages: list[dict], provider_override: str = None) -> AsyncGenerator[str, None]
+      → Yields text chunks (streaming). Tries providers in fallback order.
+      → For Gemini, use the Google Generative AI SDK format (not OpenAI-compatible).
+      → For all others, use OpenAI-compatible format with requests/httpx.
+      → If ALL providers fail, yield a local fallback response:
+        "माफ़ करो, अभी इंटरनेट कनेक्शन में समस्या है। बाद में फिर से पूछो।"
+    - get_available_providers(self) -> list[str]
+      → Returns list of providers that have API keys configured
+    - get_current_provider(self) -> str
+    - set_provider(self, name: str) -> bool
+    - async _call_openai_compatible(self, provider: str, messages: list) -> AsyncGenerator
+    - async _call_gemini(self, messages: list) -> AsyncGenerator
+    - _build_messages(self, user_messages: list) -> list[dict]
+      → Prepends system prompt, limits to last 20 messages for context window
+
+    IMPORTANT: Use urllib.request (stdlib) for HTTP calls, NOT requests library,
+    to minimize dependencies. Handle streaming by reading response line by line.
+    If that's too complex, use aiohttp or httpx as optional dependency.
+    Actually, use `requests` library since it's already in requirements.txt.
+    For streaming, use requests with stream=True and iterate over response.iter_lines().
+
+─── 3.5 VOICE ENGINE (VoiceEngine class) ───────────────────────────────────
+class VoiceEngine:
+    """Handles STT (Vosk) and TTS (Edge TTS / pyttsx3)."""
+
+    Methods:
+    - __init__(self, config: dict)
+    - async ensure_models_downloaded(self) -> None
+      → Check if Vosk models exist in ./models/
+      → If not, download from:
+        Hindi: https://alphacephei.com/vosk/models/vosk-model-small-hi-0.22.zip
+        English: https://alphacephei.com/vosk/models/vosk-model-small-en-us-0.15.zip
+      → Extract to ./models/ directory
+      → Show progress in console
+    - start_listening(self, callback: Callable[[str, float], None]) -> None
+      → Opens microphone with sounddevice (44100 Hz, mono)
+      → Creates Vosk KaldiRecognizer for each model
+      → Runs in a separate thread
+      → For each audio chunk, tries Hindi model first, then English
+      → Uses the one with higher confidence
+      → Calls callback(partial_text, confidence) for partial results
+      → Calls callback(final_text, confidence) for final results (when Vosk says Result is final)
+      → Auto-detect language: if Hindi confidence > 0.7, use Hindi; else English
+    - stop_listening(self) -> None
+    - async speak(self, text: str) -> AsyncGenerator[bytes, None]
+      → Uses edge_tts with voice "hi-IN-SwaraNeural" (configurable)
+      → Generates audio and yields chunks as bytes
+      → Fallback to pyttsx3 if edge_tts fails
+      → Support speed/rate configuration from config
+    - set_language(self, lang: str) -> None  # "hi" or "en"
+    - is_listening(self) -> bool
+
+─── 3.6 PC AUTOMATION ENGINE (PCController class) ───────────────────────────
+class PCController:
+    """Executes all PC control commands. Every method returns a result dict."""
+
+    Methods (EVERY method must have try/except and return {"success": bool, "message": str, "data": any}):
+
+    # --- System ---
+    async def shutdown(self, delay_seconds: int = 30) -> dict
+    async def restart(self, delay_seconds: int = 30) -> dict
+    async def sleep(self) -> dict
+    async def lock(self) -> dict
+    async def logoff(self) -> dict
+    async def hibernate(self) -> dict
+    # Use subprocess with appropriate OS commands:
+    # Windows: shutdown /s /t {delay}, shutdown /r /t {delay}, rundll32.exe powrprof.dll,SetSuspendState 0,1,0
+    #          rundll32.exe user32.dll,LockWorkStation, shutdown /l
+    # Linux: systemctl poweroff, systemctl reboot, systemctl suspend, loginctl lock-session, systemctl hibernate
+    # Mac: osascript -e 'tell app "System Events" to shut down', etc.
+
+    # --- Apps ---
+    async def open_app(self, app_name: str) -> dict
+      → Look up APP_MAP, use subprocess.Popen or os.startfile (Windows)
+      → If not in map, try app_name directly as executable
+    async def close_app(self, app_name: str) -> dict
+      → Use pygetwindow to find window by title, then close
+      → Fallback: use taskkill (Windows) or pkill (Linux/Mac)
+
+    # --- Volume ---
+    async def volume_up(self, amount: int = 10) -> dict
+    async def volume_down(self, amount: int = 10) -> dict
+    async def volume_set(self, percent: int) -> dict
+    async def volume_mute(self) -> dict
+    async def volume_unmute(self) -> dict
+    # Windows: use nircmd (if available) or pycaw library or ctypes with COM
+    # Actually, use ctypes to call Windows API directly for volume control:
+    # import ctypes; from ctypes import cast, POINTER
+    # Use IAudioEndpointVolume COM interface
+    # Linux: use amixer or pactl
+    # Mac: use osascript
+
+    # --- Media ---
+    async def media_play_pause(self) -> dict
+    async def media_next(self) -> dict
+    async def media_previous(self) -> dict
+    # Use pyautogui or keyboard library to send media keys:
+    # keyboard.press_and_release('play/pause'), keyboard.press_and_release('nexttrack'), etc.
+    # Or use ctypes SendInput on Windows
+
+    # --- Files ---
+    async def create_file(self, filepath: str, content: str = "") -> dict
+    async def create_folder(self, folderpath: str) -> dict
+    async def delete_file(self, filepath: str) -> dict  # Confirmation required
+    async def delete_folder(self, folderpath: str) -> dict  # Confirmation required
+    async def rename_file(self, old_path: str, new_name: str) -> dict
+    async def list_directory(self, dirpath: str) -> dict
+    async def move_file(self, src: str, dst: str) -> dict
+    async def copy_file(self, src: str, dst: str) -> dict
+    async def open_explorer(self, path: str = None) -> dict
+    # All file paths should be resolved relative to user's home directory if not absolute
+    # Use pathlib.Path for cross-platform path handling
+
+    # --- Clipboard ---
+    async def clipboard_save(self) -> dict
+      → Save current clipboard to history (in-memory list + JSON file)
+    async def clipboard_paste_last(self) -> dict
+      → Type the last saved clipboard content using pyautogui.typewrite or pyperclip
+    async def clipboard_history(self) -> dict
+      → Return list of saved clipboard entries
+    async def clipboard_clear(self) -> dict
+      → Clear clipboard and history
+
+    # --- System Info ---
+    async def get_battery(self) -> dict
+      → psutil.sensors_battery() → percent, power_plugged, secsleft
+    async def get_cpu(self) -> dict
+      → psutil.cpu_percent(interval=1), psutil.cpu_count()
+    async def get_ram(self) -> dict
+      → psutil.virtual_memory() → total, used, percent
+    async def get_disk(self) -> dict
+      → psutil.disk_usage('/') or 'C:\\'
+    async def get_ip(self) -> dict
+      → Local: socket.gethostbyname(socket.gethostname())
+      → Public: urllib.request.urlopen('https://api.ipify.org').read().decode()
+    async def get_time(self) -> dict
+    async def get_date(self) -> dict
+    async def get_full_report(self) -> dict
+      → Combines all above into one dict
+
+    # --- Web ---
+    async def open_website(self, site_name: str) -> dict
+      → Look up WEBSITE_MAP, open in default browser with webbrowser.open()
+    async def search_web(self, query: str) -> dict
+      → Open f"https://www.google.com/search?q={urllib.parse.quote(query)}" in browser
+      → Or use DuckDuckGo: f"https://duckduckgo.com/?q={query}"
+
+    # --- Screen ---
+    async def take_screenshot(self) -> dict
+      → pyautogui.screenshot() → save to ./screenshots/screenshot_YYYYMMDD_HHMMSS.png
+      → Return file path
+    async def start_recording(self) -> dict
+      → Use mss library to capture frames in a background thread
+      → Save as GIF or MP4 (using imageio if available, else PIL GIF)
+    async def stop_recording(self) -> dict
+      → Stop recording thread, return file path
+    async def brightness_up(self, amount: int = 10) -> dict
+    async def brightness_down(self, amount: int = 10) -> dict
+    async def brightness_set(self, percent: int) -> dict
+    # Windows brightness: use wmi or ctypes with gamma ramp
+    # Linux: use xrandr --brightness
+    # Implement using ctypes SetDeviceGammaRamp on Windows as primary method
+
+    # --- Macros ---
+    async def start_macro_recording(self) -> dict
+      → Start a background thread that records all mouse clicks, movements, and key presses
+      → Use mouse.hook() and keyboard.hook() callbacks
+      → Store events in a list with timestamps
+    async def stop_macro_recording(self) -> dict
+      → Stop hooks, return recorded event list
+    async def play_macro(self, macro_name: str = None, events: list = None) -> dict
+      → Replay recorded events with original timing
+      → Confirmation required
+    async def save_macro(self, name: str, events: list) -> dict
+      → Save to ./macros/{name}.json
+    async def list_macros(self) -> dict
+    async def delete_macro(self, name: str) -> dict
+
+    # --- Reminders ---
+    async def create_reminder(self, text: str, seconds: int) -> dict
+      → Schedule asyncio.create_task with delay
+      → When triggered, send TTS notification + push event to WebSocket
+    async def create_timer(self, seconds: int) -> dict
+      → Simpler version — just counts down and notifies
+    async def list_reminders(self) -> dict
+    async def cancel_reminder(self, reminder_id: str = None) -> dict
+
+    # --- Processes ---
+    async def list_processes(self) -> dict
+      → psutil.process_iter(['pid', 'name', 'cpu_percent', 'memory_percent', 'status'])
+      → Return top 30 by memory usage
+    async def kill_process(self, name_or_pid: str) -> dict  # Confirmation required
+    async def set_process_priority(self, name_or_pid: str, priority: str) -> dict
+
+    # --- Network ---
+    async def get_network_info(self) -> dict
+      → Local IP, Public IP, MAC address, hostname, connected WiFi name
+    async def speed_test(self) -> dict
+      → Download a known file (e.g., http://speedtest.tele2.net/1MB.zip) and measure time
+      → Return approximate download speed in Mbps
+    async def list_wifi_networks(self) -> dict
+      → Windows: netsh wlan show networks
+      → Linux: nmcli dev wifi list
+      → Mac: /System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -s
+
+    # --- OCR ---
+    async def ocr_capture_and_read(self) -> dict
+      → Take screenshot → run pytesseract.image_to_string()
+      → Return extracted text
+      → Requires pytesseract + tesseract-ocr installed
+
+    # --- PDF ---
+    async def pdf_merge(self, file1: str, file2: str, output: str = None) -> dict
+      → Use PyPDF2.PdfMerger
+    async def pdf_split(self, filepath: str, pages: str = "all") -> dict
+      → Split into individual pages
+    async def pdf_extract_text(self, filepath: str) -> dict
+      → Use PyPDF2 or fitz
+
+    # --- Image ---
+    async def image_resize(self, filepath: str, width: int, height: int) -> dict
+    async def image_convert(self, filepath: str, format: str) -> dict
+    async def image_compress(self, filepath: str, quality: int = 75) -> dict
+
+    # --- QR Code ---
+    async def qrcode_generate(self, data: str, filename: str = None) -> dict
+      → Use qrcode library → save as PNG → return path
+
+    # --- Calculator ---
+    async def calculator_eval(self, expression: str) -> dict
+      → SAFELY evaluate math expression
+      → Whitelist only: digits, +, -, *, /, **, (, ), ., sqrt, sin, cos, tan, log, pi, e
+      → Use ast.literal_eval for numbers, custom safe eval for expressions
+      → NEVER use eval() directly on raw input
+      → Timeout after 2 seconds using asyncio.wait_for
+      → Max number: 10^15
+
+    # --- Translator ---
+    async def translate_text(self, text: str, target_lang: str) -> dict
+      → Use free MyMemory API: https://api.mymemory.translated.net/get?q={text}&langpair={src}|{tgt}
+      → Map language names to codes: hindi→hi, english→en, french→fr, etc.
+      → No API key needed
+
+    # --- Password ---
+    async def generate_password(self, length: int = 16) -> dict
+      → Use secrets module (NOT random)
+      → Include: uppercase, lowercase, digits, symbols
+      → Ensure at least one of each category
+      → Copy to clipboard automatically
+
+    # --- Weather ---
+    async def get_weather(self, location: str = None) -> dict
+      → Use wttr.in: https://wttr.in/{location}?format=j1
+      → Parse JSON response → temperature, condition, humidity, wind
+      → If no location, try to get from IP geolocation or use "Delhi" as default
+      → Return formatted Hindi description
+
+    # --- News ---
+    async def get_news(self, category: str = "general") -> dict
+      → Use RSS feeds with feedparser:
+        General: https://feeds.bbci.co.uk/news/rss.xml
+        Tech: https://feeds.bbci.co.uk/news/technology/rss.xml
+        Sports: https://feeds.bbci.co.uk/sport/rss.xml
+        India: https://feeds.bbci.co.uk/news/world/asia/rss.xml
+        Hindi: https://feeds.bbci.co.uk/hindi/rss.xml
+      → Return top 10 headlines with links
+
+    # --- Music ---
+    async def music_play(self, query: str = None) -> dict
+      → Search for music files in user's Music folder and subfolders
+      → Play first match using pygame.mixer
+      → If query is None, play a random file
+    async def music_stop(self) -> dict
+    async def music_pause(self) -> dict
+    async def music_resume(self) -> dict
+    async def music_list(self) -> dict
+      → List all .mp3, .wav, .flac files in Music folder
+
+    # --- Disk Tools ---
+    async def cleanup_temp(self) -> dict  # Confirmation required
+      → Delete files in %TEMP% (Windows) or /tmp (Linux) older than 1 day
+      → Return space freed in bytes
+    async def find_duplicates(self, directory: str) -> dict
+      → Find duplicate files by hash (SHA-256 first 1MB)
+      → Return groups of duplicates with paths
+    async def disk_usage_by_folder(self, directory: str) -> dict
+      → Calculate size of each immediate subfolder
+      → Return sorted by size descending, top 20
+
+    # --- Text Expander ---
+    async def add_snippet(self, trigger: str, content: str) -> dict
+    async def list_snippets(self) -> dict
+    async def expand_snippet(self, trigger: str) -> dict
+      → Type the expanded content using pyautogui.typewrite or pyperclip+paste
+    async def delete_snippet(self, trigger: str) -> dict
+
+    # --- Context Detection ---
+    async def get_active_window_info(self) -> dict
+      → Return: window title, app name, process name, window position/size
+    async def get_active_window_text(self) -> dict
+      → Try to extract text from active window (Windows: UI Automation)
+
+─── 3.7 SCHEDULER (TaskScheduler class) ────────────────────────────────────
+class TaskScheduler:
+    """Cron-like scheduled task system."""
+    Methods:
+    - async schedule(self, command_dict: dict, cron_expression: str, name: str) -> dict
+      → Parse simple cron: "every X minutes/hours", "at HH:MM", "daily at HH:MM"
+      → Store in SQLite
+      → Create asyncio task that sleeps until next execution
+    - async list_scheduled(self) -> dict
+    - async cancel_scheduled(self, task_id: str) -> dict
+    - async clear_all(self) -> dict  # Confirmation required
+    - _run_scheduled_task(self, command_dict: dict) -> None
+      → Execute the command through the normal command pipeline
+
+─── 3.8 HOTKEY MANAGER (HotkeyManager class) ──────────────────────────────
+class HotkeyManager:
+    """Global hotkey management."""
+    Methods:
+    - async register(self, key_combo: str, command_dict: dict, name: str) -> dict
+      → Use keyboard.add_hotkey(key_combo, callback)
+      → key_combo examples: "ctrl+shift+p", "alt+f1", "f12"
+    - async unregister(self, name: str) -> dict
+    - async list_hotkeys(self) -> dict
+    - async clear_all(self) -> dict
+
+─── 3.9 DATABASE (Database class) ──────────────────────────────────────────
+class Database:
+    """SQLite database for persistent storage."""
+    Schema:
+      CREATE TABLE IF NOT EXISTS reminders (
+        id TEXT PRIMARY KEY,
+        text TEXT NOT NULL,
+        trigger_time TEXT NOT NULL,
+        created_at TEXT NOT NULL,
+        status TEXT DEFAULT 'active'  -- active, triggered, cancelled
+      );
+      CREATE TABLE IF NOT EXISTS clipboard_history (
+        id TEXT PRIMARY KEY,
+        content TEXT NOT NULL,
+        saved_at TEXT NOT NULL
+      );
+      CREATE TABLE IF NOT EXISTS command_log (
+        id TEXT PRIMARY KEY,
+        command_type TEXT,
+        category TEXT,
+        action TEXT,
+        params TEXT,  -- JSON
+        status TEXT,
+        message TEXT,
+        timestamp TEXT NOT NULL
+      );
+      CREATE TABLE IF NOT EXISTS scheduled_tasks (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        command TEXT NOT NULL,  -- JSON
+        cron_expression TEXT NOT NULL,
+        next_run TEXT,
+        last_run TEXT,
+        status TEXT DEFAULT 'active',
+        created_at TEXT NOT NULL
+      );
+      CREATE TABLE IF NOT EXISTS snippets (
+        trigger TEXT PRIMARY KEY,
+        content TEXT NOT NULL,
+        created_at TEXT NOT NULL
+      );
+      CREATE TABLE IF NOT EXISTS settings (
+        key TEXT PRIMARY KEY,
+        value TEXT NOT NULL
+      );
+
+    Methods:
+    - __init__(self, db_path: str = "./data/pika.db")
+    - _init_tables(self) -> None
+    - All CRUD methods for each table
+    - auto_prune(self) -> None  → Delete records older than 30 days
+
+─── 3.10 WEBSOCKET SERVER (main handler) ───────────────────────────────────
+async def handle_client(websocket, path=None):
+    """Main WebSocket connection handler."""
+    
+    On connection:
+    1. Send {"type": "event", "event": "connection_ready", "data": {"server_version": "1.0.0", "available_features": [...]}, "timestamp": "..."}
+    2. Start system status push loop (every 5 seconds):
+       → {"type": "event", "event": "system_status", "data": {"cpu": 45.2, "ram": 62.1, "battery": {"percent": 78, "plugged": true}}, "timestamp": "..."}
+    3. Start clipboard monitor loop (every 2 seconds, check if clipboard changed)
+    4. Start battery alert monitor (alert when < 20%)
+
+    On message received:
+    1. Parse JSON, validate structure
+    2. Log command to database
+    3. Check rate limit
+    4. Route to appropriate handler based on category+action
+    5. If action requires confirmation AND no confirmation_id in params:
+       → Return confirmation_required response
+    6. If it's a confirmation approval:
+       → Look up pending confirmation, execute original command
+    7. If it's a confirmation rejection:
+       → Delete pending confirmation, return cancelled message
+    8. For "voice_start":
+       → Start VoiceEngine listening, send partial/final results as events
+    9. For "voice_stop":
+       → Stop listening
+    10. For "tts_speak":
+       → Use VoiceEngine to generate audio, send as base64 chunks
+    11. For "query" type (text chat):
+       → Check command patterns first (NLU)
+       → If pattern matches → execute PC command
+       → If no pattern matches → send to LLMRouter for conversation
+       → Stream LLM response back as llm_stream messages
+    12. For "config" type:
+       → Update runtime config (switch provider, change voice settings, etc.)
+    13. For "cancel":
+       → Cancel any ongoing operation (TTS, LLM stream, etc.)
+
+    On disconnection:
+    1. Stop all loops for this client
+    2. Clean up resources
+
+async def main():
+    """Start WebSocket server."""
+    server = await websockets.serve(handle_client, "0.0.0.0", 8765)
+    print("🔗 Pika AI Bridge running on ws://localhost:8765")
+    await server.wait_closed()
+
+if __name__ == "__main__":
+    asyncio.run(main())
+
+─── 3.11 COMMAND ROUTING (route_command function) ──────────────────────────
+async def route_command(msg: dict, pc: PCController, validator: CommandValidator, 
+                         llm: LLMRouter, db: Database, scheduler: TaskScheduler,
+                         hotkeys: HotkeyManager, voice: VoiceEngine,
+                         pending_confirmations: dict) -> dict:
+    """Route a parsed command to the appropriate PCController method."""
+    
+    category = msg.get("category")
+    action = msg.get("action")
+    params = msg.get("params", {})
+
+    routing_map = {
+        ("system", "shutdown"): lambda: pc.shutdown(params.get("delay", 30)),
+        ("system", "restart"): lambda: pc.restart(params.get("delay", 30)),
+        ("system", "sleep"): lambda: pc.sleep(),
+        ("system", "lock"): lambda: pc.lock(),
+        ("system", "logoff"): lambda: pc.logoff(),
+        ("system", "hibernate"): lambda: pc.hibernate(),
+        ("apps", "open"): lambda: pc.open_app(params.get("name", "")),
+        ("apps", "close"): lambda: pc.close_app(params.get("name", "")),
+        ("volume", "up"): lambda: pc.volume_up(params.get("amount", 10)),
+        ("volume", "down"): lambda: pc.volume_down(params.get("amount", 10)),
+        ("volume", "set"): lambda: pc.volume_set(params.get("percent", 50)),
+        ("volume", "mute"): lambda: pc.volume_mute(),
+        ("volume", "unmute"): lambda: pc.volume_unmute(),
+        ("media", "play_pause"): lambda: pc.media_play_pause(),
+        ("media", "next"): lambda: pc.media_next(),
+        ("media", "previous"): lambda: pc.media_previous(),
+        ("files", "create_file"): lambda: pc.create_file(params.get("path", ""), params.get("content", "")),
+        ("files", "create_folder"): lambda: pc.create_folder(params.get("path", "")),
+        ("files", "delete"): lambda: pc.delete_file(params.get("path", "")),
+        ("files", "delete_folder"): lambda: pc.delete_folder(params.get("path", "")),
+        ("files", "rename"): lambda: pc.rename_file(params.get("old_path", ""), params.get("new_name", "")),
+        ("files", "list"): lambda: pc.list_directory(params.get("path", ".")),
+        ("files", "move"): lambda: pc.move_file(params.get("src", ""), params.get("dst", "")),
+        ("files", "copy"): lambda: pc.copy_file(params.get("src", ""), params.get("dst", "")),
+        ("files", "open_explorer"): lambda: pc.open_explorer(params.get("path", None)),
+        ("clipboard", "save"): lambda: pc.clipboard_save(),
+        ("clipboard", "paste_last"): lambda: pc.clipboard_paste_last(),
+        ("clipboard", "history"): lambda: pc.clipboard_history(),
+        ("clipboard", "clear"): lambda: pc.clipboard_clear(),
+        ("info", "battery"): lambda: pc.get_battery(),
+        ("info", "cpu"): lambda: pc.get_cpu(),
+        ("info", "ram"): lambda: pc.get_ram(),
+        ("info", "disk"): lambda: pc.get_disk(),
+        ("info", "ip"): lambda: pc.get_ip(),
+        ("info", "time"): lambda: pc.get_time(),
+        ("info", "date"): lambda: pc.get_date(),
+        ("info", "full_report"): lambda: pc.get_full_report(),
+        ("web", "open_site"): lambda: pc.open_website(params.get("name", "")),
+        ("web", "search"): lambda: pc.search_web(params.get("query", "")),
+        ("screen", "screenshot"): lambda: pc.take_screenshot(),
+        ("screen", "start_recording"): lambda: pc.start_recording(),
+        ("screen", "stop_recording"): lambda: pc.stop_recording(),
+        ("screen", "brightness_up"): lambda: pc.brightness_up(params.get("amount", 10)),
+        ("screen", "brightness_down"): lambda: pc.brightness_down(params.get("amount", 10)),
+        ("screen", "brightness_set"): lambda: pc.brightness_set(params.get("percent", 50)),
+        ("macros", "start_recording"): lambda: pc.start_macro_recording(),
+        ("macros", "stop_recording"): lambda: pc.stop_macro_recording(),
+        ("macros", "play"): lambda: pc.play_macro(params.get("name"), params.get("events")),
+        ("macros", "save"): lambda: pc.save_macro(params.get("name"), params.get("events", [])),
+        ("macros", "list"): lambda: pc.list_macros(),
+        ("macros", "delete"): lambda: pc.delete_macro(params.get("name")),
+        ("reminders", "create"): lambda: pc.create_reminder(params.get("text", ""), params.get("seconds", 60)),
+        ("reminders", "timer"): lambda: pc.create_timer(params.get("seconds", 60)),
+        ("reminders", "list"): lambda: pc.list_reminders(),
+        ("reminders", "cancel"): lambda: pc.cancel_reminder(params.get("id")),
+        ("processes", "list"): lambda: pc.list_processes(),
+        ("processes", "kill"): lambda: pc.kill_process(params.get("name_or_pid", "")),
+        ("processes", "set_priority"): lambda: pc.set_process_priority(params.get("name_or_pid", ""), params.get("priority", "normal")),
+        ("network", "ip"): lambda: pc.get_network_info(),
+        ("network", "speed_test"): lambda: pc.speed_test(),
+        ("network", "list_wifi"): lambda: pc.list_wifi_networks(),
+        ("ocr", "capture_and_read"): lambda: pc.ocr_capture_and_read(),
+        ("pdf", "merge"): lambda: pc.pdf_merge(params.get("file1"), params.get("file2"), params.get("output")),
+        ("pdf", "split"): lambda: pc.pdf_split(params.get("filepath"), params.get("pages", "all")),
+        ("pdf", "extract_text"): lambda: pc.pdf_extract_text(params.get("filepath")),
+        ("image", "resize"): lambda: pc.image_resize(params.get("filepath"), params.get("width"), params.get("height")),
+        ("image", "convert"): lambda: pc.image_convert(params.get("filepath"), params.get("format")),
+        ("image", "compress"): lambda: pc.image_compress(params.get("filepath"), params.get("quality", 75)),
+        ("qrcode", "generate"): lambda: pc.qrcode_generate(params.get("data"), params.get("filename")),
+        ("calculator", "eval"): lambda: pc.calculator_eval(params.get("expression")),
+        ("translator", "translate"): lambda: pc.translate_text(params.get("text"), params.get("target_lang")),
+        ("password", "generate"): lambda: pc.generate_password(params.get("length", 16)),
+        ("weather", "get"): lambda: pc.get_weather(params.get("location")),
+        ("news", "get"): lambda: pc.get_news(params.get("category", "general")),
+        ("music", "play"): lambda: pc.music_play(params.get("query")),
+        ("music", "stop"): lambda: pc.music_stop(),
+        ("music", "pause"): lambda: pc.music_pause(),
+        ("music", "resume"): lambda: pc.music_resume(),
+        ("music", "list"): lambda: pc.music_list(),
+        ("disk", "cleanup_temp"): lambda: pc.cleanup_temp(),
+        ("disk", "find_duplicates"): lambda: pc.find_duplicates(params.get("directory", ".")),
+        ("disk", "usage"): lambda: pc.disk_usage_by_folder(params.get("directory", ".")),
+        ("text_expand", "add"): lambda: pc.add_snippet(params.get("trigger"), params.get("content")),
+        ("text_expand", "list"): lambda: pc.list_snippets(),
+        ("text_expand", "expand"): lambda: pc.expand_snippet(params.get("trigger")),
+        ("text_expand", "delete"): lambda: pc.delete_snippet(params.get("trigger")),
+        ("context", "active_window"): lambda: pc.get_active_window_info(),
+        ("context", "window_text"): lambda: pc.get_active_window_text(),
+        ("config", "switch_provider"): lambda: llm.set_provider(params.get("provider")),
+        ("scheduler", "schedule"): lambda: scheduler.schedule(params.get("command"), params.get("cron"), params.get("name")),
+        ("scheduler", "list"): lambda: scheduler.list_scheduled(),
+        ("scheduler", "cancel"): lambda: scheduler.cancel_scheduled(params.get("id")),
+        ("scheduler", "clear_all"): lambda: scheduler.clear_all(),
+        ("hotkeys", "register"): lambda: hotkeys.register(params.get("key_combo"), params.get("command"), params.get("name")),
+        ("hotkeys", "unregister"): lambda: hotkeys.unregister(params.get("name")),
+        ("hotkeys", "list"): lambda: hotkeys.list_hotkeys(),
+        ("hotkeys", "clear_all"): lambda: hotkeys.clear_all(),
+    }
+
+    key = (category, action)
+    if key in routing_map:
+        try:
+            result = await routing_map[key]()
+            return {"type": "response", "status": "success" if result.get("success") else "error",
+                    "data": result.get("data"), "message": result.get("message", ""),
+                    "confirmation_id": None, "id": msg.get("id"), "timestamp": datetime.utcnow().isoformat()}
+        except Exception as e:
+            return {"type": "response", "status": "error", "data": None,
+                    "message": f"Error: {str(e)}", "confirmation_id": None,
+                    "id": msg.get("id"), "timestamp": datetime.utcnow().isoformat()}
+    else:
+        return {"type": "response", "status": "error", "data": None,
+                "message": f"Unknown command: {category}/{action}", "confirmation_id": None,
+                "id": msg.get("id"), "timestamp": datetime.utcnow().isoformat()}
+
+================================================================================
+PART 4: FRONTEND SPECIFICATION
+================================================================================
+
+─── 4.1 PACKAGE.JSON DEPENDENCIES ──────────────────────────────────────────
+{
+  "name": "pika-ai-frontend",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "framer-motion": "^11.15.0",
+    "zustand": "^5.0.0",
+    "lucide-react": "^0.468.0",
+    "react-markdown": "^9.0.1",
+    "react-syntax-highlighter": "^15.6.1",
+    "remark-gfm": "^4.0.0",
+    "date-fns": "^4.1.0",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^2.6.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@types/react-syntax-highlighter": "^15.5.13",
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.16",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.0"
+  }
+}
+
+─── 4.2 TAILWIND CONFIG ────────────────────────────────────────────────────
+Extend theme with:
+  colors:
+    navy: { 900: '#0a0e1a', 800: '#111827', 700: '#1a2035' }
+    accent: { purple: '#7c3aed', cyan: '#06b6d4', pink: '#ec4899' }
+    glass: { light: 'rgba(255,255,255,0.08)', medium: 'rgba(255,255,255,0.12)', heavy: 'rgba(255,255,255,0.18)' }
+  fontFamily:
+    sans: ['Inter', 'system-ui', 'sans-serif']
+    mono: ['JetBrains Mono', 'monospace']
+  animation:
+    'aurora': 'aurora 15s ease-in-out infinite'
+    'pulse-glow': 'pulse-glow 2s ease-in-out infinite'
+    'float': 'float 6s ease-in-out infinite'
+    'waveform': 'waveform 1s ease-in-out infinite'
+    'slide-up': 'slide-up 0.3s ease-out'
+    'fade-in': 'fade-in 0.3s ease-out'
+  backdropBlur:
+    'glass': '20px'
+
+─── 4.3 GLOBAL CSS (index.css) ────────────────────────────────────────────
+Include:
+- @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+- Tailwind directives
+- @keyframes aurora — gradient background animation (purple/cyan/pink shifting)
+- @keyframes pulse-glow — scale + box-shadow pulse
+- @keyframes float — translateY up/down
+- @keyframes waveform — scale bars for voice animation
+- @keyframes slide-up — translateY from 20px to 0, opacity 0 to 1
+- @keyframes fade-in — opacity 0 to 1
+- Scrollbar styling (thin, dark)
+- Glass card utility classes
+- Selection color styling
+- Focus ring styling
+
+─── 4.4 ZUSTAND STORE (assistantStore.ts) ──────────────────────────────────
+Shape of store:
+{
+  // Connection
+  isConnected: boolean
+  connectionStatus: 'disconnected' | 'connecting' | 'connected' | 'error'
+  
+  // Chat
+  messages: Array<{
+    id: string
+    role: 'user' | 'assistant' | 'system'
+    content: string
+    timestamp: string
+    provider?: string
+    isStreaming?: boolean
+  }>
+  isAiThinking: boolean
+  
+  // Voice
+  isListening: boolean
+  isSpeaking: boolean
+  partialTranscript: string
+  finalTranscript: string
+  voiceWaveformData: number[]  // 20 bars of amplitude 0-1
+  
+  // System Info
+  systemStatus: {
+    cpu: number
+    ram: number
+    battery: { percent: number; plugged: boolean } | null
+  } | null
+  
+  // UI State
+  activeTab: 'chat' | 'controls' | 'settings' | 'macros' | 'reminders' | 'processes' | 'scheduler' | 'tools'
+  controlSubTab: 'system' | 'apps' | 'media' | 'files' | 'clipboard' | 'info' | 'web' | 'screen' | 'network' | 'music' | 'disk'
+  toolsSubTab: 'ocr' | 'pdf' | 'image' | 'qrcode' | 'calculator' | 'translator' | 'password' | 'text_expand'
+  
+  // Settings
+  settings: {
+    theme: 'dark' | 'light'
+    language: 'hi' | 'en'
+    aiProvider: string
+    apiKeys: Record<string, string>
+    voiceSettings: { language: string; speed: number; pitch: number }
+    bridgeUrl: string
+    wakeWordEnabled: boolean
+    soundEffects: boolean
+    pipMode: boolean
+  }
+  
+  // Toasts
+  toasts: Array<{ id: string; type: 'success' | 'error' | 'info' | 'warning'; message: string; duration?: number }>
+  
+  // Confirmation
+  pendingConfirmation: { id: string; message: string; originalCommand: object } | null
+  
+  // Actions (ALL store mutations as methods)
+  setConnected: (status) => void
+  addMessage: (msg) => void
+  updateLastAssistantMessage: (chunk: string) => void
+  setAiThinking: (val: boolean) => void
+  setListening: (val: boolean) => void
+  setSpeaking: (val: boolean) => void
+  setPartialTranscript: (text: string) => void
+  setFinalTranscript: (text: string) => void
+  setVoiceWaveform: (data: number[]) => void
+  setSystemStatus: (data) => void
+  setActiveTab: (tab) => void
+  setControlSubTab: (tab) => void
+  setToolsSubTab: (tab) => void
+  updateSettings: (partial) => void
+  addToast: (toast) => void
+  removeToast: (id: string) => void
+  setPendingConfirmation: (conf) => void
+  clearMessages: () => void
+}
+
+─── 4.5 useWebSocket HOOK ──────────────────────────────────────────────────
+- Connect to WebSocket URL from store.settings.bridgeUrl (default: ws://localhost:8765)
+- Auto-reconnect with exponential backoff (1s, 2s, 4s, 8s, max 30s)
+- On message: parse JSON, dispatch to store based on type:
+  - "response" → addMessage or updateLastMessage, handle errors, handle confirmation_required
+  - "event" → handle each event type:
+    - "connection_ready" → setConnected('connected')
+    - "system_status" → setSystemStatus
+    - "voice_partial" → setPartialTranscript
+    - "voice_final" → setFinalTranscript, process as command
+    - "tts_started" → setSpeaking(true)
+    - "tts_ended" → setSpeaking(false)
+    - "tts_audio_chunk" → play audio chunk (base64 decode → AudioContext)
+    - "reminder_triggered" → addToast + notification sound
+    - "battery_alert" → addToast warning
+    - "clipboard_changed" → (optional) show small notification
+  - "llm_stream" → if !done: updateLastAssistantMessage(chunk); if done: finalize message
+- Expose: send(message), connect(), disconnect(), isConnected
+- Send heartbeat every 30 seconds: {"type": "ping"}
+
+─── 4.6 useVoice HOOK ──────────────────────────────────────────────────────
+- Uses Web Audio API + getUserMedia to capture microphone audio
+- DOES NOT do STT locally — sends "voice_start"/"voice_stop" to backend
+- Backend does Vosk STT and sends back partial/final events
+- Generates fake waveform data for visualization (random bars when listening)
+- Expose: startListening(), stopListening(), isListening
+
+─── 4.7 useSpeech HOOK ─────────────────────────────────────────────────────
+- Uses Web SpeechSynthesis API as fallback TTS (when backend TTS not available)
+- Expose: speak(text, lang), stop(), isSpeaking
+- Also handles backend TTS audio chunk playback via AudioContext
+
+─── 4.8 MAIN PAGE LAYOUT (page.tsx) ────────────────────────────────────────
+Structure:
+<div className="h-screen flex overflow-hidden bg-navy-900 relative">
+  {/* Animated Background */}
+  <AuroraBackground />
+  <ParticleBackground />
+  
+  {/* Sidebar - Left */}
+  <Sidebar />
+  
+  {/* Main Content Area */}
+  <main className="flex-1 flex flex-col overflow-hidden relative z-10">
+    {/* Top Bar: Status indicators */}
+    <div className="flex items-center justify-between px-6 py-3">
+      <Dashboard />  {/* Clock, date, system badges */}
+      <StatusBar />  {/* Connection status, provider badge, battery */}
+    </div>
+    
+    {/* Tab Content */}
+    <div className="flex-1 overflow-hidden">
+      {activeTab === 'chat' && <ChatInterface />}
+      {activeTab === 'controls' && <ControlPanel />}
+      {activeTab === 'settings' && <SettingsPanel />}
+      {activeTab === 'macros' && <MacroEngine />}
+      {activeTab === 'reminders' && <ReminderPanel />}
+      {activeTab === 'processes' && <ProcessManager />}
+      {activeTab === 'scheduler' && <SchedulerPanel />}
+      {activeTab === 'tools' && <ToolsPanel />}
+    </div>
+  </main>
+  
+  {/* PiP Window (conditionally rendered) */}
+  {settings.pipMode && <PiPWindow />}
+  
+  {/* Toast Container */}
+  <ToastContainer />
+  
+  {/* Confirmation Dialog */}
+  {pendingConfirmation && <ConfirmationDialog />}
+</div>
+
+─── 4.9 SIDEBAR COMPONENT ──────────────────────────────────────────────────
+- Vertical nav on the left, width 72px (icons only) or 240px (expanded)
+- Toggle expand/collapse with a button
+- Navigation items with Lucide icons:
+  💬 Chat (MessageSquare)
+  🎮 Controls (Gamepad2)
+  ⚙️ Settings (Settings)
+  🔁 Macros (Repeat)
+  ⏰ Reminders (Bell)
+  📊 Processes (Activity)
+  📅 Scheduler (Calendar)
+  🔧 Tools (Wrench)
+- Active item has purple glow background
+- Pika logo at top (stylized "⚡" or custom SVG)
+- Theme toggle at bottom (Sun/Moon)
+- Collapsible on mobile (hamburger menu)
+
+─── 4.10 CHAT INTERFACE ────────────────────────────────────────────────────
+Layout:
+<div className="flex flex-col h-full">
+  {/* Messages Area - scrollable */}
+  <div className="flex-1 overflow-y-auto px-4 py-6 space-y-4">
+    {messages.map(msg => <ChatMessage key={msg.id} message={msg} />)}
+    {isAiThinking && <LoadingSpinner />}
+  </div>
+  
+  {/* Voice Transcript (shown when listening) */}
+  {isListening && (
+    <div className="px-4 py-2 mx-4 mb-2 glass-card rounded-xl">
+      <VoiceWaveform data={voiceWaveformData} />
+      <p className="text-sm text-gray-400 mt-1">{partialTranscript || "सुन रहा हूँ..."}</p>
+    </div>
+  )}
+  
+  {/* Input Area */}
+  <div className="px-4 pb-4">
+    <div className="glass-card rounded-2xl flex items-center gap-3 p-3">
+      <VoiceButton />
+      <input
+        type="text"
+        placeholder="टाइप करो या माइक दबाओ..."
+        className="flex-1 bg-transparent outline-none text-white placeholder-gray-500"
+        onKeyDown={handleKeyDown}  // Enter to send
+        value={inputText}
+        onChange={e => setInputText(e.target.value)}
+      />
+      <button onClick={handleSend} className="p-2 rounded-xl bg-accent-purple hover:bg-purple-600 transition">
+        <Send size={18} />
+      </button>
+    </div>
+  </div>
+</div>
+
+ChatMessage component:
+- User messages: right-aligned, purple gradient background
+- Assistant messages: left-aligned, glass background, with small Pika avatar (⚡)
+- System messages: centered, small text, gray
+- Render content with MarkdownRenderer (supports code blocks, bold, italic, lists, links)
+- Show timestamp below each message
+- Show provider badge on assistant messages
+- If isStreaming, show blinking cursor at end
+
+MarkdownRenderer:
+- Use react-markdown with remark-gfm
+- Custom code block renderer using react-syntax-highlighter
+- Language detection from code fence
+- Copy button on code blocks
+- Tables styled with glass effect
+- Links open in new tab
+
+VoiceButton:
+- Large circular button (56px)
+- Microphone icon when idle
+- Animated waveform rings when listening (3 concentric rings pulsing)
+- Red when recording
+- Click to toggle listening
+- Glow effect matching state
+
+LoadingSpinner:
+- Custom "AI thinking" animation
+- Three dots bouncing in sequence
+- Pika logo (⚡) pulsing
+- Text: "सोच रहा हूँ..." or "Thinking..."
+
+─── 4.11 CONTROL PANEL ────────────────────────────────────────────────────
+Tabbed interface with sub-tabs for each category.
+Each sub-tab contains a grid of GlassCard components with GlowButton actions.
+
+System Controls:
+  [🔒 Lock] [💤 Sleep] [🔄 Restart] [⛔ Shutdown] [🚪 Log Off] [🌙 Hibernate]
+  → Shutdown/Restart/Sleep show confirmation before sending
+
+App Launcher:
+  Grid of app buttons (4 columns):
+  [Chrome] [Firefox] [VS Code] [Notepad] [Terminal] [File Explorer]
+  [Spotify] [VLC] [Telegram] [Discord] [Word] [Excel]
+  [Paint] [Calculator] [Settings] [Control Panel] [Task Manager] [CMD]
+  Each button: icon + name, glass background, hover glow
+  Click sends apps/open command
+
+Media Controls:
+  Large centered play/pause button with glow
+  [⏮ Previous] [⏯ Play/Pause] [⏭ Next]
+  Volume slider (0-100) with speaker icon
+  [🔇 Mute] button
+  Current volume percentage display
+
+File Manager:
+  Path input field with browse button
+  [📄 Create File] [📁 Create Folder] [🗑 Delete] [✏️ Rename]
+  [📋 Move] [📂 Copy] [🔍 List Contents] [📂 Open Explorer]
+  File/folder name inputs that appear contextually
+  Directory listing display area
+
+Clipboard Manager:
+  [💾 Save Clipboard] [📋 Paste Last] [🗑 Clear]
+  History list: scrollable, each item shows content preview + timestamp
+  Click to copy to clipboard
+  Search/filter input
+
+System Info:
+  Grid of info cards:
+  [CPU Usage] — circular progress indicator
+  [RAM Usage] — circular progress indicator
+  [Disk Space] — progress bar
+  [Battery] — icon + percentage + charging status
+  [IP Address] — local + public
+  [Date & Time] — large digital display
+  [Full Report] button → sends info/full_report
+
+Web Launcher:
+  Grid of website shortcuts (icons + names):
+  [YouTube] [Google] [GitHub] [Gmail] [Twitter/X] [Facebook]
+  [Instagram] [WhatsApp] [StackOverflow] [Wikipedia] [Reddit] [LinkedIn]
+  [Amazon] [Flipkart] [Netflix] [Hotstar]
+  Search bar: "Search the web..." → sends web/search
+
+Screen Tools:
+  [📸 Screenshot] [🎬 Start Recording] [⏹ Stop Recording]
+  [☀️ Brightness Up] [🌙 Brightness Down]
+  Brightness slider (0-100)
+  [🎨 Color Picker] — picks color from screen, shows hex + RGB
+
+Network Tools:
+  [🌐 IP Info] [⚡ Speed Test] [📶 WiFi Networks]
+  Results display area
+
+Music Player:
+  [📁 Browse Music] [▶️ Play] [⏸ Pause] [⏹ Stop]
+  File list from Music folder
+  Now playing display
+  Simple progress bar
+
+Disk Tools:
+  [🧹 Clean Temp Files] [🔍 Find Duplicates] [📊 Disk Usage]
+  Path input for duplicate finder and disk usage
+  Results display
+
+─── 4.12 MACRO ENGINE ─────────────────────────────────────────────────────
+[🔴 Start Recording] [⏹ Stop Recording]
+When recording: show red dot + elapsed time + action counter
+[💾 Save Macro] — name input + save button
+[▶️ Play Macro] — dropdown to select saved macro + play button
+[List of saved macros] — name, action count, date, [Play] [Delete] buttons
+
+─── 4.13 REMINDER PANEL ───────────────────────────────────────────────────
+[➕ New Reminder] — text input + time input (minutes/hours) + [Set]
+[⏱ Quick Timer] — preset buttons: [1 min] [5 min] [10 min] [15 min] [30 min] [1 hour]
+[📋 Active Reminders] — list with: text, trigger time, countdown, [Cancel] button
+Past/triggered reminders shown in gray with ✓ mark
+
+─── 4.14 PROCESS MANAGER ──────────────────────────────────────────────────
+[🔄 Refresh] button
+Table: PID | Name | CPU % | RAM % | Status | [Kill] button
+Sorted by RAM usage descending
+Search/filter input
+[Kill] button shows confirmation
+
+─── 4.15 SCHEDULER PANEL ──────────────────────────────────────────────────
+[➕ New Scheduled Task]
+  - Name input
+  - Command selector (dropdown of all available commands)
+  - Schedule input: "every X minutes", "at HH:MM", "daily at HH:MM"
+  - [Schedule] button
+[List of scheduled tasks]: name, command, schedule, next run, status, [Cancel] button
+
+─── 4.16 TOOLS PANEL (sub-tabbed) ─────────────────────────────────────────
+OCR Tab:
+  [📸 Capture & Read] button
+  Results text area with [Copy] button
+
+PDF Tab:
+  Merge: [File 1 input] [File 2 input] [Merge] button
+  Split: [File input] [Split] button
+  Extract Text: [File input] [Extract] button
+  Results area
+
+Image Tab:
+  [File input] [Resize: W x H inputs] [Convert: format dropdown] [Compress: quality slider]
+  [Execute] buttons for each operation
+
+QR Code Tab:
+  [Text/URL input] [Generate] button
+  QR code image display
+  [Download] button
+
+Calculator Tab:
+  Large display area
+  Button grid: 0-9, +, -, ×, ÷, (, ), ., =, C, √, sin, cos, tan, π, e
+  Also accept text input for voice commands
+  History of calculations
+
+Translator Tab:
+  [Source text input] (large textarea)
+  [Target language dropdown]: Hindi, English, French, German, Spanish, Japanese, Chinese, Arabic
+  [Translate] button
+  [Translated text output] with [Copy] button
+  [Swap languages] button
+
+Password Generator Tab:
+  Length slider (8-64)
+  Toggles: Uppercase, Lowercase, Digits, Symbols
+  [Generate] button
+  Generated password display with [Copy] button
+  Strength indicator (weak/fair/strong/very strong)
+
+Text Expander Tab:
+  [➕ Add Snippet]: trigger input + content textarea + [Add]
+  List of snippets: trigger → content preview, [Use] [Delete] buttons
+  [Use] types the expanded text
+
+─── 4.17 SETTINGS PANEL ───────────────────────────────────────────────────
+Sections (each in a GlassCard):
+
+AI Provider:
+  - Dropdown: Groq, Gemini, Mistral, Cerebras, OpenRouter, Z.ai, DeepSeek
+  - Current provider badge with status (✓ configured / ✗ no key)
+  - API Key inputs for each provider (show/hide toggle, password type)
+  - [Test Connection] button for current provider
+  - [Save] button
+
+Voice Settings:
+  - Language dropdown: Hindi (hi-IN-SwaraNeural), English (en-US-JennyNeural)
+  - Speed slider (0.5x - 2.0x)
+  - Pitch slider (-10 to +10)
+  - Wake Word toggle + wake word input ("Computer" / "Hey Pika")
+  - [Test Voice] button → speaks "नमस्ते, मैं पिका हूँ"
+
+Appearance:
+  - Theme toggle: Dark ☾ / Light ☀
+  - Sound Effects toggle
+  - PiP Mode toggle
+  - Particle Background toggle
+
+Connection:
+  - Bridge URL input (default: ws://localhost:8765)
+  - [Test Connection] button
+  - Connection status indicator
+
+About:
+  - Pika AI Assistant v1.0.0
+  - "पूरी तरह लोकल, पूरी तरह निजी"
+  - GitHub link
+  - License: MIT
+
+─── 4.18 GLASS CARD COMPONENT ─────────────────────────────────────────────
+Reusable component:
+<div className={cn(
+  "rounded-2xl border border-white/10 backdrop-blur-glass",
+  "bg-glass-light shadow-lg",
+  "hover:border-white/20 transition-all duration-300",
+  className
+)}>
+  {children}
+</div>
+
+─── 4.19 GLOW BUTTON COMPONENT ────────────────────────────────────────────
+<button className={cn(
+  "flex items-center gap-2 px-4 py-2.5 rounded-xl",
+  "bg-glass-medium border border-white/10",
+  "hover:bg-glass-heavy hover:border-accent-purple/50",
+  "hover:shadow-[0_0_20px_rgba(124,58,237,0.3)]",
+  "active:scale-95 transition-all duration-200",
+  "text-white/80 hover:text-white text-sm font-medium",
+  className
+)} onClick={onClick}>
+  {icon && <Icon size={18} />}
+  {label}
+</button>
+
+─── 4.20 TOAST SYSTEM ─────────────────────────────────────────────────────
+- Container: fixed bottom-4 right-4, flex-col gap-2, z-50
+- Each toast: GlassCard with colored left border (green=success, red=error, blue=info, yellow=warning)
+- Auto-dismiss after duration (default 4 seconds)
+- Slide-in animation from right
+- Close button (X)
+- Stack max 5 toasts
+
+─── 4.21 CONFIRMATION DIALOG ──────────────────────────────────────────────
+- Modal overlay with blur backdrop
+- Centered GlassCard
+- Warning icon (⚠️) in accent color
+- Message text explaining what will happen
+- [Cancel] button (gray) and [Confirm] button (red/danger)
+- Animated entrance (scale + fade)
+
+─── 4.22 PiP WINDOW ───────────────────────────────────────────────────────
+- Fixed position, bottom-right corner
+- 280px × 120px
+- Glass background with border
+- Shows: Pika logo, connection dot, "सुन रहा हूँ" or idle text
+- Small mic button
+- Draggable (mouse drag on title bar)
+- Click expand button → toggles to full UI
+- Always on top (CSS: fixed + high z-index)
+- Minimizable to just a small dot
+
+─── 4.23 AURORA BACKGROUND ────────────────────────────────────────────────
+- Full-screen div behind everything, z-0
+- Animated gradient using CSS:
+  background: linear-gradient(135deg, #0a0e1a 0%, #1a0533 25%, #0a1628 50%, #0d1f2d 75%, #0a0e1a 100%);
+  background-size: 400% 400%;
+  animation: aurora 15s ease-in-out infinite;
+- Additional radial gradient overlays for depth
+- Subtle, not distracting
+
+─── 4.24 PARTICLE BACKGROUND ──────────────────────────────────────────────
+- 30-50 small dots (2-4px) floating slowly upward
+- Random positions, random opacity (0.1-0.4)
+- Colors: white, purple, cyan (random per particle)
+- Pure CSS animation (no canvas needed for performance)
+- Each particle has random animation-duration (8-20s) and animation-delay
+
+─── 4.25 VOICE WAVEFORM ──────────────────────────────────────────────────
+- 20 vertical bars
+- Height animated based on voiceWaveformData (0-1)
+- Colors: gradient from purple to cyan
+- Smooth transition between values
+- When not listening: all bars at minimum height (4px)
+- When listening: bars animate to random heights every 100ms
+
+─── 4.26 STATUS BAR ───────────────────────────────────────────────────────
+- Fixed at top-right area
+- Shows: [🟢 Connected / 🔴 Disconnected] [⚡ Groq] [🔋 78%]
+- Small text, glass background pill
+- Connection status pulses when connecting
+
+─── 4.27 DASHBOARD ────────────────────────────────────────────────────────
+- Large digital clock (HH:MM:SS) in thin weight font
+- Date below (Day, DD Month YYYY) in Hindi
+- Small system status badges: CPU/RAM mini bars
+- All in a horizontal flex layout
+
+================================================================================
+PART 5: TYPESCRIPT TYPES (types/index.ts)
+================================================================================
+
+export interface WSMessage {
+  type: 'command' | 'query' | 'config' | 'voice_start' | 'voice_stop' | 'tts_speak' | 'cancel' | 'ping';
+  category?: string;
+  action?: string;
+  params?: Record<string, any>;
+  id: string;
+  timestamp: string;
+}
+
+export interface WSResponse {
+  type: 'response';
+  status: 'success' | 'error' | 'confirmation_required';
+  data?: any;
+  message: string;
+  confirmation_id?: string | null;
+  id: string;
+  timestamp: string;
+}
+
+export interface WSEvent {
+  type: 'event';
+  event: string;
+  data: any;
+  timestamp: string;
+}
+
+export interface WSLLMStream {
+  type: 'llm_stream';
+  chunk: string;
+  provider: string;
+  id: string;
+  done: boolean;
+  timestamp: string;
+}
+
+export type WSIncoming = WSResponse | WSEvent | WSLLMStream;
+
+export interface ChatMessage {
+  id: string;
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+  timestamp: string;
+  provider?: string;
+  isStreaming?: boolean;
+}
+
+export interface SystemStatus {
+  cpu: number;
+  ram: number;
+  battery: { percent: number; plugged: boolean } | null;
+}
+
+export interface Toast {
+  id: string;
+  type: 'success' | 'error' | 'info' | 'warning';
+  message: string;
+  duration?: number;
+}
+
+export interface PendingConfirmation {
+  id: string;
+  message: string;
+  originalCommand: WSMessage;
+}
+
+export interface AppSettings {
+  theme: 'dark' | 'light';
+  language: 'hi' | 'en';
+  aiProvider: string;
+  apiKeys: Record<string, string>;
+  voiceSettings: {
+    language: string;
+    speed: number;
+    pitch: number;
+  };
+  bridgeUrl: string;
+  wakeWordEnabled: boolean;
+  soundEffects: boolean;
+  pipMode: boolean;
+}
+
+export type TabName = 'chat' | 'controls' | 'settings' | 'macros' | 'reminders' | 'processes' | 'scheduler' | 'tools';
+export type ControlSubTab = 'system' | 'apps' | 'media' | 'files' | 'clipboard' | 'info' | 'web' | 'screen' | 'network' | 'music' | 'disk';
+export type ToolsSubTab = 'ocr' | 'pdf' | 'image' | 'qrcode' | 'calculator' | 'translator' | 'password' | 'text_expand';
+
+================================================================================
+PART 6: START.BAT (Windows Launcher)
+================================================================================
+
+@echo off
+title Pika AI Assistant - Starting...
+color 0A
+echo.
+echo  ╔═══════════════════════════════════════════════════════╗
+echo  ║         ⚡ PIKA AI ASSISTANT - LAUNCHER ⚡            ║
+echo  ║    Personal AI Desktop Voice Controller               ║
+echo  ╚═══════════════════════════════════════════════════════╝
+echo.
+
+:: Check Python
+echo [1/6] Checking Python...
+python --version >nul 2>&1
+if %errorlevel% neq 0 (
+    echo [ERROR] Python not found! Install Python 3.10+ from python.org
+    echo         Make sure to check "Add to PATH" during installation.
+    pause
+    exit /b 1
+)
+echo        [OK] Python found.
+
+:: Check Node.js
+echo [2/6] Checking Node.js...
+node --version >nul 2>&1
+if %errorlevel% neq 0 (
+    echo [ERROR] Node.js not found! Install from nodejs.org
+    pause
+    exit /b 1
+)
+echo        [OK] Node.js found.
+
+:: Install Python dependencies
+echo [3/6] Installing Python dependencies...
+pip install -r requirements.txt --quiet
+if %errorlevel% neq 0 (
+    echo [WARNING] Some Python packages failed to install. Pika may have limited features.
+)
+echo        [OK] Python dependencies installed.
+
+:: Install Node dependencies
+echo [4/6] Installing frontend dependencies...
+cd frontend
+call npm install --silent
+if %errorlevel% neq 0 (
+    echo [ERROR] Failed to install Node.js packages.
+    pause
+    exit /b 1
+)
+cd ..
+echo        [OK] Frontend dependencies installed.
+
+:: Create required directories
+echo [5/6] Creating directories...
+if not exist "models" mkdir models
+if not exist "tts_cache" mkdir tts_cache
+if not exist "screenshots" mkdir screenshots
+if not exist "recordings" mkdir recordings
+if not exist "macros" mkdir macros
+if not exist "data" mkdir data
+echo        [OK] Directories created.
+
+:: Start services
+echo [6/6] Starting services...
+echo.
+
+:: Start Python backend in new window
+start "Pika Bridge" cmd /k "python pc_bridge.py"
+timeout /t 3 /nobreak >nul
+
+:: Start frontend in current window
+echo  ╔═══════════════════════════════════════════════════════╗
+echo  ║  ⚡ Pika AI Assistant is starting!                   ║
+echo  ║  Frontend: http://localhost:3000                     ║
+echo  ║  Backend:  ws://localhost:8765                       ║
+echo  ║                                                       ║
+echo  ║  Close this window to stop the frontend.              ║
+echo  ║  Close the "Pika Bridge" window to stop the backend. ║
+echo  ╚═══════════════════════════════════════════════════════╝
+echo.
+
+:: Open browser
+timeout /t 2 /nobreak >nul
+start http://localhost:3000
+
+cd frontend
+call npm run dev
+
+================================================================================
+PART 7: REQUIREMENTS.TXT
+================================================================================
+
+# === Core ===
+websockets>=12.0
+asyncio-extra>=1.0.0;python_version<"3.11"
+
+# === Voice (STT) ===
+vosk>=0.3.45
+sounddevice>=0.4.6
+numpy>=1.24.0
+
+# === Voice (TTS) ===
+edge-tts>=6.1.0
+pyttsx3>=2.90
+
+# === PC Automation ===
+pyautogui>=0.9.54
+pygetwindow>=0.0.9
+pyperclip>=1.8.2
+keyboard>=0.13.5
+mouse>=0.7.1
+
+# === System Info ===
+psutil>=5.9.0
+
+# === Screen & Image ===
+Pillow>=10.0.0
+mss>=9.0.0
+
+# === OCR ===
+pytesseract>=0.3.10
+
+# === PDF ===
+PyPDF2>=3.0.0
+
+# === QR Code ===
+qrcode>=7.4.0
+
+# === News ===
+feedparser>=6.0.11
+
+# === Music ===
+pygame>=2.5.0
+
+# === HTTP ===
+requests>=2.31.0
+
+# === LLM Providers ===
+groq>=0.4.2
+google-generativeai>=0.3.0
+openai>=1.0.0
+
+# === Utilities ===
+python-dotenv>=1.0.0
+
+# === Windows Specific (optional) ===
+pywin32>=306;sys_platform=="win32"
+
+================================================================================
+PART 8: .ENV.EXAMPLE
+================================================================================
+
+# Pika AI Assistant - Environment Variables
+# Copy this file to .env and fill in your API keys
+# ALL API keys are OPTIONAL - Pika works without them (with limited AI features)
+
+# === LLM Provider API Keys (get free keys from each provider) ===
+
+# Groq (fastest, recommended) - https://console.groq.com
+GROQ_API_KEY=gsk_your_key_here
+
+# Google Gemini - https://aistudio.google.com
+GEMINI_API_KEY=your_key_here
+
+# Mistral - https://console.mistral.ai
+MISTRAL_API_KEY=your_key_here
+
+# Cerebras (ultra-fast) - https://cloud.cerebras.ai
+CEREBRAS_API_KEY=your_key_here
+
+# OpenRouter (access to 20+ free models) - https://openrouter.ai
+OPENROUTER_API_KEY=your_key_here
+
+# Z.ai (GLM) - https://chat.z.ai
+ZAI_API_KEY=your_key_here
+
+# DeepSeek (coding expert) - https://platform.deepseek.com
+DEEPSEEK_API_KEY=your_key_here
+
+# === Optional: Email for System Reports ===
+# SMTP_EMAIL=your_email@gmail.com
+# SMTP_PASSWORD=your_app_password
+# SMTP_SERVER=smtp.gmail.com
+# SMTP_PORT=587
+
+# === Optional: Weather Default Location ===
+# DEFAULT_WEATHER_LOCATION=Delhi
+
+================================================================================
+PART 9: README.MD
+================================================================================
+
+# ⚡ Pika AI Assistant (पिका एआई असिस्टेंट)
+
+> आपका व्यक्तिगत AI डेस्कटॉप असिस्टेंट — हिंदी और अंग्रेज़ी में आवाज़ से कंट्रोल करो
+
+![Version](https://img.shields.io/badge/version-1.0.0-purple)
+![License](https://img.shields.io/badge/license-MIT-green)
+![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20Mac-blue)
+
+## ✨ Features
+
+### 🎤 Voice Control
+- Offline speech recognition (Hindi + English) via Vosk
+- Natural text-to-speech via Microsoft Edge TTS
+- Wake word support ("Computer" / "Hey Pika")
+- Push-to-talk mode
+
+### 🖥️ PC Automation (30+ commands)
+- System: Shutdown, Restart, Sleep, Lock, Hibernate, Log Off
+- Apps: Open/Close 40+ applications by voice
+- Volume: Up/Down/Mute/Set precise percentage
+- Media: Play/Pause/Next/Previous track
+- Files: Create/Delete/Rename/Move/Copy files & folders
+- Clipboard: Save/Paste/History/Clear
+- Screen: Screenshot, Record, Brightness control
+- Keyboard: Press any hotkey combo via voice
+- Processes: List/Kill/Set priority
+- Network: IP info, Speed test, WiFi list
+
+### 🤖 AI Chat (7 Free Providers)
+- Groq (fastest), Gemini, Mistral, Cerebras, OpenRouter, Z.ai, DeepSeek
+- Auto-fallback if one fails
+- Conversation memory (last 20 messages)
+- Streaming responses
+
+### 🔧 Advanced Tools
+- **Macro Engine**: Record & replay mouse/keyboard sequences
+- **OCR**: Read text from screen
+- **PDF Tools**: Merge, Split, Extract text
+- **Image Tools**: Resize, Convert, Compress
+- **QR Code Generator**
+- **Calculator**: Safe math evaluation
+- **Translator**: 8+ languages (free API)
+- **Password Generator**: Cryptographically secure
+- **Weather**: Real-time via wttr.in (no API key)
+- **News Reader**: RSS feeds from BBC Hindi, etc.
+- **Music Player**: Local music file playback
+- **Disk Tools**: Clean temp files, Find duplicates, Disk usage analysis
+- **Text Expander**: Custom text snippets
+- **Scheduled Tasks**: Cron-like automation
+- **Hotkey Manager**: Global keyboard shortcuts
+- **Reminders & Timers**: Voice-settable
+
+### 🎨 Premium UI
+- Glassmorphism design with aurora gradient background
+- Floating particle system
+- Voice waveform animation
+- Framer Motion animations
+- Picture-in-Picture mode
+- Dark/Light theme
+- Fully responsive
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Python 3.10+
+- Node.js 18+
+- (Optional) Tesseract OCR: https://github.com/UB-Mannheim/tesseract/wiki
+
+### One-Click Start (Windows)
+```
+Double-click start.bat
+```
+
+### Manual Start
+```bash
+# Install Python dependencies
+pip install -r requirements.txt
+
+# Install frontend dependencies
+cd frontend && npm install && cd ..
+
+# Start backend (Terminal 1)
+python pc_bridge.py
+
+# Start frontend (Terminal 2)
+cd frontend && npm run dev
+
+# Open http://localhost:3000
+```
+
+### Get Free API Keys
+| Provider | URL | Free Limit |
+|----------|-----|------------|
+| Groq | console.groq.com | 30 RPM |
+| Gemini | aistudio.google.com | 15 RPM |
+| Mistral | console.mistral.ai | 1M tokens/day |
+| Cerebras | cloud.cerebras.ai | 100k tokens/day |
+| OpenRouter | openrouter.ai | 20+ free models |
+| Z.ai | chat.z.ai | 100 queries/day |
+| DeepSeek | platform.deepseek.com | 500 queries/day |
+
+Copy `.env.example` to `.env` and add your keys.
+
+## 🗣️ Voice Commands (हिंदी + English)
+
+| Category | Commands |
+|----------|----------|
+| System | "computer shutdown" / "लैपटॉप बंद करो" |
+| Apps | "open chrome" / "notepad खोलो" |
+| Volume | "volume 50%" / "आवाज़ बढ़ाओ" |
+| Media | "play music" / "next song" |
+| Files | "create file test.txt" / "folder बनाओ notes" |
+| Info | "battery dikhao" / "CPU usage" |
+| Web | "open youtube" / "search for cats" |
+| AI | "switch to gemini" / "groq use करो" |
+| Tools | "screenshot लो" / "calculate 25 * 4" |
+| General | "namaste" / "hello" / "thank you" |
+
+## 🔒 Privacy & Security
+- All data stays on YOUR computer
+- No telemetry, no tracking
+- Voice processed locally (Vosk)
+- API keys stored locally only
+- Confirmation required for destructive actions
+- Safe calculator (no eval on raw input)
+- Rate limiting on commands
+- Blocked system paths protection
+
+## 📁 Project Structure
+```
+pika-ai-assistant/
+├── pc_bridge.py          # Complete Python backend (ONE file)
+├── requirements.txt      # Python dependencies
+├── .env.example          # API keys template
+├── start.bat             # Windows launcher
+├── start.sh              # Linux/Mac launcher
+├── frontend/             # React + Vite + TypeScript
+│   ├── src/
+│   │   ├── app/          # Pages
+│   │   ├── components/   # 40+ UI components
+│   │   ├── hooks/        # 7 custom hooks
+│   │   ├── store/        # Zustand state
+│   │   ├── lib/          # Utilities
+│   │   └── types/        # TypeScript interfaces
+│   └── package.json
+├── models/               # Vosk models (auto-downloaded)
+├── data/                 # SQLite DB + JSON data
+└── macros/               # Saved macros
+```
+
+## 🛠️ Tech Stack
+- **Backend**: Python 3.10+, WebSockets, Vosk, Edge TTS, PyAutoGUI
+- **Frontend**: React 18, TypeScript, Vite, Tailwind CSS, Framer Motion
+- **State**: Zustand
+- **Icons**: Lucide React
+- **Database**: SQLite (stdlib)
+- **AI**: Groq, Gemini, Mistral, Cerebras, OpenRouter, Z.ai, DeepSeek
+
+## 📜 License
+MIT License — Free to use, modify, and distribute.
+
+---
+
+**पिका — तुम्हारा अपना AI असिस्टेंट, तुम्हारे कंप्यूटर पर, तुम्हारी भाषा में।** ⚡
+
+================================================================================
+PART 10: CRITICAL IMPLEMENTATION NOTES
+================================================================================
+
+1. ALL code must be COMPLETE — no "// ... similar" or "// rest omitted"
+2. pc_bridge.py MUST be a SINGLE file with ALL backend code
+3. Use `if __name__ == "__main__":` pattern
+4. Every async function must have proper error handling (try/except)
+5. Every PCController method must return {"success": bool, "message": str, "data": any}
+6. WebSocket must handle client disconnect gracefully (try/except around sends)
+7. Vosk models auto-download on first run with progress bar
+8. Edge TTS is primary, pyttsx3 is fallback
+9. LLM streaming MUST work — yield chunks, don't wait for full response
+10. Gemini API uses DIFFERENT format than OpenAI-compatible — handle separately
+11. Calculator MUST use safe eval (whitelist only math operations, NO eval() on raw input)
+12. File operations MUST check blocked paths before executing
+13. Confirmation flow MUST work for all destructive commands
+14. Rate limiting MUST use sliding window algorithm
+15. Frontend MUST handle WebSocket reconnection automatically
+16. Frontend MUST work even when backend is disconnected (show clear error state)
+17. ALL UI text must be in Hindi by default, English when language setting is "en"
+18. Glassmorphism: backdrop-blur-xl + bg-white/5-10% + border-white/10
+19. Colors: Deep navy bg (#0a0e1a), Purple accent (#7c3aed), Cyan accent (#06b6d4)
+20. Framer Motion: use motion.div with initial/animate/exit for all animated elements
+21. Tailwind: use cn() utility (clsx + tailwind-merge) for conditional classes
+22. Generate UUIDs with crypto.randomUUID() in frontend, uuid.uuid4() in backend
+23. Timestamps: ISO 8601 format everywhere
+24. Sound effects: use HTML5 Audio API, files in public/sounds/
+25. PiP window: must be draggable (use mouse events, not HTML drag API)
+26. Mobile responsive: sidebar collapses to bottom nav on small screens
+27. Keyboard shortcut in browser: Ctrl+Space to toggle voice listening
+28. The frontend MUST have a "Connect to Bridge" button that appears when disconnected
+29. System status events MUST be pushed every 5 seconds when client is connected
+30. Conversation history MUST be persisted to data/conversation_history.json
+31. When no LLM API key is configured, show helpful message in settings explaining how to get free keys
+32. When Vosk models are downloading, show progress in the UI
+33. The macro recorder MUST record mouse position, click type, and key presses with timestamps
+34. The macro player MUST replay with realistic timing (not instant)
+35. All file paths in commands should be resolved: if relative, resolve against user home directory
+
+================================================================================
+PART 11: ADVANCED FEATURES BEYOND ORIGINAL SPEC
+================================================================================
+
+These are ADDITIONAL features I want you to implement that were NOT in the
+original brief. They make Pika significantly more powerful:
+
+A) CONTEXT-AWARE RESPONSES:
+   - Detect which window/app is focused
+   - If user says "close this" → close the active window
+   - If user says "save" in VS Code → send Ctrl+S
+   - If user says "what am I looking at" → read window title and describe
+
+B) SMART COMMAND PARSING:
+   - "volume thoda karo" → volume up by 5 (not 10)
+   - "bahut loud hai" → volume down by 20
+   - "5 minute baad yaad dilana khana banao" → reminder in 5 min, text "khana banao"
+   - Handle vague quantities: "thoda"=5, "bahut"=20, "ek dam"=100
+
+C) MULTI-STEP COMMANDS:
+   - "open chrome and search for pika ai" → open chrome THEN search
+   - "screenshot leke mail karo" → take screenshot then... (explain can't email without SMTP config)
+   - Parse "and" / "aur" / "then" / "फिर" as command separators
+
+D) NATURAL LANGUAGE FILE PATHS:
+   - "desktop par file banao test.txt" → ~/Desktop/test.txt
+   - "documents mein folder banao notes" → ~/Documents/notes/
+   - "downloads mein kya hai" → list ~/Downloads/
+   - Map: "desktop"→Desktop, "documents"→Documents, "downloads"→Downloads,
+     "pictures"→Pictures, "music"→Music, "videos"→Videos
+
+E) EMOTIONAL AWARENESS (simple keyword-based):
+   - If user says "thak gaya" / "tired" → "आराम करो, कुछ पानी पीओ ☕"
+   - If user says "bored" / "bore ho raha" → suggest: music, youtube, joke
+   - If user says "sad" / "dukhi" → motivational quote
+   - Keep a small list of 20 Hindi+English responses for common emotional states
+
+F) QUICK MATH:
+   - "2 plus 2" → "4"
+   - "kitna hai 15 percent of 2000" → "300"
+   - "convert 100 dollars to rupees" → use free API or approximate rate
+   - Integrate into calculator module
+
+G) DATE/TIME QUESTIONS:
+   - "kal kya din hai" → calculate tomorrow's day name
+   - "next monday ki date" → calculate next Monday's date
+   - "2 ghante baad kya time hoga" → add 2 hours to current time
+
+H) AUTO-COMPLETE SUGGESTIONS:
+   - In the chat input, show suggestions based on partial text
+   - "vol" → ["volume up", "volume down", "volume 50%", "volume mute"]
+   - "open" → ["open chrome", "open notepad", "open youtube", ...]
+   - Show as dropdown below input
+
+I) COMMAND ALIAS SYSTEM:
+   - Users can create custom aliases in settings
+   - "bs" → "open brave"
+   - "vol50" → "volume 50%"
+   - Store in config.json under "aliases"
+
+J) NOTIFICATION SOUNDS:
+   - Different sounds for: command success, error, reminder, connection, message
+   - Use Web Audio API to generate simple tones (no audio files needed as fallback)
+   - Or use the mp3 files in public/sounds/
+
+K) STATISTICS DASHBOARD:
+   - Track: total commands executed, most used commands, average response time
+   - Show in a "Stats" section in settings
+   - Store in SQLite
+
+L) UNDO LAST COMMAND:
+   - "undo" / "वापस" → reverse last non-irreversible command
+   - Undo volume change, undo file rename (if original name saved), etc.
+   - Keep last 5 commands in an undo stack
+
+================================================================================
+END OF PROMPT — NOW GENERATE ALL CODE FILES
+================================================================================
+
+OUTPUT ORDER:
+1. pc_bridge.py (COMPLETE — this is the most important file, make it THOROUGH)
+2. requirements.txt
+3. .env.example
+4. start.bat
+5. start.sh
+6. frontend/package.json
+7. frontend/vite.config.ts
+8. frontend/tsconfig.json
+9. frontend/tailwind.config.ts
+10. frontend/postcss.config.js
+11. frontend/index.html
+12. frontend/src/index.css
+13. frontend/src/main.tsx
+14. frontend/src/App.tsx
+15. frontend/src/types/index.ts
+16. frontend/src/lib/constants.ts
+17. frontend/src/lib/utils.ts
+18. frontend/src/lib/soundEffects.ts
+19. frontend/src/lib/markdown.ts
+20. frontend/src/store/assistantStore.ts
+21. frontend/src/hooks/useWebSocket.ts
+22. frontend/src/hooks/useVoice.ts
+23. frontend/src/hooks/useSpeech.ts
+24. frontend/src/hooks/useSystemInfo.ts
+25. frontend/src/hooks/useClipboard.ts
+26. frontend/src/hooks/useHotkeys.ts
+27. frontend/src/hooks/usePiP.ts
+28. frontend/src/hooks/useTheme.ts
+29. frontend/src/components/GlassCard.tsx
+30. frontend/src/components/GlowButton.tsx
+31. frontend/src/components/IconBadge.tsx
+32. frontend/src/components/AuroraBackground.tsx
+33. frontend/src/components/ParticleBackground.tsx
+34. frontend/src/components/LoadingSpinner.tsx
+35. frontend/src/components/Toast.tsx
+36. frontend/src/components/ConfirmationDialog.tsx
+37. frontend/src/components/VoiceWaveform.tsx
+38. frontend/src/components/VoiceButton.tsx
+39. frontend/src/components/MarkdownRenderer.tsx
+40. frontend/src/components/ChatMessage.tsx
+41. frontend/src/components/ChatInterface.tsx
+42. frontend/src/components/Dashboard.tsx
+43. frontend/src/components/StatusBar.tsx
+44. frontend/src/components/Sidebar.tsx
+45. frontend/src/components/ControlPanel.tsx
+46. frontend/src/components/SystemControls.tsx
+47. frontend/src/components/AppLauncher.tsx
+48. frontend/src/components/MediaControls.tsx
+49. frontend/src/components/FileManager.tsx
+50. frontend/src/components/ClipboardManager.tsx
+51. frontend/src/components/SystemInfo.tsx
+52. frontend/src/components/WebLauncher.tsx
+53. frontend/src/components/ScreenTools.tsx
+54. frontend/src/components/MacroEngine.tsx
+55. frontend/src/components/ReminderPanel.tsx
+56. frontend/src/components/ProcessManager.tsx
+57. frontend/src/components/NetworkTools.tsx
+58. frontend/src/components/SchedulerPanel.tsx
+59. frontend/src/components/OcrTool.tsx
+60. frontend/src/components/PdfTools.tsx
+61. frontend/src/components/ImageTools.tsx
+62. frontend/src/components/QrGenerator.tsx
+63. frontend/src/components/Calculator.tsx
+64. frontend/src/components/Translator.tsx
+65. frontend/src/components/PasswordGenerator.tsx
+66. frontend/src/components/WeatherWidget.tsx
+67. frontend/src/components/NewsReader.tsx
+68. frontend/src/components/MusicPlayer.tsx
+69. frontend/src/components/DiskTools.tsx
+70. frontend/src/components/TextExpander.tsx
+71. frontend/src/components/SettingsPanel.tsx
+72. frontend/src/components/PiPWindow.tsx
+73. frontend/src/app/layout.tsx
+74. frontend/src/app/page.tsx
+75. README.md
+
+GENERATE EVERY SINGLE FILE. DO NOT SKIP ANY. DO NOT USE PLACEHOLDERS.
+WRITE COMPLETE, PRODUCTION-READY CODE WITH FULL ERROR HANDLING.
+```
+
+---
+
+यह prompt इतना detailed है कि **कोई भी AI** (Claude 3.5 Sonnet, GPT-4o, Gemini 2.0 Flash, DeepSeek V3) इसे पढ़कर **पूरा काम करने वाला code** generate कर सकता है।
+
+**मैंने क्या-क्या add किया original से:**
+
+| Feature | Original | Enhanced |
+|---------|----------|----------|
+| Voice Commands | ~40 patterns | **120+ patterns** (Hindi+English+Hinglish) |
+| Safety System | ❌ None | ✅ Confirmation flow, blocked paths, safe calc, rate limiting |
+| Macro Engine | ❌ None | ✅ Record/play/save/load mouse+keyboard macros |
+| OCR | ❌ None | ✅ Tesseract integration |
+| Screen Recording | ❌ None | ✅ mss-based recording |
+| PDF Tools | ❌ None | ✅ Merge/split/extract |
+| Image Tools | ❌ None | ✅ Resize/convert/compress |
+| QR Code | ❌ None | ✅ Generate from text/URL |
+| Calculator | ❌ None | ✅ Safe math eval (no raw eval) |
+| Translator | ❌ None | ✅ 8+ languages via MyMemory (free) |
+| Password Gen | ❌ None | ✅ Cryptographically secure |
+| Weather | ❌ None | ✅ wttr.in (no API key) |
+| News | ❌ None | ✅ RSS from BBC Hindi etc. |
+| Music Player | ❌ None | ✅ Local file playback via pygame |
+| Disk Tools | ❌ None | ✅ Cleanup, duplicates, usage analysis |
+| Text Expander | ❌ None | ✅ Custom snippets |
+| Scheduler | ❌ None | ✅ Cron-like task scheduling |
+| Hotkey Manager | ❌ None | ✅ Global hotkeys mapped to commands |
+| Context Detection | ❌ None | ✅ Detect active window, "close this" |
+| Smart Parsing | ❌ None | ✅ "thoda", "bahut", multi-step commands |
+| NL File Paths | ❌ None | ✅ "desktop par file banao" |
+| Emotional Awareness | ❌ None | ✅ Keyword-based emotional responses |
+| Auto-complete | ❌ None | ✅ Input suggestions |
+| Command Aliases | ❌ None | ✅ Custom shortcuts |
+| Undo System | ❌ None | ✅ Undo last command |
+| Statistics | ❌ None | ✅ Command usage tracking |
+| PiP Mode | Basic | ✅ Draggable floating window |
+| WebSocket Protocol | Vague | ✅ Exact JSON schemas for every message type |
+| Error Handling | Basic | ✅ Every method wrapped in try/except with graceful fallback |
+| Offline Support | Mentioned | ✅ Optional import pattern, fallback responses |
+
+**इस .txt को directly किसी भी AI chat में paste करो और बोलो — "Generate all code files as specified"** 🚀

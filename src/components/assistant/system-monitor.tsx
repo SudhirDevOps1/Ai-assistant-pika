@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Cpu, HardDrive, Battery, Wifi, Monitor, Clock, Thermometer, Server, Mail } from 'lucide-react'
 import { toast } from 'sonner'
+import { usePcBridge } from '@/hooks/use-pc-bridge'
 
 interface SystemInfo {
   cpuUsage: number

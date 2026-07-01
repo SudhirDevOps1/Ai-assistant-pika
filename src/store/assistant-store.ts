@@ -18,7 +18,7 @@ export interface Reminder {
 }
 
 export type AssistantStatus = 'idle' | 'listening' | 'thinking' | 'speaking'
-export type ActivePanel = 'chat' | 'reminders' | 'clipboard' | 'system' | 'pc-control' | 'settings'
+export type ActivePanel = 'chat' | 'reminders' | 'clipboard' | 'system' | 'pc-control' | 'settings' | 'tools' | 'macros' | 'scheduler'
 
 interface AssistantStore {
   // Chat
@@ -42,10 +42,18 @@ interface AssistantStore {
   setAutoFallback: (v: boolean) => void
   conversationLimit: number
   setConversationLimit: (v: number) => void
+  pipMode: boolean
+  setPipMode: (v: boolean) => void
   wakeWord: string
   setWakeWord: (v: string) => void
   ttsVoice: string
   setTtsVoice: (v: string) => void
+  speechMode: 'online' | 'offline'
+  setSpeechMode: (v: 'online' | 'offline') => void
+  sttEngine: 'web_speech' | 'vosk'
+  setSttEngine: (v: 'web_speech' | 'vosk') => void
+  ttsEngine: 'edge_tts' | 'pyttsx3'
+  setTtsEngine: (v: 'edge_tts' | 'pyttsx3') => void
 
   // Status
   status: AssistantStatus
@@ -77,6 +85,8 @@ interface AssistantStore {
   // Global Command Executor
   executeCommand: ((category: string, action: string, params?: Record<string, unknown>) => Promise<any>) | null
   setExecuteCommand: (fn: ((category: string, action: string, params?: Record<string, unknown>) => Promise<any>) | null) => void
+  currentCommandText: string
+  setCurrentCommandText: (v: string) => void
 
   sendAudioChunk: ((chunk: ArrayBuffer | Blob) => void) | null
   setSendAudioChunk: (fn: ((chunk: ArrayBuffer | Blob) => void) | null) => void
@@ -181,6 +191,30 @@ export const useAssistantStore = create<AssistantStore>((set, get) => ({
         model: data.model,
       })
 
+      // Speak using Edge TTS via PC Bridge
+      const cmdExecutor = get().executeCommand
+      if (cmdExecutor && responseContent && !extractedCommand) {
+        const voice = get().ttsVoice || 'hi-IN-SwaraNeural'
+        const ttsEngine = get().ttsEngine || 'edge_tts'
+        cmdExecutor('tts', 'speak', { text: responseContent, voice, engine: ttsEngine })
+          .then((res) => {
+            if (res.success && res.audio) {
+              const format = res.format || 'mp3'
+              const audioUrl = `data:audio/${format};base64,${res.audio}`
+              const audio = new Audio(audioUrl)
+              setStatus('speaking')
+              audio.onended = () => setStatus('idle')
+              audio.play().catch((err) => {
+                console.error("Audio playback failed:", err)
+                setStatus('idle')
+              })
+            }
+          })
+          .catch((err) => {
+            console.error("TTS request failed:", err)
+          })
+      }
+
       if (extractedCommand) {
         const executor = get().executeCommand
         if (executor) {
@@ -220,12 +254,12 @@ Please briefly summarize this result for me.`)
   setProvider: (p) => set({ provider: p }),
   setModel: (m) => set({ model: m }),
 
-  // Config
   apiKeys: {
     groq: '',
     gemini: '',
     mistral: '',
     cerebras: '',
+    openrouter: '',
   },
   setApiKey: (provider, key) =>
     set((state) => ({
@@ -237,10 +271,18 @@ Please briefly summarize this result for me.`)
   setAutoFallback: (v) => set({ autoFallback: v }),
   conversationLimit: 50,
   setConversationLimit: (v) => set({ conversationLimit: v }),
+  pipMode: false,
+  setPipMode: (v) => set({ pipMode: v }),
   wakeWord: 'Hey Assistant',
   setWakeWord: (v) => set({ wakeWord: v }),
-  ttsVoice: 'en-US-Neural2-A',
+  ttsVoice: 'hi-IN-SwaraNeural',
   setTtsVoice: (v) => set({ ttsVoice: v }),
+  speechMode: 'online',
+  setSpeechMode: (v) => set({ speechMode: v }),
+  sttEngine: 'web_speech',
+  setSttEngine: (v) => set({ sttEngine: v }),
+  ttsEngine: 'edge_tts',
+  setTtsEngine: (v) => set({ ttsEngine: v }),
 
   // Status
   status: 'idle',
@@ -280,6 +322,8 @@ Please briefly summarize this result for me.`)
   // Global Command Executor
   executeCommand: null,
   setExecuteCommand: (fn) => set({ executeCommand: fn }),
+  currentCommandText: '',
+  setCurrentCommandText: (v) => set({ currentCommandText: v }),
 
   sendAudioChunk: null,
   setSendAudioChunk: (fn) => set({ sendAudioChunk: fn }),

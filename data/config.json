@@ -1,14 +1,20 @@
 {
-  "provider": "groq",
-  "model": "llama-3.3-70b-versatile",
+  "provider": "mistral",
+  "model": "mistral-large-latest",
   "apiKeys": {
-    "groq": "",
+    "groq": "785dc1ab01c11c6623e694f04f9d02e0:a5bf3f6f7aeb940d18c1f6e151ceb731f07d16d4e09c86e1e899e81555e11e00b4b3724033deeb57b4e9902143e25831dd3f0d9399b9d70a6dbb840f0ff67b8c",
     "gemini": "",
-    "mistral": "",
-    "cerebras": ""
+    "mistral": "f58301d065416c2f5571d12c02729acb:63fa0910f504c0ebac07402b3b70c147bc348250a7de7d0b9ad9aa7b911d2fa620c3a83c9fa5ee3e4369bef4009e4a24",
+    "cerebras": "1c5fb8a1c5c00f98c5c6ccaeae4c0fec:fd5ba86f2e55ab654698487e7fa8b48343f2cebe996128ee3f4b480c923829eaf76228914b855631c2edc7b13378685c327b72d31d1ecad0fcdaba2a02106dec",
+    "openrouter": ""
   },
-  "ttsVoice": "en-US-Neural2-A",
+  "ttsVoice": "hi-IN-SwaraNeural",
   "autoFallback": true,
   "conversationLimit": 50,
-  "wakeWord": "Hey Assistant"
+  "wakeWord": "Hey Assistant",
+  "auroraTheme": "neon",
+  "pcBridgeUrl": "ws://localhost:8765",
+  "speechMode": "online",
+  "sttEngine": "vosk",
+  "ttsEngine": "edge_tts"
 }

@@ -17,13 +17,16 @@ cls
 
 :: ─── ANIMATED BANNER ───
 echo.
-echo   [96m╔══════════════════════════════════════════════════════════╗[0m
-echo   [96m║[0m                                                          [96m║[0m
-echo   [96m║[0m    [95m🎙️  P I K A   A I   A S S I S T A N T[0m                 [96m║[0m
-echo   [96m║[0m    [36m    Desktop Voice Assistant Launcher[0m                  [96m║[0m
-echo   [96m║[0m                                                          [96m║[0m
-echo   [96m╚══════════════════════════════════════════════════════════╝[0m
+echo   [95m    ██████╗ ██╗██╗  ██╗ █████╗      █████╗ ██╗[0m
+echo   [95m    ██╔══██╗██║██║ ██╔╝██╔══██╗    ██╔══██╗██║[0m
+echo   [36m    ██████╔╝██║█████╔╝ ███████║    ███████║██║[0m
+echo   [36m    ██╔═══╝ ██║██╔═██╗ ██╔══██║    ██╔══██║██║[0m
+echo   [96m    ██║     ██║██║  ██╗██║  ██║    ██║  ██║██║[0m
+echo   [96m    ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝    ╚═╝  ╚═╝╚═╝[0m
 echo.
+echo   [90m  ================================================[0m
+echo   [97m   🎙️  P I K A   A I   A S S I S T A N T   L A U N C H E R[0m
+echo   [90m  ================================================[0m
 echo   [90m  Project: %PROJECT_DIR%[0m
 echo.
 
@@ -58,7 +61,7 @@ echo   [92m  ✓ %PY_VER%[0m
 :: Check npm
 where npm >nul 2>&1
 if %ERRORLEVEL% NEQ 0 (
-    echo   [91m  ✗ npm not found! (Should come with Node.js)[0m
+    echo   [91m  ✗ npm not found! [Should come with Node.js][0m
     pause
     exit /b 1
 )
@@ -73,9 +76,9 @@ if exist "%PROJECT_DIR%\pc-bridge\requirements.txt" (
     cd /d "%PROJECT_DIR%\pc-bridge"
     pip install -r requirements.txt --quiet --disable-pip-version-check >nul 2>&1
     if %ERRORLEVEL% EQU 0 (
-        echo   [92m  ✓ Python packages installed[0m
+        echo   [92m  ✓ Python packages installed
     ) else (
-        echo   [93m  ⚠ Some Python packages may have failed (non-critical)[0m
+        echo   [93m  ⚠ Some Python packages may have failed [non-critical][0m
     )
 ) else (
     echo   [93m  ⚠ requirements.txt not found, skipping...[0m
@@ -88,11 +91,11 @@ echo   [33m[3/6][0m [97mInstalling Node.js packages...[0m
 cd /d "%PROJECT_DIR%"
 
 if not exist "%PROJECT_DIR%\node_modules" (
-    echo   [90m  ► npm install (first time — this may take 2-5 minutes)...[0m
+    echo   [90m  ► npm install [first time — this may take 2-5 minutes]...[0m
     npm install --loglevel=error 2>&1 | findstr /i "added changed"
     echo   [92m  ✓ Node packages installed[0m
 ) else (
-    echo   [92m  ✓ node_modules already exists (skipping install)[0m
+    echo   [92m  ✓ node_modules already exists [skipping install][0m
 )
 echo.
 
@@ -103,19 +106,19 @@ cd /d "%PROJECT_DIR%"
 
 if exist "%PROJECT_DIR%\prisma" (
     echo   [90m  ► npx prisma generate[0m
-    npx prisma generate --no-hints >nul 2>&1
+    call npx prisma generate --no-hints >nul 2>&1
     if %ERRORLEVEL% EQU 0 (
-        echo   [92m  ✓ Prisma client generated[0m
+        echo   [92m  ✓ Prisma client generated
     ) else (
-        echo   [93m  ⚠ Prisma generate had warnings (non-critical)[0m
+        echo   [93m  ⚠ Prisma generate had warnings [non-critical][0m
     )
 
     echo   [90m  ► npx prisma db push[0m
-    npx prisma db push --accept-data-loss >nul 2>&1
+    call npx prisma db push --accept-data-loss >nul 2>&1
     if %ERRORLEVEL% EQU 0 (
-        echo   [92m  ✓ Database synced[0m
+        echo   [92m  ✓ Database synced
     ) else (
-        echo   [93m  ⚠ Prisma db push had warnings (non-critical)[0m
+        echo   [93m  ⚠ Prisma db push had warnings [non-critical][0m
     )
 ) else (
     echo   [93m  ⚠ No prisma directory found, skipping...[0m
@@ -129,8 +132,8 @@ cd /d "%PROJECT_DIR%\pc-bridge"
 
 if exist "%PROJECT_DIR%\pc-bridge\pc_bridge.py" (
     start "Pika AI - PC Bridge" /min cmd /c "title Pika AI - PC Bridge [ws://localhost:8765] && color 0A && python pc_bridge.py"
-    echo   [92m  ✓ PC Bridge starting on ws://localhost:8765[0m
-    echo   [90m    (Running in minimized window)[0m
+    echo   [92m  ✓ PC Bridge starting on ws://localhost:8765
+    echo   [90m    [Running in minimized window][0m
 ) else (
     echo   [93m  ⚠ pc_bridge.py not found, skipping...[0m
 )

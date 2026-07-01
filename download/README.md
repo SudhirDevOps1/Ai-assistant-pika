@@ -66,7 +66,9 @@ All PC commands execute on your local machine through a Python WebSocket bridge.
 
 **Screen & Display:** Screenshot (saves to Desktop + thumbnail preview in browser), Brightness Up/Down
 
-**File Operations:** Create files on Desktop, Delete files/folders, List directory contents
+**File Operations:** Create files on Desktop (with contents), Create folders, Edit/write files, Delete files/folders, List directory contents, Rename files, Copy, Move, Open File Explorer, and Keyword file search.
+
+**Camera & WiFi:** Turn WiFi On/Off, List networks, Connect/Disconnect, Open default system Camera app
 
 **Clipboard:** Read clipboard content, Write text to clipboard, Paste (Ctrl+V)
 

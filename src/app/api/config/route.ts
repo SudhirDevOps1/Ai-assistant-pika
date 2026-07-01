@@ -13,13 +13,17 @@ const DEFAULT_CONFIG = {
     gemini: '',
     mistral: '',
     cerebras: '',
+    openrouter: '',
   },
-  ttsVoice: 'en-US-Neural2-A',
+  ttsVoice: 'hi-IN-SwaraNeural',
   autoFallback: true,
   conversationLimit: 50,
   wakeWord: 'Hey Assistant',
   auroraTheme: 'neon',
   pcBridgeUrl: 'ws://localhost:8765',
+  speechMode: 'online',
+  sttEngine: 'web_speech',
+  ttsEngine: 'edge_tts',
 }
 
 async function readConfig() {
@@ -39,25 +43,31 @@ async function writeConfig(config: Record<string, any>) {
 export async function GET() {
   const config = await readConfig()
   
-  // Return masked keys to client, checking both JSON storage and environment variables
-  const maskedKeys: Record<string, string> = {}
-  const providers = ['groq', 'gemini', 'mistral', 'cerebras']
+  // Return decrypted keys to client, checking both JSON storage and environment variables
+  const plainKeys: Record<string, string> = {}
+  const providers = ['groq', 'gemini', 'mistral', 'cerebras', 'openrouter']
   
   providers.forEach((provider) => {
     const jsonKey = config.apiKeys?.[provider]
     const envKeyName = `${provider.toUpperCase()}_API_KEY`
     const envKey = process.env[envKeyName]
     
-    const isConfigured = 
-      (jsonKey && jsonKey.trim() !== '') || 
-      (envKey && envKey.trim() !== '' && !envKey.includes('your_'))
-      
-    maskedKeys[provider] = isConfigured ? '••••••••••••' : ''
+    if (jsonKey && jsonKey.trim() !== '') {
+      try {
+        plainKeys[provider] = decrypt(jsonKey)
+      } catch {
+        plainKeys[provider] = jsonKey
+      }
+    } else if (envKey && envKey.trim() !== '' && !envKey.includes('your_')) {
+      plainKeys[provider] = envKey
+    } else {
+      plainKeys[provider] = ''
+    }
   })
 
   return NextResponse.json({
     ...config,
-    apiKeys: maskedKeys,
+    apiKeys: plainKeys,
   })
 }
 
@@ -90,17 +100,31 @@ export async function POST(request: Request) {
 
     await writeConfig(newConfig)
     
-    // Return masked configuration back to client
-    const maskedKeys: Record<string, string> = {}
-    if (newConfig.apiKeys) {
-      Object.entries(newConfig.apiKeys).forEach(([provider, value]) => {
-        maskedKeys[provider] = value ? '••••••••••••' : ''
-      })
-    }
+    // Return decrypted keys back to client for local display & testing
+    const plainKeys: Record<string, string> = {}
+    const providers = ['groq', 'gemini', 'mistral', 'cerebras', 'openrouter']
+    
+    providers.forEach((provider) => {
+      const jsonKey = newConfig.apiKeys?.[provider]
+      const envKeyName = `${provider.toUpperCase()}_API_KEY`
+      const envKey = process.env[envKeyName]
+      
+      if (jsonKey && jsonKey.trim() !== '') {
+        try {
+          plainKeys[provider] = decrypt(jsonKey)
+        } catch {
+          plainKeys[provider] = jsonKey
+        }
+      } else if (envKey && envKey.trim() !== '' && !envKey.includes('your_')) {
+        plainKeys[provider] = envKey
+      } else {
+        plainKeys[provider] = ''
+      }
+    })
 
     return NextResponse.json({
       ...newConfig,
-      apiKeys: maskedKeys,
+      apiKeys: plainKeys,
     })
   } catch (error) {
     return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })

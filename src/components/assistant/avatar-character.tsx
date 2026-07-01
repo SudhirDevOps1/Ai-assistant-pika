@@ -213,10 +213,18 @@ export function AvatarCharacter({ size = 'md', interactive = true }: AvatarChara
         />
 
         {status === 'listening' && (
-          <div className="absolute inset-[-15px] rounded-full border border-cyan-400/30 animate-ping" />
+          <>
+            <div className="absolute inset-[-12px] rounded-full border border-cyan-400/40 animate-ping" style={{ animationDuration: '1.8s' }} />
+            <div className="absolute inset-[-25px] rounded-full border border-cyan-300/20 animate-ping" style={{ animationDuration: '2.5s', animationDelay: '0.4s' }} />
+            <div className="absolute inset-[-8px] rounded-full border border-dashed border-cyan-400/30 animate-spin" style={{ animationDuration: '8s' }} />
+          </>
         )}
         {status === 'speaking' && (
-          <div className="absolute inset-[-20px] rounded-full border border-purple-400/20 animate-pulse" />
+          <>
+            <div className="absolute inset-[-15px] rounded-full border border-purple-400/40 animate-ping" style={{ animationDuration: '2s' }} />
+            <div className="absolute inset-[-30px] rounded-full border border-pink-400/20 animate-pulse" style={{ animationDuration: '1.2s' }} />
+            <div className="absolute inset-[-10px] rounded-full border border-dotted border-purple-400/40 animate-spin" style={{ animationDuration: '12s' }} />
+          </>
         )}
 
         {/* Pika Container */}
@@ -224,14 +232,18 @@ export function AvatarCharacter({ size = 'md', interactive = true }: AvatarChara
           className={`relative ${sizeClasses[size]} rounded-full overflow-visible p-1.5 flex items-center justify-center bg-gradient-to-br ${colors.gradient} shadow-2xl`}
           animate={
             status === 'listening'
-              ? { scale: [1, 1.05, 1] }
+              ? { scale: [1, 1.08, 0.96, 1.04, 1] }
+              : status === 'speaking'
+              ? { scale: [1, 1.06, 0.98, 1.06, 1], y: [0, -6, 2, -4, 0] }
               : status === 'thinking'
-              ? { rotate: [0, 5, -5, 0] }
+              ? { rotate: [0, 8, -8, 0], scale: [1, 0.96, 1.02, 1] }
               : { y: [0, -3, 0] }
           }
           transition={
             status === 'listening'
-              ? { duration: 1.5, repeat: Infinity }
+              ? { duration: 1.5, repeat: Infinity, ease: 'easeInOut' }
+              : status === 'speaking'
+              ? { duration: 0.9, repeat: Infinity, ease: 'easeInOut' }
               : status === 'thinking'
               ? { duration: 2, repeat: Infinity, ease: 'easeInOut' }
               : { duration: 4, repeat: Infinity, ease: 'easeInOut' }
