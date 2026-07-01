@@ -6,28 +6,30 @@
   <meta name="theme-color" content="#06060e">
   <title>Pika AI — Desktop Assistant Setup Guide</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Orbitron:wght@500;700;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     *{margin:0;padding:0;box-sizing:border-box}
     html{scroll-behavior:smooth;scroll-padding-top:80px;overflow-x:hidden;width:100%;max-width:100vw}
     body{overflow-x:hidden;width:100%;max-width:100vw;position:relative}
     img,video,svg,canvas{max-width:100%;height:auto;display:block}
     :root{
-      --bg:#06060e;--bg-1:#0a0a18;
-      --bg-card:rgba(255,255,255,0.025);
-      --bg-card-hover:rgba(255,255,255,0.055);
-      --border:rgba(255,255,255,0.06);
-      --border-hover:rgba(255,255,255,0.14);
-      --text:#eef2ff;--text-2:#94a3c8;--text-3:#5b6488;
+      --bg:#05050c;--bg-1:#090916;
+      --bg-card:rgba(255,255,255,0.028);
+      --bg-card-hover:rgba(255,255,255,0.06);
+      --border:rgba(255,255,255,0.08);
+      --border-hover:rgba(0,229,255,0.35);
+      --text:#f3f4f6;--text-2:#9ca3af;--text-3:#64748b;
       --cyan:#00e5ff;--cyan-2:#22d3ee;
-      --purple:#a855f7;--purple-2:#c084fc;
+      --purple:#a855f7;--purple-glow:#7c3aed;
       --green:#4ade80;--orange:#fb923c;
       --red:#f87171;--yellow:#facc15;
       --blue:#60a5fa;--pink:#ec4899;
-      --radius:clamp(10px,2vw,16px);--radius-sm:clamp(6px,1.5vw,10px);
-      --glass:rgba(255,255,255,0.03);
-      --shadow:0 8px 32px rgba(0,0,0,0.4);
-      --nav-h:clamp(52px,7vw,64px);
+      --radius:clamp(12px,2vw,18px);--radius-sm:clamp(8px,1.5vw,12px);
+      --glass:rgba(255,255,255,0.035);
+      --shadow:0 12px 40px rgba(0,0,0,0.5);
+      --glow-cyan:0 0 25px rgba(0,229,255,0.25);
+      --glow-purple:0 0 30px rgba(124,58,237,0.3);
+      --nav-h:clamp(54px,7vw,68px);
     }
     body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden;-webkit-font-smoothing:antialiased;min-height:100dvh}
     a{color:var(--cyan);text-decoration:none;transition:.2s}
@@ -127,6 +129,49 @@
     .tag-yellow{background:rgba(250,204,21,.08);border-color:rgba(250,204,21,.2);color:var(--yellow)}
     .tag-blue{background:rgba(96,165,250,.08);border-color:rgba(96,165,250,.2);color:var(--blue)}
 
+    /* ── VYRON AI Cyber UI Enhancements ── */
+    .vyron-pill{display:inline-flex;align-items:center;gap:10px;padding:6px 18px;border-radius:50px;background:rgba(124,58,237,0.12);border:1px solid rgba(124,58,237,0.35);color:#d8b4fe;font-family:'Space Grotesk',sans-serif;font-size:0.8rem;font-weight:600;letter-spacing:0.5px;box-shadow:0 0 20px rgba(124,58,237,0.25);margin-bottom:20px}
+    .vyron-pill .dot{width:8px;height:8px;border-radius:50%;background:#00e5ff;box-shadow:0 0 10px #00e5ff;animation:pulse 1.8s infinite}
+    
+    .metrics-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin:32px 0 12px;width:100%}
+    .metric-card{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.08);border-radius:var(--radius);padding:18px 20px;text-align:left;position:relative;overflow:hidden;transition:all .3s}
+    .metric-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,var(--cyan),var(--purple));opacity:0;transition:.3s}
+    .metric-card:hover{background:rgba(255,255,255,0.04);border-color:rgba(0,229,255,0.3);transform:translateY(-3px);box-shadow:var(--glow-cyan)}
+    .metric-card:hover::before{opacity:1}
+    .metric-card .m-val{font-family:'Space Grotesk',sans-serif;font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,#fff,var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.2}
+    .metric-card .m-lbl{font-size:0.75rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-3);font-weight:700;margin-top:4px}
+
+    .voice-array-banner{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:14px 24px;border-radius:50px;background:linear-gradient(90deg,rgba(0,229,255,0.06),rgba(168,85,247,0.08));border:1px solid rgba(0,229,255,0.2);margin:24px auto;max-width:680px}
+    .soundwave{display:flex;align-items:center;gap:3px;height:20px}
+    .soundwave .bar{width:3px;background:var(--cyan);border-radius:2px;animation:waveAnim 1.2s ease-in-out infinite alternate}
+    .soundwave .bar:nth-child(1){height:8px;animation-delay:0s}
+    .soundwave .bar:nth-child(2){height:16px;animation-delay:0.2s}
+    .soundwave .bar:nth-child(3){height:12px;animation-delay:0.4s}
+    .soundwave .bar:nth-child(4){height:20px;animation-delay:0.1s}
+    .soundwave .bar:nth-child(5){height:10px;animation-delay:0.3s}
+    @keyframes waveAnim{0%{transform:scaleY(0.4)}100%{transform:scaleY(1.3)}}
+
+    /* Interactive Terminal Showcase */
+    .terminal-showcase{background:#04040a;border:1px solid rgba(124,58,237,0.3);border-radius:var(--radius);overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.7),0 0 30px rgba(124,58,237,0.15);margin:28px 0}
+    .terminal-top{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:rgba(255,255,255,0.02);border-bottom:1px solid var(--border);flex-wrap:wrap;gap:10px}
+    .terminal-tabs{display:flex;gap:6px;flex-wrap:wrap}
+    .t-tab{padding:5px 14px;border-radius:6px;font-size:0.75rem;font-family:'Space Grotesk',sans-serif;font-weight:600;background:rgba(255,255,255,0.03);color:var(--text-2);border:1px solid transparent;cursor:pointer;transition:.2s}
+    .t-tab:hover{background:rgba(255,255,255,0.07);color:var(--text)}
+    .t-tab.active{background:rgba(0,229,255,0.1);color:var(--cyan);border-color:rgba(0,229,255,0.3)}
+    .terminal-content{padding:20px;font-family:'JetBrains Mono',monospace;font-size:0.82rem;line-height:1.8;color:var(--text);overflow-x:auto;transition:opacity 0.2s ease;min-height:200px}
+    
+    /* Bento Grid Upgrade */
+    .bento-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin:20px 0}
+    @media(min-width:768px){
+      .bento-span-2{grid-column:span 2}
+    }
+    .bento-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;position:relative;overflow:hidden;transition:all .35s cubic-bezier(0.16,1,0.3,1);display:flex;flex-direction:column;justify-content:space-between}
+    .bento-card::before{content:'';position:absolute;top:0;right:0;width:120px;height:120px;background:radial-gradient(circle,rgba(0,229,255,0.12),transparent 70%);opacity:0;transition:.4s}
+    .bento-card:hover{background:var(--bg-card-hover);border-color:rgba(0,229,255,0.4);transform:translateY(-4px);box-shadow:0 15px 40px rgba(0,0,0,0.5),0 0 20px rgba(0,229,255,0.15)}
+    .bento-card:hover::before{opacity:1}
+    .bento-card h4{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700;color:#fff;margin-bottom:10px;display:flex;align-items:center;gap:10px}
+    .bento-tag{font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:3px 8px;border-radius:4px;background:rgba(124,58,237,0.15);color:#d8b4fe;display:inline-block;margin-bottom:12px;width:fit-content}
+
     /* ── Sections ── */
     .section{margin-top:clamp(30px,5vw,56px)}
     .section-head{display:flex;align-items:center;gap:clamp(8px,1.5vw,14px);margin-bottom:clamp(14px,2vw,24px)}
@@ -171,6 +216,8 @@
     .code-block .url{color:var(--orange)}
     .code-block .str{color:var(--yellow)}
     .code-block .hl{color:var(--cyan)}
+    .code-block .green{color:var(--green)}
+    .terminal-content .green{color:#4ade80;font-weight:600}
 
     /* ── Alerts ── */
     .alert{border-radius:var(--radius);padding:clamp(12px,1.8vw,16px) clamp(14px,2vw,20px);margin:clamp(10px,1.5vw,16px) 0;display:flex;gap:clamp(8px,1.2vw,12px);align-items:flex-start;font-size:clamp(.78rem,1vw,.88rem)}
@@ -265,15 +312,40 @@
     /* ── Mobile / Tablet (≤900px) ── */
     @media(max-width:900px){
       .nav-hamburger{display:flex!important}
-      .nav-links{position:fixed;top:var(--nav-h);right:0;bottom:0;width:min(280px,80vw);background:rgba(10,10,24,.97);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);flex-direction:column;padding:clamp(16px,3vw,24px) clamp(12px,2vw,20px);gap:4px;transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);border-left:1px solid var(--border);box-shadow:-8px 0 32px rgba(0,0,0,.5);z-index:99;overflow-y:auto}
-      .nav-links.open{transform:translateX(0)}
-      .nav-link,.nav-cta{width:100%;text-align:left;padding:clamp(10px,2vw,12px) clamp(12px,2vw,16px);border-radius:10px;font-size:.85rem;min-height:44px;display:flex;align-items:center}
-      .nav-cta{justify-content:center;margin-top:8px}
+      /* BUGFIX: .nav-links stays inside <nav> which has backdrop-filter — that creates a
+         "containing block" for position:fixed children, trapping the off-canvas menu inside
+         the ~60px tall nav bar so it becomes invisible. Fix = hide the inline desktop links
+         completely on mobile and use a SEPARATE drawer (.mobile-drawer) that lives outside
+         <nav> in the DOM, so position:fixed works correctly relative to the viewport. */
+      .nav-links{display:none!important}
       .mobile-quick-nav{display:block}
       .arch-diagram{flex-direction:column;align-items:stretch;gap:6px;padding:16px 12px}
       .arch-box{min-width:auto;width:100%}
       .arch-arrow{text-align:center;transform:rotate(90deg);font-size:1.1rem;align-self:center}
       .feat-grid{grid-template-columns:1fr;gap:8px}
+    }
+
+    /* ── Mobile Off-Canvas Drawer (sibling of <nav>, NOT a descendant) ── */
+    .mobile-drawer{display:none}
+    @media(max-width:900px){
+      .mobile-drawer{
+        display:block;position:fixed;top:0;right:0;bottom:0;width:min(300px,82vw);
+        background:rgba(9,9,18,.98);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+        border-left:1px solid var(--border);box-shadow:-12px 0 48px rgba(0,0,0,.6);
+        z-index:150;overflow-y:auto;transform:translateX(100%);
+        transition:transform .35s cubic-bezier(.4,0,.2,1);padding:0 0 24px;
+      }
+      .mobile-drawer.open{transform:translateX(0)}
+      .mobile-drawer-head{position:sticky;top:0;display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:rgba(9,9,18,.98);border-bottom:1px solid var(--border);z-index:2}
+      .mobile-drawer-head .md-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:.9rem;background:linear-gradient(135deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+      .mobile-drawer-close{width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--text);font-size:1rem;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center}
+      .mobile-drawer-close:active{transform:scale(.9)}
+      .mobile-drawer-cta{margin:14px 18px;display:block;text-align:center;padding:12px;border-radius:10px;font-size:.85rem;font-weight:700;background:linear-gradient(135deg,var(--cyan),var(--purple));color:#000!important;text-decoration:none!important}
+      .mobile-drawer-section{padding:6px 10px}
+      .mobile-drawer-label{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-3);padding:14px 12px 6px}
+      .mobile-drawer a.md-link{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:10px;font-size:.85rem;color:var(--text-2);text-decoration:none;min-height:44px;transition:.2s}
+      .mobile-drawer a.md-link:hover,.mobile-drawer a.md-link:active{background:rgba(0,229,255,.08);color:var(--cyan)}
+      .mobile-drawer a.md-link .md-num{width:22px;height:22px;border-radius:6px;background:rgba(255,255,255,.05);color:var(--text-3);display:flex;align-items:center;justify-content:center;font-size:.62rem;font-weight:700;flex-shrink:0}
     }
 
     /* ── Mobile (≤768px) ── */
@@ -366,7 +438,7 @@
 
     /* ── Print styles ── */
     @media print{
-      .nav,.sidebar,.mobile-quick-nav,.back-top,.scroll-progress,.bg-wrap,.bg-grid{display:none!important}
+      .nav,.sidebar,.mobile-quick-nav,.back-top,.scroll-progress,.bg-wrap,.bg-grid,.mobile-drawer,.nav-overlay{display:none!important}
       .page-wrap{padding-top:0}
       .main{max-width:100%;padding:0}
       body{color:#000;background:#fff}
@@ -411,6 +483,40 @@
   </button>
 </nav>
 
+<!-- Mobile Off-Canvas Drawer (kept OUTSIDE <nav> on purpose — see CSS bugfix note) -->
+<div class="mobile-drawer" id="mobileDrawer">
+  <div class="mobile-drawer-head">
+    <span class="md-title">&#9889; PIKA AI — Menu</span>
+    <button class="mobile-drawer-close" id="mobileDrawerClose" aria-label="Close menu">&#10005;</button>
+  </div>
+
+  <a class="mobile-drawer-cta" href="https://github.com/SudhirDevOps1/Ai-assistant-pika" target="_blank" rel="noopener">&#11088; View on GitHub &#8599;</a>
+
+  <div class="mobile-drawer-section">
+    <div class="mobile-drawer-label">Guide Contents</div>
+    <a class="md-link" href="#hero"><span class="md-num">&#10022;</span> Overview</a>
+    <a class="md-link" href="#requirements"><span class="md-num">1</span> Requirements</a>
+    <a class="md-link" href="#setup"><span class="md-num">2</span> Setup</a>
+    <a class="md-link" href="#pc-bridge"><span class="md-num">3</span> PC Bridge</a>
+    <a class="md-link" href="#settings"><span class="md-num">4</span> Settings</a>
+    <a class="md-link" href="#chat"><span class="md-num">5</span> Chat</a>
+    <a class="md-link" href="#features"><span class="md-num">6</span> PC Control</a>
+    <a class="md-link" href="#tech-stack"><span class="md-num">&#128736;</span> Tech Stack</a>
+    <a class="md-link" href="#architecture"><span class="md-num">&#9881;</span> Architecture</a>
+    <a class="md-link" href="#repo-audit"><span class="md-num">&#128193;</span> Repo Audit</a>
+    <a class="md-link" href="#websocket-proto"><span class="md-num">&#128268;</span> WS Protocol</a>
+    <a class="md-link" href="#voice-pipeline"><span class="md-num">&#128266;</span> Voice Engine</a>
+    <a class="md-link" href="#reminders"><span class="md-num">7</span> Reminders</a>
+    <a class="md-link" href="#clipboard"><span class="md-num">8</span> Clipboard</a>
+    <a class="md-link" href="#monitor"><span class="md-num">9</span> Monitor</a>
+    <a class="md-link" href="#providers"><span class="md-num">10</span> AI Providers</a>
+    <a class="md-link" href="#troubleshoot"><span class="md-num">11</span> Troubleshoot</a>
+    <a class="md-link" href="#screenshots"><span class="md-num">&#128247;</span> Screenshots</a>
+    <a class="md-link" href="#roadmap"><span class="md-num">&#128506;</span> Roadmap</a>
+    <a class="md-link" href="#contributing"><span class="md-num">&#129309;</span> Contributing</a>
+  </div>
+</div>
+
 <div class="page-wrap">
 
   <!-- Sidebar (Desktop) -->
@@ -423,6 +529,7 @@
     <a class="sidebar-link" href="#settings"><span class="s-num">4</span> Settings</a>
     <a class="sidebar-link" href="#chat"><span class="s-num">5</span> Chat</a>
     <a class="sidebar-link" href="#features"><span class="s-num">6</span> PC Control</a>
+    <a class="sidebar-link" href="#tech-stack"><span class="s-num">&#128736;</span> Tech Stack</a>
     <a class="sidebar-link" href="#architecture"><span class="s-num">&#9881;</span> Architecture</a>
     <a class="sidebar-link" href="#repo-audit"><span class="s-num">&#128193;</span> Repo Audit</a>
     <a class="sidebar-link" href="#websocket-proto"><span class="s-num">&#128268;</span> WS Protocol</a>
@@ -433,24 +540,116 @@
     <a class="sidebar-link" href="#providers"><span class="s-num">10</span> AI Providers</a>
     <a class="sidebar-link" href="#troubleshoot"><span class="s-num">11</span> Troubleshoot</a>
     <a class="sidebar-link" href="#screenshots"><span class="s-num">&#128247;</span> Screenshots</a>
+    <a class="sidebar-link" href="#roadmap"><span class="s-num">&#128506;</span> Roadmap</a>
+    <a class="sidebar-link" href="#contributing"><span class="s-num">&#129309;</span> Contributing</a>
   </aside>
 
   <main class="main">
 
-    <!-- HERO -->
+    <!-- HERO (VYRON AI INSPIRED REDESIGN) -->
     <section class="hero" id="hero">
-      <div class="hero-badge"><span class="pulse"></span> v0.2.0 — Stable Release</div>
-      <div class="hero-icon">
-        <span style="font-size:clamp(24px,5vw,40px)">⚡</span>
+      <div class="vyron-pill">
+        <span class="dot"></span> PIKA AI v0.2.0 — VOICE-CONTROLLED DESKTOP ASSISTANT
       </div>
-      <h1>Pika AI Desktop Assistant</h1>
-      <p class="subtitle">Complete Setup &amp; Usage Guide — Hindi/English Voice Assistant jo aapke PC ko AI se control karega. Chat, Voice Commands, PC Control sab ek jagah.</p>
-      <div class="hero-tags">
+      <h1 style="font-family:'Space Grotesk',sans-serif;letter-spacing:-1px">Pika AI — Desktop Voice Assistant</h1>
+      <p class="subtitle">A sleek, modern, voice-controlled Desktop Assistant built with Next.js &amp; Python. Control your PC • Offline Hindi/English Voice Recognition • Chat with top LLMs (Groq, Gemini, Mistral, Cerebras).</p>
+      
+      <div class="voice-array-banner">
+        <div class="soundwave">
+          <span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span>
+        </div>
+        <span style="font-size:0.85rem;font-weight:600;color:var(--text)">Voice-Native AI</span>
+        <span style="color:var(--text-3)">|</span>
+        <span style="font-size:0.82rem;color:var(--cyan);font-family:'JetBrains Mono',monospace">"Hey Pika, Chrome kholo aur volume 80% karo"</span>
+      </div>
+
+      <div class="metrics-strip">
+        <div class="metric-card">
+          <div class="m-val">Offline</div>
+          <div class="m-lbl">Vosk Voice Recognition</div>
+        </div>
+        <div class="metric-card">
+          <div class="m-val">4 AI</div>
+          <div class="m-lbl">Groq • Gemini • Mistral • Cerebras</div>
+        </div>
+        <div class="metric-card">
+          <div class="m-val">19+</div>
+          <div class="m-lbl">PC Control Features</div>
+        </div>
+        <div class="metric-card">
+          <div class="m-val">1-Click</div>
+          <div class="m-lbl">start.bat Auto Launcher</div>
+        </div>
+      </div>
+
+      <div class="hero-tags" style="margin-top:20px">
         <span class="tag tag-cyan">Next.js 15</span>
         <span class="tag tag-purple">React 19</span>
-        <span class="tag tag-green">Python WebSocket</span>
-        <span class="tag tag-orange">4 AI Providers</span>
-        <span class="tag tag-pink">Voice Control</span>
+        <span class="tag tag-green">Tailwind CSS 3</span>
+        <span class="tag tag-orange">Vosk Offline STT</span>
+        <span class="tag tag-pink">Python WebSocket</span>
+        <span class="tag tag-blue">4 AI Providers</span>
+      </div>
+    </section>
+
+    <!-- INTERACTIVE TERMINAL SIMULATOR SHOWCASE -->
+    <div class="terminal-showcase reveal">
+      <div class="terminal-top">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="width:12px;height:12px;border-radius:50%;background:#ff5f57;display:inline-block"></span>
+          <span style="width:12px;height:12px;border-radius:50%;background:#febc2e;display:inline-block"></span>
+          <span style="width:12px;height:12px;border-radius:50%;background:#28c840;display:inline-block"></span>
+          <span style="font-family:'Space Grotesk',sans-serif;font-size:0.75rem;color:var(--text-3);margin-left:10px">PIKA_DEV_CONSOLE // LAUNCHER</span>
+        </div>
+        <div class="terminal-tabs" id="termTabs">
+          <button class="t-tab active" onclick="switchTerm(0)">🚀 One-Click (start.bat)</button>
+          <button class="t-tab" onclick="switchTerm(1)">⚡ Web UI (npm dev)</button>
+          <button class="t-tab" onclick="switchTerm(2)">🔌 PC Bridge (Python)</button>
+        </div>
+      </div>
+      <div class="terminal-content" id="termScreen">
+        <!-- populated dynamically -->
+      </div>
+    </div>
+
+    <!-- TECH STACK BENTO GRID -->
+    <section class="section reveal" id="tech-stack">
+      <div class="section-head">
+        <div class="section-icon" style="background:linear-gradient(135deg,#f472b6,#a855f7)">&#128736;</div>
+        <h2 class="section-title">🛠️ Tech Stack — Built with the Best</h2>
+      </div>
+
+      <div class="bento-grid">
+        <div class="bento-card">
+          <span class="bento-tag">Frontend</span>
+          <h4>⚛️ Next.js 15 + React 19</h4>
+          <p>App Router, Server Components, Fast Refresh, TypeScript strict mode</p>
+        </div>
+        <div class="bento-card">
+          <span class="bento-tag">Styling</span>
+          <h4>🎨 Tailwind CSS 3</h4>
+          <p>Utility-first CSS, responsive breakpoints, dark mode, glassmorphism</p>
+        </div>
+        <div class="bento-card">
+          <span class="bento-tag">Backend</span>
+          <h4>🐍 Python 3.10+</h4>
+          <p>Async WebSocket server, psutil, pyautogui, pyperclip, pillow</p>
+        </div>
+        <div class="bento-card">
+          <span class="bento-tag">Voice STT</span>
+          <h4>🎤 Vosk Offline</h4>
+          <p>Hindi + English speech recognition, works without internet</p>
+        </div>
+        <div class="bento-card">
+          <span class="bento-tag">Voice TTS</span>
+          <h4>🔊 Edge-TTS + Pyttsx3</h4>
+          <p>Neural online voices + offline fallback, zero-delay switching</p>
+        </div>
+        <div class="bento-card">
+          <span class="bento-tag">AI Models</span>
+          <h4>🤖 4 LLM Providers</h4>
+          <p>Groq (Llama 3.3), Gemini 2.0, Mistral Large, Cerebras (Llama 4)</p>
+        </div>
       </div>
     </section>
 
@@ -833,82 +1032,106 @@
 
       <p style="color:var(--text-2);margin-bottom:20px">PC Control panel mein <strong>16+ features</strong> hain. Har section expand karke buttons se control karo:</p>
 
-      <div class="feat-grid">
-        <div class="feat-card">
-          <h4>&#9889; System Commands</h4>
-          <p><strong>Shutdown</strong> — PC band (5s delay)<br><strong>Restart</strong> — PC restart<br><strong>Sleep</strong> — Neend mode<br><strong>Lock</strong> — Screen lock<br><strong>Log Off</strong> — Sign out</p>
+      <div class="bento-grid">
+        <div class="bento-card bento-span-2">
+          <span class="bento-tag">🎤 Voice Core</span>
+          <h4>🎙️ Offline Voice Recognition (Vosk)</h4>
+          <p>Hindi &amp; English speech-to-text powered by <strong>Vosk</strong> — works completely offline without internet. Accurate accent detection for Hinglish commands. Wake word activation: <code>"Hey Assistant"</code>.</p>
         </div>
-        <div class="feat-card">
-          <h4>&#128266; Volume Control</h4>
-          <p><strong>Up/Down</strong> — 10% change<br><strong>Mute/Unmute</strong> — Toggle<br><strong>Set Level</strong> — Specific % pe set karo</p>
+        <div class="bento-card bento-span-2">
+          <span class="bento-tag">💬 AI Chat</span>
+          <h4>🤖 Multi-Provider AI Chat (4 LLMs)</h4>
+          <p>Chat with <strong>Groq</strong> (Llama 3.3 70B), <strong>Google Gemini</strong> (2.0 Flash), <strong>Mistral</strong> (Large/Codestral), or <strong>Cerebras</strong> (Llama 4 Scout). Auto-fallback if one provider fails.</p>
         </div>
-        <div class="feat-card">
-          <h4>&#127925; Media Controls</h4>
-          <p><strong>Play/Pause</strong> — Toggle<br><strong>Next/Previous</strong> — Track change<br>Spotify, YouTube, VLC — sab supported</p>
+        <div class="bento-card">
+          <span class="bento-tag">⚡ System</span>
+          <h4>⚡ System Commands</h4>
+          <p><strong>Shutdown</strong> (5s delay)<br><strong>Restart</strong> PC<br><strong>Sleep</strong> mode<br><strong>Lock</strong> screen<br><strong>Log Off</strong> session</p>
         </div>
-        <div class="feat-card">
-          <h4>&#128640; App Launcher</h4>
-          <p><strong>25+ Apps:</strong> Chrome, Notepad, Calculator, VS Code, Spotify, Word, Excel...<br><strong>Close</strong> koi bhi running app</p>
+        <div class="bento-card">
+          <span class="bento-tag">🔊 Volume</span>
+          <h4>🔊 Volume Control</h4>
+          <p><strong>Up/Down</strong> 10%<br><strong>Mute/Unmute</strong><br><strong>Set Level</strong> 0-100%</p>
         </div>
-        <div class="feat-card">
-          <h4>&#127760; URL &amp; Web</h4>
-          <p>Koi bhi URL browser mein kholo directly — YouTube, GitHub, Google. Bina browser switch kiye!</p>
+        <div class="bento-card">
+          <span class="bento-tag">🎵 Media</span>
+          <h4>🎵 Media Controls</h4>
+          <p><strong>Play/Pause</strong><br><strong>Next/Previous</strong> track<br>Spotify, YouTube, VLC</p>
         </div>
-        <div class="feat-card">
-          <h4>&#128451; Window Management</h4>
-          <p><strong>Minimize/Maximize</strong><br><strong>Close</strong> (Alt+F4)<br><strong>Switch</strong> (Alt+Tab)<br><strong>Show Desktop</strong> (Win+D)</p>
+        <div class="bento-card bento-span-2">
+          <span class="bento-tag">📱 Apps</span>
+          <h4>📱 App Launcher (25+ Apps)</h4>
+          <p>Open/Close Chrome, VS Code, Notepad, Calculator, Spotify, Word, Excel, PowerPoint, Terminal, and 25+ more apps via voice or UI buttons.</p>
         </div>
-        <div class="feat-card">
-          <h4>&#128202; System Info</h4>
-          <p>Real-time: <strong>Battery</strong>, <strong>CPU</strong>, <strong>RAM</strong>, <strong>Disk</strong>, IP, Uptime, Running Processes</p>
+        <div class="bento-card">
+          <span class="bento-tag">🌐 Web</span>
+          <h4>🌐 URL Launcher</h4>
+          <p>Open any URL in browser — YouTube, GitHub, Google, StackOverflow directly from voice command.</p>
         </div>
-        <div class="feat-card">
-          <h4>&#128203; Clipboard</h4>
-          <p><strong>Get</strong> — Current content dekho<br><strong>Set</strong> — Text copy karo<br><strong>Paste</strong> — Auto paste (Ctrl+V)</p>
+        <div class="bento-card">
+          <span class="bento-tag">🪟 Windows</span>
+          <h4>🪟 Window Management</h4>
+          <p><strong>Min/Max</strong><br><strong>Close</strong> (Alt+F4)<br><strong>Switch</strong> (Alt+Tab)<br><strong>Show Desktop</strong></p>
         </div>
-        <div class="feat-card">
-          <h4>&#128193; File Manager</h4>
-          <p><strong>Create</strong> — Nayi file<br><strong>Delete</strong> — File/folder<br><strong>List</strong> — Directory contents</p>
+        <div class="bento-card">
+          <span class="bento-tag">📊 Monitor</span>
+          <h4>📊 System Monitor</h4>
+          <p>Real-time: <strong>CPU %</strong>, <strong>RAM GB</strong>, <strong>Disk</strong>, <strong>Battery %</strong>, IP, Uptime</p>
         </div>
-        <div class="feat-card">
-          <h4>&#128247; Screenshot</h4>
-          <p>Ek click mein screenshot! Desktop pe save hota hai aur thumbnail preview bhi dikhata hai.</p>
+        <div class="bento-card">
+          <span class="bento-tag">📋 Clipboard</span>
+          <h4>📋 Clipboard Manager</h4>
+          <p><strong>Get</strong> content<br><strong>Set</strong> text<br><strong>Paste</strong> (Ctrl+V)<br>Track last 50 items</p>
         </div>
-        <div class="feat-card">
-          <h4>&#9200; Reminders</h4>
-          <p>Timer set karo — "5 min baad yaad dilao". Desktop notification aayega automatically!</p>
+        <div class="bento-card bento-span-2">
+          <span class="bento-tag">📁 Files</span>
+          <h4>📁 File Manager (7 Operations)</h4>
+          <p><strong>Create</strong>, <strong>Write</strong>, <strong>Append</strong>, <strong>Delete</strong>, <strong>List</strong>, <strong>Search</strong>, <strong>Copy</strong>, <strong>Move</strong> files and folders with full path support.</p>
         </div>
-        <div class="feat-card">
-          <h4>&#128276; Notifications</h4>
-          <p>Custom Windows desktop notifications bhejo — title aur message ke saath.</p>
+        <div class="bento-card">
+          <span class="bento-tag">📸 Screenshot</span>
+          <h4>📸 Screenshot Capture</h4>
+          <p>One-click desktop capture. Saves PNG to desktop with thumbnail preview notification.</p>
         </div>
-        <div class="feat-card">
-          <h4>&#9000; Keyboard Shortcuts</h4>
-          <p>Koi bhi hotkey remotely: <strong>Ctrl+C</strong>, <strong>Ctrl+V</strong>, <strong>Win+E</strong>, <strong>Alt+Tab</strong>, etc.</p>
+        <div class="bento-card">
+          <span class="bento-tag">⏰ Reminders</span>
+          <h4>⏰ Smart Reminders</h4>
+          <p>Set timers with desktop notifications. <em>"5 min baad yaad dilao"</em> — voice or UI.</p>
         </div>
-        <div class="feat-card">
-          <h4>&#9728; Brightness</h4>
-          <p>Screen brightness control — set level ya current dekho (laptops pe best kaam karta hai)</p>
+        <div class="bento-card">
+          <span class="bento-tag">🔔 Notifications</span>
+          <h4>🔔 Windows Notifications</h4>
+          <p>Send custom toast notifications with title, body, and sound effects.</p>
         </div>
-        <div class="feat-card">
-          <h4>&#128246; WiFi Control</h4>
-          <p><strong>List</strong> — Available networks<br><strong>Connect/Disconnect</strong> — WiFi switch karo<br><strong>Turn On/Off</strong> — Adapter control</p>
+        <div class="bento-card">
+          <span class="bento-tag">⌨️ Hotkeys</span>
+          <h4>⌨️ Keyboard Shortcuts</h4>
+          <p>Send any hotkey: <strong>Ctrl+C/V</strong>, <strong>Win+E</strong>, <strong>Alt+Tab</strong>, <strong>Ctrl+Shift+Esc</strong></p>
         </div>
-        <div class="feat-card">
-          <h4>&#128269; Web Search</h4>
-          <p>Google, Bing, YouTube, GitHub, StackOverflow, Wikipedia — sab pe search karo</p>
+        <div class="bento-card">
+          <span class="bento-tag">🔆 Brightness</span>
+          <h4>🔆 Brightness Control</h4>
+          <p>Get/Set screen brightness levels (laptops supported).</p>
         </div>
-        <div class="feat-card">
-          <h4>&#128249; Camera Control</h4>
-          <p><strong>Camera Open</strong> — default camera app open karo voice or button se directly instantly</p>
+        <div class="bento-card">
+          <span class="bento-tag">📶 WiFi</span>
+          <h4>📶 WiFi Manager</h4>
+          <p><strong>List</strong> networks<br><strong>Connect/Disconnect</strong><br><strong>Turn On/Off</strong> adapter</p>
         </div>
-        <div class="feat-card">
-          <h4>&#128250; PiP Floating Window</h4>
-          <p>Draggable Picture-in-Picture window supporting simulated speech waveforms, microphone quick toggles, and live command logging status feeds.</p>
+        <div class="bento-card">
+          <span class="bento-tag">🔍 Search</span>
+          <h4>🔍 Web Search</h4>
+          <p>Search: Google, Bing, YouTube, GitHub, StackOverflow, Wikipedia</p>
         </div>
-        <div class="feat-card">
-          <h4>&#128483; Manual Speech Engine</h4>
-          <p>Independently pick Online/Offline speech providers (Edge-TTS, Pyttsx3, Vosk, Web Speech API) and save presets permanently in database settings.</p>
+        <div class="bento-card">
+          <span class="bento-tag">📷 Camera</span>
+          <h4>📷 Camera Control</h4>
+          <p>Launch default system Camera app via voice or button click.</p>
+        </div>
+        <div class="bento-card bento-span-2">
+          <span class="bento-tag">🪟 PiP + 🎛️ Engine Select</span>
+          <h4>🪟 PiP Floating Window &amp; Manual Speech Engine Select</h4>
+          <p>Draggable Picture-in-Picture widget with live command logs. Independently toggle <strong>Online/Offline STT</strong> (Vosk/Web Speech) and <strong>TTS</strong> (Edge-TTS/Pyttsx3) — settings persist in <code>data/config.json</code>.</p>
         </div>
       </div>
     </section>
@@ -949,12 +1172,16 @@
             </thead>
             <tbody>
               <tr><td><strong>pc-bridge/pc_bridge.py</strong></td><td><span style="color:var(--green)">⚡ Core</span></td><td>WebSocket server for system commands &amp; voice processing.</td></tr>
-              <tr><td><strong>src/app/page.tsx</strong></td><td><span style="color:var(--green)">⚡ Core</span></td><td>Futuristic layout, grids, responsive mapping logic.</td></tr>
-              <tr><td><strong>src/components/assistant/</strong></td><td><span style="color:var(--green)">⚡ Core</span></td><td>WebcamFeed, NeuralNetVisualizer, settings panels.</td></tr>
-              <tr><td><strong>data/config.json</strong></td><td><span style="color:var(--green)">⚡ Core</span></td><td>Manual speech selections, API keys configuration.</td></tr>
+              <tr><td><strong>src/app/page.tsx</strong></td><td><span style="color:var(--green)">⚡ Core</span></td><td>Main page — renders Sidebar, ChatPanel, PCControlPanel.</td></tr>
+              <tr><td><strong>src/components/ChatPanel.tsx</strong></td><td><span style="color:var(--green)">⚡ Core</span></td><td>AI Chat interface — handles messages &amp; provider responses.</td></tr>
+              <tr><td><strong>src/components/PCControlPanel.tsx</strong></td><td><span style="color:var(--green)">⚡ Core</span></td><td>Renders all 19 PC Control feature buttons.</td></tr>
+              <tr><td><strong>src/lib/websocket.ts</strong></td><td><span style="color:var(--green)">⚡ Core</span></td><td>WebSocket client connecting to pc_bridge.py.</td></tr>
+              <tr><td><strong>src/lib/ai-providers.ts</strong></td><td><span style="color:var(--green)">⚡ Core</span></td><td>Groq/Gemini/Mistral/Cerebras API integration logic.</td></tr>
+              <tr><td><strong>src/lib/voice.ts</strong></td><td><span style="color:var(--green)">⚡ Core</span></td><td>Vosk offline &amp; Web Speech API voice recognition logic.</td></tr>
+              <tr><td><strong>.env.example</strong></td><td><span style="color:var(--blue)">📄 Template</span></td><td>Copy to <code>.env.local</code> and fill your API keys.</td></tr>
+              <tr><td><strong>public/screenshots/</strong></td><td><span style="color:var(--blue)">📄 Assets</span></td><td>Store your app screenshots here (chat.png, pc-control.png, etc).</td></tr>
               <tr><td><strong>tsconfig.tsbuildinfo</strong></td><td><span style="color:var(--orange)">⚠️ Cache</span></td><td>TypeScript compiler cache. Safe to delete/ignore.</td></tr>
-              <tr><td><strong>pc-bridge/qrcode.png</strong></td><td><span style="color:var(--orange)">⚠️ Temp</span></td><td>Auto-generated sample output. Safe to delete.</td></tr>
-              <tr><td><strong>idea/ folders</strong></td><td><span style="color:var(--blue)">📄 Docs</span></td><td>Guide reference files only. Not runtime-critical.</td></tr>
+              <tr><td><strong>node_modules/</strong></td><td><span style="color:var(--orange)">⚠️ Generated</span></td><td>Auto-installed by <code>npm install</code>. Never commit to Git.</td></tr>
             </tbody>
           </table>
         </div>
@@ -976,8 +1203,8 @@
       </div>
 
       <div class="card">
-        <h3>Complete Complete Repository File Tree</h3>
-        <p style="margin-bottom:12px">Repository ka clean structured breakdown jismein Next.js frontend aur Python backend clear segregated hain:</p>
+        <h3>Complete Repository File Tree (Verified vs. GitHub)</h3>
+        <p style="margin-bottom:12px">Repository ka accurate structure — directly matched with <a href="https://github.com/SudhirDevOps1/Ai-assistant-pika" target="_blank" rel="noopener">GitHub README</a> project structure:</p>
         <div class="code-wrap">
           <div class="code-header">
             <div class="code-dots"><span></span><span></span><span></span></div>
@@ -985,29 +1212,44 @@
             <button class="code-copy" onclick="copyCode(this)">Copy</button>
           </div>
           <div class="code-block">Ai-assistant-pika/
-├── <span class="cmd">start.bat</span>                   <span class="cm"># One-click Windows auto-installer & launcher</span>
-├── <span class="cmd">package.json</span>                <span class="cm"># Next.js 15, React 19, Tailwind dependencies</span>
-├── <span class="cmd">next.config.ts</span>              <span class="cm"># Next.js compiler & security configurations</span>
-├── <span class="cmd">tsconfig.json</span>               <span class="cm"># TypeScript strict type definitions</span>
-├── <span class="hl">src/</span>                        <span class="cm"># Frontend Application Source Code</span>
-│   ├── <span class="hl">app/</span>                    <span class="cm"># Next.js App Router Core</span>
-│   │   ├── <span class="str">layout.tsx</span>          <span class="cm"># Root HTML wrapper with fonts & global state</span>
-│   │   ├── <span class="str">page.tsx</span>            <span class="cm"># 3-Column futuristic dashboard interface</span>
-│   │   └── <span class="str">globals.css</span>         <span class="cm"># Custom glowing CSS & Tailwind styles</span>
-│   └── <span class="hl">components/assistant/</span>   <span class="cm"># Interactive AI UI Widgets</span>
-│       ├── <span class="url">WebcamFeed.tsx</span>      <span class="cm"># Live camera toggle via HTML5 MediaStream</span>
-│       ├── <span class="url">NeuralNetVisualizer.tsx</span> <span class="cm"># SVG animated AI listening/thinking rings</span>
-│       ├── <span class="url">ChatBox.tsx</span>         <span class="cm"># Voice transcript & manual text command entry</span>
-│       ├── <span class="url">SettingsModal.tsx</span>   <span class="cm"># AI Provider selection & API Key storage</span>
-│       ├── <span class="url">SystemMetrics.tsx</span>   <span class="cm"># Real-time CPU/RAM/Battery telemetry cards</span>
-│       └── <span class="url">PiPWidget.tsx</span>       <span class="cm"># Floating Picture-in-Picture status overlay</span>
-├── <span class="hl">pc-bridge/</span>                <span class="cm"># Python Hardware Control Server</span>
-│   ├── <span class="str">pc_bridge.py</span>            <span class="cm"># Main Async WebSocket server (ws://0.0.0.0:8765)</span>
-│   ├── <span class="str">requirements.txt</span>        <span class="cm"># psutil, pyautogui, edge-tts, pyttsx3, vosk</span>
-│   └── <span class="str">utils/</span>                  <span class="cm"># System automation helpers & audio drivers</span>
-└── <span class="hl">data/</span>                       <span class="cm"># Local Persistence JSON Database</span>
-    ├── <span class="str">config.json</span>             <span class="cm"># Persistent user preferences & wake words</span>
-    └── <span class="str">history.json</span>            <span class="cm"># Stored chat transcripts & reminder queues</span></div>
+├── <span class="cmd">start.bat</span>                  <span class="cm"># One-click startup (Windows)</span>
+├── <span class="cmd">start.sh</span>                   <span class="cm"># One-click startup (Linux/Mac)</span>
+├── <span class="cmd">index.html</span>                 <span class="cm"># Offline setup guide (Hindi/English) — this page!</span>
+├── <span class="cmd">package.json</span>               <span class="cm"># Node.js dependencies</span>
+├── <span class="cmd">next.config.js</span>             <span class="cm"># Next.js configuration</span>
+├── <span class="cmd">tailwind.config.js</span>         <span class="cm"># Tailwind CSS configuration</span>
+├── <span class="cmd">.env.example</span>               <span class="cm"># Environment variables template</span>
+├── <span class="cmd">README.md</span>                  <span class="cm"># Project documentation</span>
+├── <span class="cmd">LICENSE</span>                    <span class="cm"># MIT License</span>
+│
+├── <span class="hl">public/</span>
+│   ├── <span class="str">logo.svg</span>                <span class="cm"># App logo</span>
+│   └── <span class="str">screenshots/</span>            <span class="cm"># UI screenshots (chat, pc-control, settings, monitor)</span>
+│
+├── <span class="hl">src/</span>
+│   ├── <span class="hl">app/</span>
+│   │   ├── <span class="str">page.tsx</span>            <span class="cm"># Main page</span>
+│   │   ├── <span class="str">layout.tsx</span>          <span class="cm"># Root layout</span>
+│   │   └── <span class="str">globals.css</span>         <span class="cm"># Global styles</span>
+│   │
+│   ├── <span class="hl">components/</span>
+│   │   ├── <span class="url">ChatPanel.tsx</span>       <span class="cm"># AI Chat interface</span>
+│   │   ├── <span class="url">PCControlPanel.tsx</span>  <span class="cm"># PC Control buttons</span>
+│   │   ├── <span class="url">SettingsPanel.tsx</span>   <span class="cm"># Settings page</span>
+│   │   ├── <span class="url">Sidebar.tsx</span>         <span class="cm"># Navigation sidebar</span>
+│   │   ├── <span class="url">SystemMonitor.tsx</span>   <span class="cm"># System info display</span>
+│   │   ├── <span class="url">ClipboardPanel.tsx</span>  <span class="cm"># Clipboard history</span>
+│   │   ├── <span class="url">ReminderPanel.tsx</span>   <span class="cm"># Reminders manager</span>
+│   │   └── <span class="url">Header.tsx</span>          <span class="cm"># Top header bar</span>
+│   │
+│   └── <span class="hl">lib/</span>
+│       ├── <span class="str">ai-providers.ts</span>     <span class="cm"># AI API integrations (Groq/Gemini/Mistral/Cerebras)</span>
+│       ├── <span class="str">voice.ts</span>            <span class="cm"># Voice recognition logic (Vosk/Web Speech)</span>
+│       └── <span class="str">websocket.ts</span>        <span class="cm"># WebSocket client</span>
+│
+└── <span class="hl">pc-bridge/</span>
+    ├── <span class="str">pc_bridge.py</span>            <span class="cm"># Python WebSocket server</span>
+    └── <span class="str">requirements.txt</span>        <span class="cm"># websockets, psutil, pyautogui, pyperclip, Pillow, PyGetWindow</span></div>
         </div>
       </div>
 
@@ -1355,6 +1597,72 @@
 
     <div class="divider"></div>
 
+    <!-- ROADMAP (from repo README — previously missing) -->
+    <section class="section reveal" id="roadmap">
+      <div class="section-head">
+        <div class="section-icon" style="background:linear-gradient(135deg,var(--purple),var(--pink))">&#128506;</div>
+        <h2 class="section-title">&#128506;&#65039; Roadmap</h2>
+      </div>
+
+      <div class="bento-grid">
+        <div class="bento-card">
+          <span class="bento-tag" style="background:rgba(74,222,128,.15);color:var(--green)">&#9989; v0.2.0 — Current</span>
+          <h4>Stable Release</h4>
+          <p>Multi-provider AI chat • PC Bridge with 16 control categories • Offline Vosk voice recognition • One-click start.bat • Glassmorphism UI • System monitor • Clipboard manager • Smart reminders</p>
+        </div>
+        <div class="bento-card">
+          <span class="bento-tag" style="background:rgba(250,204,21,.15);color:var(--yellow)">&#128260; v0.3.0 — Planned</span>
+          <h4>Next Milestone</h4>
+          <p>Electron desktop app packaging • Docker support • Custom wake word training • Plugin system for custom commands • Multi-language UI toggle (Hindi/English) • Voice cloning / custom TTS voices</p>
+        </div>
+        <div class="bento-card">
+          <span class="bento-tag" style="background:rgba(96,165,250,.15);color:var(--blue)">&#128302; v1.0.0 — Future</span>
+          <h4>Long-Term Vision</h4>
+          <p>Mobile app (React Native) • Cloud sync for settings • Team collaboration features • AI agent with tool use • Automation workflows (if-this-then-that) • GitHub Actions CI/CD</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- CONTRIBUTING (from repo README — previously missing) -->
+    <section class="section reveal" id="contributing">
+      <div class="section-head">
+        <div class="section-icon" style="background:linear-gradient(135deg,var(--green),var(--cyan))">&#129309;</div>
+        <h2 class="section-title">&#129309; Contributing</h2>
+      </div>
+
+      <div class="card">
+        <h3>Contributions Are Welcome!</h3>
+        <div class="steps" style="margin:12px 0 0">
+          <div class="step" style="padding:12px 16px"><div class="step-num" style="width:30px;height:30px;font-size:.78rem">1</div><div class="step-body"><p><strong>Fork</strong> this repository on GitHub</p></div></div>
+          <div class="step" style="padding:12px 16px"><div class="step-num" style="width:30px;height:30px;font-size:.78rem">2</div><div class="step-body"><p><strong>Clone</strong> your fork: <code>git clone https://github.com/YOUR_USERNAME/Ai-assistant-pika.git</code></p></div></div>
+          <div class="step" style="padding:12px 16px"><div class="step-num" style="width:30px;height:30px;font-size:.78rem">3</div><div class="step-body"><p><strong>Create</strong> a branch: <code>git checkout -b feature/amazing-feature</code></p></div></div>
+          <div class="step" style="padding:12px 16px"><div class="step-num" style="width:30px;height:30px;font-size:.78rem">4</div><div class="step-body"><p><strong>Commit</strong> your changes: <code>git commit -m "Add amazing feature"</code></p></div></div>
+          <div class="step" style="padding:12px 16px"><div class="step-num" style="width:30px;height:30px;font-size:.78rem">5</div><div class="step-body"><p><strong>Push</strong>: <code>git push origin feature/amazing-feature</code></p></div></div>
+          <div class="step" style="padding:12px 16px"><div class="step-num" style="width:30px;height:30px;font-size:.78rem">6</div><div class="step-body"><p><strong>Open</strong> a Pull Request &#127881;</p></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>&#128161; Ideas for Contributions</h3>
+        <ul>
+          <li>&#127760; Add more language support for voice</li>
+          <li>&#127912; New UI themes</li>
+          <li>&#128013; New PC Bridge commands</li>
+          <li>&#128221; Documentation improvements</li>
+          <li>&#128027; Bug fixes</li>
+        </ul>
+      </div>
+
+      <div class="alert alert-success">
+        <span class="alert-icon">&#128220;</span>
+        <span class="alert-text"><strong>License:</strong> This project is licensed under the <strong>MIT License</strong> — free to use, modify, and distribute. See <code>LICENSE</code> file in the repo for full details.</span>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
     <!-- QUICK REFERENCE -->
     <section class="section reveal">
       <div class="section-head">
@@ -1451,7 +1759,7 @@
     <button class="mq-link active" data-target="hero"><span class="mq-icon">&#9733;</span>Home</button>
     <button class="mq-link" data-target="setup"><span class="mq-icon">&#128640;</span>Setup</button>
     <button class="mq-link" data-target="features"><span class="mq-icon">&#128187;</span>Control</button>
-    <button class="mq-link" data-target="voice-pipeline"><span class="mq-icon">&#127908;</span>Voice</button>
+    <button class="mq-link" data-target="tech-stack"><span class="mq-icon">&#128736;</span>Stack</button>
     <button class="mq-link" data-target="providers"><span class="mq-icon">&#129302;</span>AI</button>
     <button class="mq-link" data-target="screenshots"><span class="mq-icon">&#128247;</span>Shots</button>
     <button class="mq-link" data-target="troubleshoot"><span class="mq-icon">&#128295;</span>Help</button>
@@ -1470,6 +1778,8 @@
   const navLinksContainer = document.getElementById('navLinks');
   const navHamburger = document.getElementById('navHamburger');
   const navOverlay = document.getElementById('navOverlay');
+  const mobileDrawer = document.getElementById('mobileDrawer');
+  const mobileDrawerClose = document.getElementById('mobileDrawerClose');
   const sidebarLinks = document.querySelectorAll('.sidebar-link');
   const navLinkEls = document.querySelectorAll('.nav-link');
   const mobileQuickLinks = document.querySelectorAll('.mobile-quick-nav .mq-link');
@@ -1553,33 +1863,53 @@
   // Expose globally
   window.copyCode = copyCode;
 
-  // ── Mobile Navigation ──
+  // ── Mobile Navigation (Off-Canvas Drawer) ──
+  // NOTE: drawer lives OUTSIDE <nav> in the DOM on purpose — see CSS bugfix comment.
+  // This fixes the earlier bug where clicking the hamburger opened an "empty/hidden" menu
+  // because .nav-links (position:fixed) was trapped inside <nav>'s backdrop-filter
+  // containing block, collapsing it to ~0 visible height.
   function closeMobileNav(){
-    navLinksContainer.classList.remove('open');
+    if(mobileDrawer) mobileDrawer.classList.remove('open');
     navHamburger.classList.remove('open');
     navOverlay.classList.remove('open');
     document.body.style.overflow = '';
   }
   function openMobileNav(){
-    navLinksContainer.classList.add('open');
+    if(mobileDrawer) mobileDrawer.classList.add('open');
     navHamburger.classList.add('open');
     navOverlay.classList.add('open');
     document.body.style.overflow = 'hidden';
   }
   navHamburger.addEventListener('click', function(){
-    if(navLinksContainer.classList.contains('open')){closeMobileNav();}
+    const isOpen = mobileDrawer && mobileDrawer.classList.contains('open');
+    if(isOpen){closeMobileNav();}
     else{openMobileNav();}
   });
   navOverlay.addEventListener('click', closeMobileNav);
+  if(mobileDrawerClose) mobileDrawerClose.addEventListener('click', closeMobileNav);
 
-  // Close nav when any link clicked
-  navLinksContainer.querySelectorAll('a').forEach(function(link){
-    link.addEventListener('click', closeMobileNav);
-  });
+  // Close drawer + smooth scroll when any drawer link clicked
+  if(mobileDrawer){
+    mobileDrawer.querySelectorAll('a.md-link').forEach(function(link){
+      link.addEventListener('click', function(e){
+        e.preventDefault();
+        var id = link.getAttribute('href').slice(1);
+        closeMobileNav();
+        setTimeout(function(){
+          var target = document.getElementById(id);
+          if(target){
+            var offset = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 80;
+            var top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+            window.scrollTo({top:top, behavior:'smooth'});
+          }
+        }, 300);
+      });
+    });
+  }
 
   // Close on Escape
   document.addEventListener('keydown', function(e){
-    if(e.key === 'Escape' && navLinksContainer.classList.contains('open')){
+    if(e.key === 'Escape' && mobileDrawer && mobileDrawer.classList.contains('open')){
       closeMobileNav();
     }
   });
@@ -1606,15 +1936,17 @@
     });
   });
 
-  // ── Swipe to close mobile nav ──
+  // ── Swipe to close mobile drawer ──
   var touchStartX = 0;
-  navLinksContainer.addEventListener('touchstart', function(e){
-    touchStartX = e.touches[0].clientX;
-  }, {passive:true});
-  navLinksContainer.addEventListener('touchmove', function(e){
-    var diff = e.touches[0].clientX - touchStartX;
-    if(diff > 50){closeMobileNav();}
-  }, {passive:true});
+  if(mobileDrawer){
+    mobileDrawer.addEventListener('touchstart', function(e){
+      touchStartX = e.touches[0].clientX;
+    }, {passive:true});
+    mobileDrawer.addEventListener('touchmove', function(e){
+      var diff = e.touches[0].clientX - touchStartX;
+      if(diff > 50){closeMobileNav();}
+    }, {passive:true});
+  }
 
   // ── Screenshot Gallery ──
   const screenshotGrid = document.getElementById('screenshotGrid');
@@ -1704,6 +2036,65 @@
     else if (e.key === 'ArrowLeft') navLightbox(-1);
     else if (e.key === 'ArrowRight') navLightbox(1);
   });
+
+  // ── Interactive Terminal Simulator ──
+  const termOutputs = [
+    `<span class="cm"># 🚀 PIKA AI — ONE-CLICK BOOTSTRAPPER (start.bat)</span>
+<span class="cmd">C:\\Users\\Admin&gt; start.bat</span>
+
+<span class="hl">[✓]</span> Node.js v20.11.0 detected
+<span class="hl">[✓]</span> Python 3.11.5 detected
+<span class="hl">[✓]</span> Installing frontend dependencies...
+<span class="cm">added 487 packages in 28s</span>
+<span class="hl">[✓]</span> Installing Python bridge dependencies...
+<span class="cm">websockets, psutil, pyautogui, pyperclip, pillow, pygetwindow — installed</span>
+<span class="green">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+<span class="green">  🎙️ PIKA AI IS RUNNING!</span>
+<span class="green">  Web UI:      http://localhost:3000</span>
+<span class="green">  WS Bridge:   ws://localhost:8765</span>
+<span class="green">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>`,
+
+    `<span class="cm"># ⚡ NEXT.JS 15 + REACT 19 FRONTEND</span>
+<span class="cmd">&gt; npm run dev</span>
+
+<span class="hl">▲ Next.js 15.1.0</span>  - Ready in 1240ms
+  ├─ Local:     <span class="url">http://localhost:3000</span>
+  └─ Network:   <span class="url">http://192.168.1.105:3000</span>
+
+<span class="hl">[Tailwind CSS]</span> PostCSS enabled
+<span class="hl">[WebSocket]</span> Connected to <span class="url">ws://localhost:8765</span> (1.2ms latency)
+<span class="green">✓</span> Fast Refresh enabled
+<span class="green">✓</span> TypeScript strict mode active`,
+
+    `<span class="cm"># 🔌 PYTHON PC BRIDGE (pc_bridge.py)</span>
+<span class="cmd">&gt; python pc_bridge.py</span>
+
++------------------------------------------------------+
+|  🎙️ PIKA AI — WEBSOCKET HARDWARE BRIDGE v0.2.0     |
+|  Listening on: <span class="url">ws://0.0.0.0:8765</span>                    |
+|  Modules: Volume • Media • Apps • Files • WiFi      |
++------------------------------------------------------+
+<span class="hl">[12:45:01]</span> Client connected: 127.0.0.1:54210
+<span class="hl">[12:45:08]</span> Command: <span class="cmd">{"action":"volume","command":"set_level","value":80}</span>
+<span class="green">[12:45:08]</span> ✓ Volume set to 80%
+<span class="hl">[12:45:15]</span> Command: <span class="cmd">{"action":"app","command":"open","app":"chrome"}</span>
+<span class="green">[12:45:15]</span> ✓ Google Chrome launched`
+  ];
+
+  window.switchTerm = function(idx) {
+    const tabs = document.querySelectorAll('.t-tab');
+    tabs.forEach((t, i) => t.classList.toggle('active', i === idx));
+    const screen = document.getElementById('termScreen');
+    if (screen) {
+      screen.style.opacity = '0';
+      setTimeout(() => {
+        screen.innerHTML = termOutputs[idx];
+        screen.style.opacity = '1';
+      }, 150);
+    }
+  };
+  // Initialize terminal
+  if (document.getElementById('termScreen')) window.switchTerm(0);
 
   // ── Initial state ──
   updateScrollProgress();
