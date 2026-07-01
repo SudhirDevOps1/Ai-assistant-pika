@@ -392,6 +392,9 @@
     <a class="sidebar-link" href="#chat"><span class="s-num">5</span> Chat</a>
     <a class="sidebar-link" href="#features"><span class="s-num">6</span> PC Control</a>
     <a class="sidebar-link" href="#architecture"><span class="s-num">&#9881;</span> Architecture</a>
+    <a class="sidebar-link" href="#repo-audit"><span class="s-num">&#128193;</span> Repo Audit</a>
+    <a class="sidebar-link" href="#websocket-proto"><span class="s-num">&#128268;</span> WS Protocol</a>
+    <a class="sidebar-link" href="#voice-pipeline"><span class="s-num">&#128266;</span> Voice Engine</a>
     <a class="sidebar-link" href="#reminders"><span class="s-num">7</span> Reminders</a>
     <a class="sidebar-link" href="#clipboard"><span class="s-num">8</span> Clipboard</a>
     <a class="sidebar-link" href="#monitor"><span class="s-num">9</span> Monitor</a>
@@ -927,6 +930,175 @@
 
     <div class="divider"></div>
 
+    <!-- 6c. DEEP REPOSITORY AUDIT & COMPLETE FILE TREE ANALYSIS -->
+    <section class="section reveal" id="repo-audit">
+      <div class="section-head">
+        <div class="section-icon" style="background:linear-gradient(135deg,#38bdf8,#818cf8)">&#128193;</div>
+        <h2 class="section-title">6c. Deep Repository Audit &amp; Complete File Tree Analysis</h2>
+      </div>
+
+      <div class="alert alert-info">
+        <span class="alert-icon">&#128269;</span>
+        <span class="alert-text"><strong>In-Depth Codebase Breakdown:</strong> Yeh section <a href="https://github.com/SudhirDevOps1/Ai-assistant-pika.git" target="_blank" rel="noopener">SudhirDevOps1/Ai-assistant-pika</a> repository ke har folder, bootstrapper file, frontend component, aur Python backend bridge ki technical logic ko explain karta hai taaki aap isse apne hisaab se customize, debug aur extend kar sakein.</span>
+      </div>
+
+      <div class="card">
+        <h3>Complete Complete Repository File Tree</h3>
+        <p style="margin-bottom:12px">Repository ka clean structured breakdown jismein Next.js frontend aur Python backend clear segregated hain:</p>
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <span class="code-label">Ai-assistant-pika Structure</span>
+            <button class="code-copy" onclick="copyCode(this)">Copy</button>
+          </div>
+          <div class="code-block">Ai-assistant-pika/
+├── <span class="cmd">start.bat</span>                   <span class="cm"># One-click Windows auto-installer & launcher</span>
+├── <span class="cmd">package.json</span>                <span class="cm"># Next.js 15, React 19, Tailwind dependencies</span>
+├── <span class="cmd">next.config.ts</span>              <span class="cm"># Next.js compiler & security configurations</span>
+├── <span class="cmd">tsconfig.json</span>               <span class="cm"># TypeScript strict type definitions</span>
+├── <span class="hl">src/</span>                        <span class="cm"># Frontend Application Source Code</span>
+│   ├── <span class="hl">app/</span>                    <span class="cm"># Next.js App Router Core</span>
+│   │   ├── <span class="str">layout.tsx</span>          <span class="cm"># Root HTML wrapper with fonts & global state</span>
+│   │   ├── <span class="str">page.tsx</span>            <span class="cm"># 3-Column futuristic dashboard interface</span>
+│   │   └── <span class="str">globals.css</span>         <span class="cm"># Custom glowing CSS & Tailwind styles</span>
+│   └── <span class="hl">components/assistant/</span>   <span class="cm"># Interactive AI UI Widgets</span>
+│       ├── <span class="url">WebcamFeed.tsx</span>      <span class="cm"># Live camera toggle via HTML5 MediaStream</span>
+│       ├── <span class="url">NeuralNetVisualizer.tsx</span> <span class="cm"># SVG animated AI listening/thinking rings</span>
+│       ├── <span class="url">ChatBox.tsx</span>         <span class="cm"># Voice transcript & manual text command entry</span>
+│       ├── <span class="url">SettingsModal.tsx</span>   <span class="cm"># AI Provider selection & API Key storage</span>
+│       ├── <span class="url">SystemMetrics.tsx</span>   <span class="cm"># Real-time CPU/RAM/Battery telemetry cards</span>
+│       └── <span class="url">PiPWidget.tsx</span>       <span class="cm"># Floating Picture-in-Picture status overlay</span>
+├── <span class="hl">pc-bridge/</span>                <span class="cm"># Python Hardware Control Server</span>
+│   ├── <span class="str">pc_bridge.py</span>            <span class="cm"># Main Async WebSocket server (ws://0.0.0.0:8765)</span>
+│   ├── <span class="str">requirements.txt</span>        <span class="cm"># psutil, pyautogui, edge-tts, pyttsx3, vosk</span>
+│   └── <span class="str">utils/</span>                  <span class="cm"># System automation helpers & audio drivers</span>
+└── <span class="hl">data/</span>                       <span class="cm"># Local Persistence JSON Database</span>
+    ├── <span class="str">config.json</span>             <span class="cm"># Persistent user preferences & wake words</span>
+    └── <span class="str">history.json</span>            <span class="cm"># Stored chat transcripts & reminder queues</span></div>
+        </div>
+      </div>
+
+      <div class="feat-grid">
+        <div class="feat-card">
+          <h4>&#128187; Bootstrapper Workflow (start.bat)</h4>
+          <p>Windows pe double click karte hi <code>start.bat</code> pehle Node.js aur Python PATH variable verify karta hai. Phir yeh automatically <code>npm install</code> aur <code>pip install -r pc-bridge/requirements.txt</code> chala kar saari libraries ready karta hai aur ek hi command se Next.js server (port 3000) aur WebSocket bridge (port 8765) chala deta hai.</p>
+        </div>
+        <div class="feat-card">
+          <h4>&#9889; Frontend Core (Next.js 15 &amp; React 19)</h4>
+          <p>Application latest Next.js 15 App Router ke upar bani hai. <code>page.tsx</code> responsive 3-column layouts render karta hai aur React 19 hooks ke zariye microphone streams, WebSocket connection states aur system health data ko bina page refresh kiye real-time update karta hai.</p>
+        </div>
+        <div class="feat-card">
+          <h4>&#128268; Python Hardware Bridge (pc_bridge.py)</h4>
+          <p>Python script <code>websockets</code> library se async background server chalata hai. Yeh <code>psutil</code> se hardware health nikalta hai, <code>pyautogui</code> se keyboard/mouse aur media volume controls chalata hai, aur OS command prompt calls ke zariye saari desktop apps launch ya close karta hai.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- 6d. WEBSOCKET PROTOCOL & COMMAND JSON REFERENCE -->
+    <section class="section reveal" id="websocket-proto">
+      <div class="section-head">
+        <div class="section-icon" style="background:linear-gradient(135deg,#a855f7,#ec4899)">&#128268;</div>
+        <h2 class="section-title">6d. WebSocket API Protocol &amp; Command JSON Reference</h2>
+      </div>
+
+      <div class="card">
+        <h3>Bidirectional JSON Messaging Schema</h3>
+        <p>Next.js Web UI aur Python Bridge ke beech saari communication standardized JSON payloads ke zariye hoti hai. Jab aap UI button dabate hain ya voice command bolte hain, client ek structured payload bhejta hai, aur server turant action execute karke status aur telemetry response return karta hai.</p>
+
+        <h4 style="margin-top:16px;font-size:.92rem;color:var(--cyan)">1. Volume &amp; System Control Command (Client &#10132; Server)</h4>
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <span class="code-label">JSON Request Schema</span>
+            <button class="code-copy" onclick="copyCode(this)">Copy</button>
+          </div>
+          <div class="code-block">{
+  <span class="str">"action"</span>: <span class="hl">"system_control"</span>,
+  <span class="str">"command"</span>: <span class="url">"set_volume"</span>,
+  <span class="str">"value"</span>: <span class="cmd">75</span>,
+  <span class="str">"timestamp"</span>: <span class="cmd">1712400000000</span>
+}</div>
+        </div>
+
+        <h4 style="margin-top:16px;font-size:.92rem;color:var(--green)">2. App Execution &amp; URL Launch Command (Client &#10132; Server)</h4>
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <span class="code-label">JSON Request Schema</span>
+            <button class="code-copy" onclick="copyCode(this)">Copy</button>
+          </div>
+          <div class="code-block">{
+  <span class="str">"action"</span>: <span class="hl">"app_launcher"</span>,
+  <span class="str">"app_name"</span>: <span class="url">"chrome"</span>,
+  <span class="str">"url"</span>: <span class="str">"https://github.com/SudhirDevOps1/Ai-assistant-pika"</span>
+}</div>
+        </div>
+
+        <h4 style="margin-top:16px;font-size:.92rem;color:var(--yellow)">3. Real-Time Telemetry Stream Response (Server &#10132; Client)</h4>
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <span class="code-label">JSON Response Schema</span>
+            <button class="code-copy" onclick="copyCode(this)">Copy</button>
+          </div>
+          <div class="code-block">{
+  <span class="str">"status"</span>: <span class="hl">"success"</span>,
+  <span class="str">"type"</span>: <span class="str">"telemetry"</span>,
+  <span class="str">"data"</span>: {
+    <span class="str">"cpu_percent"</span>: <span class="cmd">18.4</span>,
+    <span class="str">"ram_gb"</span>: { <span class="str">"used"</span>: <span class="cmd">7.8</span>, <span class="str">"total"</span>: <span class="cmd">16.0</span>, <span class="str">"percent"</span>: <span class="cmd">48.7</span> },
+    <span class="str">"battery"</span>: { <span class="str">"percent"</span>: <span class="cmd">92</span>, <span class="str">"charging"</span>: <span class="hl">true</span> },
+    <span class="str">"os"</span>: <span class="str">"Windows 11 Pro (64-bit)"</span>
+  }
+}</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- 6e. 4-TIER VOICE PIPELINE & AI EXECUTION MECHANICS -->
+    <section class="section reveal" id="voice-pipeline">
+      <div class="section-head">
+        <div class="section-icon" style="background:linear-gradient(135deg,#facc15,#fb923c)">&#128266;</div>
+        <h2 class="section-title">6e. 4-Tier Voice &amp; AI Execution Pipeline Mechanics</h2>
+      </div>
+
+      <div class="card">
+        <h3>How Hindi/English Voice Commands Are Processed</h3>
+        <p>Jab aap bole hain <em>"Hey Pika, Chrome kholo aur gaana bajao"</em>, tab system ek ultra-low latency 4-tier processing architecture execute karta hai:</p>
+
+        <div class="arch-diagram" style="margin:20px 0;gap:16px">
+          <div class="arch-box" style="background:rgba(0,229,255,.06);border-color:rgba(0,229,255,.2);color:var(--cyan);min-width:140px">
+            1. Mic Input<br><small style="color:var(--text-3);font-size:.75em">Web Speech API / Vosk</small>
+          </div>
+          <span class="arch-arrow">&#10132;</span>
+          <div class="arch-box" style="background:rgba(168,85,247,.06);border-color:rgba(168,85,247,.2);color:var(--purple);min-width:140px">
+            2. AI Intent Parse<br><small style="color:var(--text-3);font-size:.75em">Groq Llama 3.3 70B</small>
+          </div>
+          <span class="arch-arrow">&#10132;</span>
+          <div class="arch-box" style="background:rgba(74,222,128,.06);border-color:rgba(74,222,128,.2);color:var(--green);min-width:140px">
+            3. Action Execute<br><small style="color:var(--text-3);font-size:.75em">WebSocket Bridge</small>
+          </div>
+          <span class="arch-arrow">&#10132;</span>
+          <div class="arch-box" style="background:rgba(251,146,60,.06);border-color:rgba(251,146,60,.2);color:var(--orange);min-width:140px">
+            4. Voice Feedback<br><small style="color:var(--text-3);font-size:.75em">Edge-TTS / Pyttsx3</small>
+          </div>
+        </div>
+
+        <ul style="margin-top:16px">
+          <li><strong>Tier 1 — Speech-To-Text (STT):</strong> Browser microphone stream ko native <code>webkitSpeechRecognition</code> API ya offline Python <code>vosk</code> model se capture karta hai. Yeh automatically Hinglish, Hindi aur English ke accents ko accurately transcribe karta hai.</li>
+          <li><strong>Tier 2 — AI Prompt Engineering &amp; Intent Extraction:</strong> Transcribed text ko Groq API (ya Gemini/Mistral) pe system prompt ke saath bheja jata hai. System prompt AI ko instruct karta hai ki user ka intent samjhe aur agar koi system action chahiye (jaise volume ya app launch), toh text ke saath JSON tool payload embed kare.</li>
+          <li><strong>Tier 3 — Zero-Latency Hardware Execution:</strong> Web UI AI response se JSON tool payload extract karke Python Bridge ko WebSocket pe bhej deta hai jo turant system hardware ko command bhejta hai.</li>
+          <li><strong>Tier 4 — Smart Hybrid Text-To-Speech (TTS):</strong> Bolne ke liye system pehle ek 0.6s DNS query se check karta hai ki internet connected hai ya nahi. Agar high-speed internet hai, toh Microsoft Edge-TTS neural voice (<code>hi-IN-SwaraNeural</code> ya <code>en-US-Neural2-A</code>) se natural reply sunata hai. Agar offline ya network slow hai, toh bina kisi delay ke local OS voice engine (<code>pyttsx3</code>) pe switch ho jata hai!</li>
+        </ul>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
     <!-- 7. REMINDERS -->
     <section class="section reveal" id="reminders">
       <div class="section-head">
@@ -1214,6 +1386,8 @@
     <button class="mq-link active" data-target="hero"><span class="mq-icon">&#9733;</span>Home</button>
     <button class="mq-link" data-target="setup"><span class="mq-icon">&#128640;</span>Setup</button>
     <button class="mq-link" data-target="features"><span class="mq-icon">&#128187;</span>Control</button>
+    <button class="mq-link" data-target="repo-audit"><span class="mq-icon">&#128193;</span>Repo</button>
+    <button class="mq-link" data-target="websocket-proto"><span class="mq-icon">&#128268;</span>Proto</button>
     <button class="mq-link" data-target="providers"><span class="mq-icon">&#129302;</span>AI</button>
     <button class="mq-link" data-target="troubleshoot"><span class="mq-icon">&#128295;</span>Help</button>
   </div>
